@@ -1,0 +1,36 @@
+services:
+  api:
+    build:
+      context: ./api 
+      dockerfile: Dockerfile
+    command: >
+      sh -c ". /app/.venv/bin/activate &&
+             python manage.py migrate &&
+             uvicorn core.asgi:application --host 0.0.0.0 --port 8000"
+    ports:
+      - "8000:8000"
+    env_file:
+      - ./api/.env
+    networks:
+      - app-network
+  web:
+    build:
+      context: ./web
+      dockerfile: Dockerfile
+    ports:
+      - "5173:5173"
+    volumes:
+      - ./web/src:/app/src
+      - ./web/public:/app/public
+      - ./web/index.html:/app/index.html
+      - ./web/vite.config.ts:/app/vite.config.ts
+      - ./web/tsconfig.json:/app/tsconfig.json
+    stdin_open: true
+    tty: true
+    depends_on:
+      - api
+    networks:
+      - app-network
+networks:
+  app-network:
+    driver: bridge
