@@ -17,7 +17,7 @@ function App() {
   ];
   return (
     <div>
-      <Navbar links={links} />
+      <Navbar links={links} isLogged={false} />
     </div>
   );
 }

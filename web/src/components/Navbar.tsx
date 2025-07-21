@@ -12,9 +12,10 @@ interface Link {
 
 interface NavbarProps {
   links: Link[];
+  isLogged: boolean;
 }
 
-const Navbar = ({ links }: NavbarProps) => {
+const Navbar = ({ links, isLogged }: NavbarProps) => {
   return (
     <NavigationMenu className="p-2 bg-gray-200 rounded-bl-md ">
       <NavigationMenuList className="gap-x-4">
@@ -26,10 +27,15 @@ const Navbar = ({ links }: NavbarProps) => {
           </NavigationMenuItem>
         ))}
         <NavigationMenuItem>
-          {/* Need to check if user is logged in */}
-          <NavigationMenuLink className="bg-blue-50" href={"login"}>
-            Login
-          </NavigationMenuLink>
+          {isLogged ? (
+            <NavigationMenuLink className="bg-blue-50" href={"logout"}>
+              Logout
+            </NavigationMenuLink>
+          ) : (
+            <NavigationMenuLink className="bg-blue-50" href={"login"}>
+              Login
+            </NavigationMenuLink>
+          )}
         </NavigationMenuItem>
       </NavigationMenuList>
     </NavigationMenu>
