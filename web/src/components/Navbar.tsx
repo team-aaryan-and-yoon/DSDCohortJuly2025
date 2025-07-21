@@ -15,6 +15,15 @@ interface NavbarProps {
   isLogged: boolean;
 }
 
+/**
+ * Navbar component that renders a horizontal navigation menu.
+ *
+ * @component
+ * @param {Array<{ url: string; label: string }>} links - An array of link objects containing the URL and label for each menu item.
+ * @param {boolean} isLogged - A boolean indicating whether the user is logged in or not.
+ *
+ * @returns {JSX.Element} - A rendered navigation menu with the provided links and a login/logout item based on authentication status.
+ */
 const Navbar = ({ links, isLogged }: NavbarProps) => {
   return (
     <NavigationMenu className="p-2 bg-gray-200 rounded-bl-md ">
