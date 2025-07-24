@@ -12,6 +12,7 @@ interface Link {
 }
 
 function App() {
+  const [rating, setRating] = useState(3);
   const links: Link[] = [
     { url: "/home", label: "Home" },
     { url: "/portal", label: "Portal" },
@@ -20,7 +21,7 @@ function App() {
   return (
     <div>
       <Navbar links={links} isLogged={false} />
-      <Rating style={{ maxWidth: 100, height: 20 }} value={3}  />
+      <Rating style={{ maxWidth: 100, height: 20 }} value={rating} onChange={setRating}  />
     </div>
   );
 }
