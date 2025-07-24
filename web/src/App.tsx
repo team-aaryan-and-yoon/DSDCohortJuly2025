@@ -3,7 +3,7 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import Navbar from "./components/Navbar";
-import DatePicker from "./components/Datepicker";
+import DatePicker from "./components/DateTimePicker";
 import * as React from "react";
 
 interface Link {
@@ -17,14 +17,20 @@ function App() {
     { url: "/portal", label: "Portal" },
     { url: "/account", label: "Account Info" },
   ];
-  const [date, setDate] = React.useState<Date | undefined>(new Date());
-  const occupied: Date[] = [];
+
+  const [selectedTimestamp, setSelectedTimestamp] = React.useState<
+    number | undefined
+  >(undefined);
+  const occupiedTimestamps = Array.from({ length: 37 }, (_, i) => {
+    const date = new Date(2025, 6, 25, 9, i * 15);
+    return date.getTime();
+  });
   return (
-    <div>
+    <div className="flex">
       <DatePicker
-        selectedDate={date}
-        setSelectedDate={setDate}
-        occupiedDates={occupied}
+        selectedTimestamp={selectedTimestamp}
+        setSelectedTimestamp={setSelectedTimestamp}
+        occupiedTimestamps={occupiedTimestamps}
       />
     </div>
   );
