@@ -3,6 +3,8 @@ import "./App.css";
 import Navbar from "./components/Navbar";
 import ServiceOrderCard from "./components/ServiceOrderCard";
 import type { ServiceOrder } from "./components/ServiceOrderCard";
+import { Input } from "./components/ui/input";
+import { Label } from "./components/ui/label";
 
 interface Link {
   url: string;
@@ -53,6 +55,10 @@ function App() {
       <ServiceOrderCard order={dummyOrder2} />
       <ServiceOrderCard order={dummyOrder3} />
       <ServiceOrderCard order={dummyOrder4} />
+      <div className="grid w-full max-w-sm items-center gap-3 m-4">
+        <Label htmlFor="email">Email</Label>
+        <Input type="email" id="email" placeholder="Email" />
+      </div>
     </div>
   );
 }
