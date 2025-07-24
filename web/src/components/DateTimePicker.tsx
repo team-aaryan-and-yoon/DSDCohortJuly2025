@@ -97,9 +97,14 @@ const DateTimePicker = ({
                   hour,
                   minute
                 ).getTime();
-
-                const isDisabled = occupiedTimestamps.includes(timestamp);
-
+                const now = new Date();
+                const isToday =
+                  selectedDate &&
+                  selectedDate.toDateString() == now.toDateString();
+                const isPastTime = isToday && timestamp < now.getTime();
+                const isDisabled =
+                  occupiedTimestamps.includes(timestamp) || isPastTime;
+                
                 const label = `${hour.toString().padStart(2, "0")}:${minute
                   .toString()
                   .padStart(2, "0")}`;
