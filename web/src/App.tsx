@@ -1,10 +1,10 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
+// import { useState } from "react";
+import "./App.css";
 import Navbar from "./components/Navbar";
+
 import DatePicker from "./components/DateTimePicker";
 import * as React from "react";
+
 
 interface Link {
   url: string;
@@ -32,8 +32,9 @@ function App() {
         setSelectedTimestamp={setSelectedTimestamp}
         occupiedTimestamps={occupiedTimestamps}
       />
+
     </div>
   );
 }
 
-export default App
+export default App;
