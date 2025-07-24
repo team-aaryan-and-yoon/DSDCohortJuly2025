@@ -3,6 +3,8 @@ import reactLogo from './assets/react.svg'
 import viteLogo from '/vite.svg'
 import './App.css'
 import Navbar from "./components/Navbar";
+import { Rating } from "@smastrom/react-rating";
+import "@smastrom/react-rating/style.css";
 
 interface Link {
   url: string;
@@ -10,6 +12,7 @@ interface Link {
 }
 
 function App() {
+  const [rating, setRating] = useState(3);
   const links: Link[] = [
     { url: "/home", label: "Home" },
     { url: "/portal", label: "Portal" },
@@ -18,6 +21,7 @@ function App() {
   return (
     <div>
       <Navbar links={links} isLogged={false} />
+      <Rating style={{ maxWidth: 100, height: 20 }} value={rating} onChange={setRating}  />
     </div>
   );
 }
