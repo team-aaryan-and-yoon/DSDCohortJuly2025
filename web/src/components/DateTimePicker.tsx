@@ -104,11 +104,12 @@ const DateTimePicker = ({
                 const isPastTime = isToday && timestamp < now.getTime();
                 const isDisabled =
                   occupiedTimestamps.includes(timestamp) || isPastTime;
-                
-                const label = `${hour.toString().padStart(2, "0")}:${minute
-                  .toString()
-                  .padStart(2, "0")}`;
-
+                    const ampmHour = hour % 12 === 0 ? 12 : hour % 12;
+                    const ampm = hour >= 12 ? "PM" : "AM";
+                    const label = `${ampmHour}:${minute
+                      .toString()
+                      .padStart(2, "0")} ${ampm}`;
+          
                 return (
                   <Button
                     key={timestamp}
