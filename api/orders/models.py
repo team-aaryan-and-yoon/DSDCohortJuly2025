@@ -1,6 +1,12 @@
 from django.db import models
 from datetime import timedelta
 from django.core.validators import MinValueValidator, MaxValueValidator
+import random
+import string
+
+def generate_order_id(length=6):
+  chars = string.ascii_uppercase + string.digits
+  return ''.join(random.choices(chars, k=length))
 
 class Order(models.Model):
   SERVICE_TYPES = [
@@ -32,7 +38,7 @@ class Order(models.Model):
     related_name='client_orders'
   )
 
-  order_num = models.CharField(max_length=50, unique=True)
+  order_num = models.CharField(max_length=6, unique=True, blank=True)
 
   payment_token = models.CharField(max_length=50, blank=True, null=True)
 
@@ -66,6 +72,16 @@ class Order(models.Model):
   updated_at = models.DateTimeField(auto_now=True)
 
   def save(self, *args, **kwargs):
+    if not self.order_num:
+      for _ in range(5):
+        self.order_num = generate_order_id()
+        if not Order.objects.filter(order_num=self.order_num).exists():
+          break
+      else:
+        raise ValueError('Could not generate a unique order_num after 5 attempts.')
     duration = self.SERVICE_DURATIONS[self.service_type]
     self.end_time = self.start_time + duration
     super().save(*args, **kwargs)
+
+  def __str__(self):
+    return f"Order {self.order_num} ({self.service_type}) for {self.client}"
