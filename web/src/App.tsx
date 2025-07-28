@@ -1,8 +1,10 @@
 // import { useState } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
-import ServiceOrderCard from "./components/ServiceOrderCard";
-import type { ServiceOrder } from "./components/ServiceOrderCard";
+
+import DatePicker from "./components/DateTimePicker";
+import * as React from "react";
+
 
 interface Link {
   url: string;
@@ -16,43 +18,21 @@ function App() {
     { url: "/account", label: "Account Info" },
   ];
 
-  // Service order card dummy data
-  const dummyOrder: ServiceOrder = {
-    orderType: "Handyman",
-    orderStatus: "Scheduled",
-    serviceDate: "7/24/2025",
-    serviceTime: "10:00 am",
-    providerName: "Jane Smith",
-  };
-  const dummyOrder2: ServiceOrder = {
-    orderType: "Cleaning",
-    orderStatus: "On the way",
-    serviceDate: "7/23/2025",
-    serviceTime: "6:00 pm",
-    providerName: "John Doe",
-  };
-  const dummyOrder3: ServiceOrder = {
-    orderType: "Handyman",
-    orderStatus: "Working",
-    serviceDate: "7/26/2025",
-    serviceTime: "1:00 pm",
-    providerName: "Bob Brown",
-  };
-  const dummyOrder4: ServiceOrder = {
-    orderType: "Cleaning",
-    orderStatus: "Completed",
-    serviceDate: "7/25/2025",
-    serviceTime: "2:00 pm",
-    providerName: "Alice Johnson",
-  };
-
+  const [selectedTimestamp, setSelectedTimestamp] = React.useState<
+    number | undefined
+  >(undefined);
+  const occupiedTimestamps = Array.from({ length: 37 }, (_, i) => {
+    const date = new Date(2025, 6, 25, 9, i * 15);
+    return date.getTime();
+  });
   return (
-    <div>
-      <Navbar links={links} isLogged={false} />
-      <ServiceOrderCard order={dummyOrder} />
-      <ServiceOrderCard order={dummyOrder2} />
-      <ServiceOrderCard order={dummyOrder3} />
-      <ServiceOrderCard order={dummyOrder4} />
+    <div className="flex">
+      <DatePicker
+        selectedTimestamp={selectedTimestamp}
+        setSelectedTimestamp={setSelectedTimestamp}
+        occupiedTimestamps={occupiedTimestamps}
+      />
+
     </div>
   );
 }
