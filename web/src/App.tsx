@@ -1,6 +1,7 @@
 
 import './App.css'
 import Navbar from "./components/Navbar";
+import OrderConfirmationPage from './components/order-confirmation-page';
 
 interface Link {
   url: string;
@@ -16,7 +17,7 @@ function App() {
   return (
     <div>
       <Navbar links={links} isLogged={false} />
-     
+      <OrderConfirmationPage />
     </div>
   );
 }

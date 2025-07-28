@@ -1,108 +1,11 @@
 import React from 'react';
 import { Button } from './ui/button';
 
-type Styles = {
-  [key: string]: React.CSSProperties;
-};
-
-
 const OrderConfirmationPage: React.FC = () => { 
- 
   const orderNumber = '#2343345646423';
-
-
-  const styles: Styles = {
-    page: {
-      fontFamily: '-apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif',
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      padding: '40px 20px',
-      minHeight: '100vh',
-      boxSizing: 'border-box',
-    },
-    header: {
-      width: '100%',
-      maxWidth: '800px',
-      marginBottom: '40px',
-      color: '#343a40',
-      fontSize: '1rem',
-      fontWeight: 'normal',
-    },
-    progressBarContainer: {
-      width: '100%',
-      maxWidth: '600px',
-      display: 'flex',
-      justifyContent: 'space-between',
-      position: 'relative',
-      marginBottom: '80px',
-    },
-    progressLine: {
-      position: 'absolute',
-      top: '80%',
-      left: 18,
-      right: 48,
-      transform: 'translateY(-50%)',
-      height: '4px',
-      backgroundColor: '#3b4a6b',
-      zIndex: 1,
-    },
-    progressStep: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      position: 'relative',
-      zIndex: 2,
-    //   backgroundColor: '#f7f8fa', // Same as page background to "cut through" the line
-      padding: '0 10px',
-    },
-    progressCircle: {
-      width: '20px',
-      height: '20px',
-      borderRadius: '50%',
-      backgroundColor: '#3b4a6b',
-    },
-    progressLabel: {
-      marginTop: '12px',
-      color: '#495057',
-      fontSize: '1rem',
-    },
-    confirmationContainer: {
-      display: 'flex',
-      flexDirection: 'column',
-      alignItems: 'center',
-      textAlign: 'center',
-      padding: '20px',
-    },
-    iconWrapper: {
-      marginBottom: '30px',
-    },
-    orderNumber: {
-      fontSize: '2rem',
-      fontWeight: '600',
-      color: '#212529',
-      margin: '0 0 10px 0',
-    },
-    title: {
-      fontSize: '1.25rem',
-      fontWeight: 'bold',
-      color: '#343a40',
-      letterSpacing: '1px',
-      margin: '0 0 15px 0',
-      textTransform: 'uppercase',
-    },
-    message: {
-      color: '#6c757d',
-      fontSize: '1rem',
-      maxWidth: '450px',
-      lineHeight: '1.5',
-      marginBottom: '30px',
-    },
-  };
-
-
+ 
   const CheckmarkIcon: React.FC = () => (
-    <div style={styles.iconWrapper}>
+    <div className='pb-10'>
       <svg width="90" height="90" viewBox="-2 -2 104 104">
         <polygon 
           points="50,0 93.3,25 93.3,75 50,100 6.7,75 6.7,25" 
@@ -124,12 +27,12 @@ const OrderConfirmationPage: React.FC = () => {
   const ProgressBar: React.FC = () => {
     const steps = ['Cart', 'Payment', 'Confirmation'];
     return (
-      <div style={styles.progressBarContainer}>
-        <div style={styles.progressLine}></div>
+      <div className='w-full max-w-[600px] flex justify-between relative mb-15'>
+        <div className='absolute top-[70%] left-[18px] right-[48px] h-[6px]  bg-[#3b4a6b] z-10'></div>
         {steps.map((label) => (
-          <div key={label} style={styles.progressStep}>
-            <div style={styles.progressLabel}>{label}</div>
-            <div style={styles.progressCircle}></div>
+          <div key={label} className='flex flex-col items-center relative z-20 p-0 10px'>
+            <div className='text-gray-500 text-sm'>{label}</div>
+            <div className='w-[20px] h-[20px] rounded-full bg-[#3b4a6b]'></div>
           </div>
         ))}
       </div>
@@ -137,15 +40,15 @@ const OrderConfirmationPage: React.FC = () => {
   };
 
   return (
-    <div style={styles.page}>
+    <div className='flex flex-col items-center justify-center h-screen'>
       
       <ProgressBar />
       
-      <main style={styles.confirmationContainer}>
+      <main className='flex flex-col items-center justify-center'>
         <CheckmarkIcon />
-        <h2 style={styles.orderNumber}>{orderNumber}</h2>
-        <p style={styles.title}>ORDER CONFIRMATION RECEIVED</p>
-        <p style={styles.message}>
+        <h2 className='text-2xl font-bold p-1 '>{orderNumber}</h2>
+        <p className='text-lg font-bold p-1'>ORDER CONFIRMATION RECEIVED</p>
+        <p className='text-gray-500 max-w-[450px] text-center mb-4' >
           Your Order has been received, please check on the
           dashboard for the status of your order.
         </p>
