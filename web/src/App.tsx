@@ -6,6 +6,7 @@ import ServiceOrderCard from "./components/ServiceOrderCard";
 import type { ServiceOrder } from "./components/ServiceOrderCard";
 
 
+
 interface Link {
   url: string;
   label: string;
@@ -49,13 +50,15 @@ function App() {
     providerName: "Alice Johnson",
   };
 
+
   return (
-    <div>
-      <Navbar links={links} isLogged={false} />
-      <ServiceOrderCard order={dummyOrder} />
-      <ServiceOrderCard order={dummyOrder2} />
-      <ServiceOrderCard order={dummyOrder3} />
-      <ServiceOrderCard order={dummyOrder4} />
+    <div className="flex">
+      <DatePicker
+        selectedTimestamp={selectedTimestamp}
+        setSelectedTimestamp={setSelectedTimestamp}
+        occupiedTimestamps={occupiedTimestamps}
+      />
+
     </div>
   );
 }
