@@ -1,25 +1,16 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
-import './App.css'
-import Navbar from "./components/Navbar";
+import React from 'react';
+import { Button } from './components/ui/button';
 
-interface Link {
-  url: string;
-  label: string;
-}
 
-function App() {
-  const links: Link[] = [
-    { url: "/home", label: "Home" },
-    { url: "/portal", label: "Portal" },
-    { url: "/account", label: "Account Info" },
-  ];
+export default function App() {
   return (
     <div>
-      <Navbar links={links} isLogged={false} />
+      <Button variant="destructive">Remove</Button>
+      <Button variant="secondary">Contact</Button>
+      <Button variant="default">Details</Button>
+      <Button variant="warning">Warning</Button>
     </div>
   );
 }
 
-export default App
+
