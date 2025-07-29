@@ -2,12 +2,14 @@
 import "./App.css";
 import Navbar from "./components/Navbar";
 import ServiceDetailsPage from "./pages/ServiceDetails";
+import SignUpPage from "./pages/SignUp";
 import {
   BrowserRouter as Router,
   Routes,
   Route,
   BrowserRouter,
 } from "react-router-dom";
+
 interface Link {
   url: string;
   label: string;
@@ -27,6 +29,7 @@ function App() {
       </div>
       <Routes>
         <Route path="/services" element={<ServiceDetailsPage />} />
+        <Route path="/sign-up" element={<SignUpPage />} />
       </Routes>
     </BrowserRouter>
   );
