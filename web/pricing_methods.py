@@ -18,6 +18,17 @@
 
     # input_data = {"service": "handyman", "data": [{service: "fixing door", "price": 100}]}
 
+    # Basic services for handyman:
+    # handyman_data = [
+    #   {"service" : "fix_trash_disposal", "price": 80}, \
+    #   {"service" : "unlocking_door", "price": 100}, \
+    #   {"service" : "fixing_window_leak", "price": 80}, \
+    #   {"service" : "fixing_light", "price": 40}, \
+    #   {"service" : "fixing_faucet", "price": 70}
+    # ]
+
+    # This is only for single service - MVP
+
 
 class PricingCalculator:
     """A class to calculate the total price for services based on input data.
@@ -36,7 +47,7 @@ class PricingCalculator:
             for item in self.data:
                 total_price += item["price"]
             # Assuming handyman service has a fixed price for simplicity
-            return total_price
+            return 100
         
         else:
             raise ValueError("Service not recognized. Please provide a valid service type.")
