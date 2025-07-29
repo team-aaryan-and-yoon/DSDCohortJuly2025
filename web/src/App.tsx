@@ -2,10 +2,13 @@
 import "./App.css";
 import Navbar from "./components/Navbar";
 
-import ServiceOrderCard from "./components/ServiceOrderCard";
-import type { ServiceOrder } from "./components/ServiceOrderCard";
-
-
+import ServiceDetailsPage from "./pages/ServiceDetails";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  BrowserRouter,
+} from "react-router-dom";
 
 interface Link {
   url: string;
@@ -20,46 +23,15 @@ function App() {
   ];
 
 
-  // Service order card dummy data
-  const dummyOrder: ServiceOrder = {
-    orderType: "Handyman",
-    orderStatus: "Scheduled",
-    serviceDate: "7/24/2025",
-    serviceTime: "10:00 am",
-    providerName: "Jane Smith",
-  };
-  const dummyOrder2: ServiceOrder = {
-    orderType: "Cleaning",
-    orderStatus: "On the way",
-    serviceDate: "7/23/2025",
-    serviceTime: "6:00 pm",
-    providerName: "John Doe",
-  };
-  const dummyOrder3: ServiceOrder = {
-    orderType: "Handyman",
-    orderStatus: "Working",
-    serviceDate: "7/26/2025",
-    serviceTime: "1:00 pm",
-    providerName: "Bob Brown",
-  };
-  const dummyOrder4: ServiceOrder = {
-    orderType: "Cleaning",
-    orderStatus: "Completed",
-    serviceDate: "7/25/2025",
-    serviceTime: "2:00 pm",
-    providerName: "Alice Johnson",
-  };
-
-
   return (
-    <div className="flex">
-      <DatePicker
-        selectedTimestamp={selectedTimestamp}
-        setSelectedTimestamp={setSelectedTimestamp}
-        occupiedTimestamps={occupiedTimestamps}
-      />
-
-    </div>
+    <BrowserRouter>
+      <div className="flex w-full justify-end">
+        <Navbar links={links} isLogged />
+      </div>
+      <Routes>
+        <Route path="/services" element={<ServiceDetailsPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
