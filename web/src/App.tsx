@@ -1,16 +1,35 @@
-import React from 'react';
-import { Button } from './components/ui/button';
+// import { useState } from "react";
+import "./App.css";
+import Navbar from "./components/Navbar";
+import ServiceDetailsPage from "./pages/ServiceDetails";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  BrowserRouter,
+} from "react-router-dom";
+interface Link {
+  url: string;
+  label: string;
+}
 
+function App() {
+  const links: Link[] = [
+    { url: "/home", label: "Home" },
+    { url: "/portal", label: "Portal" },
+    { url: "/account", label: "Account Info" },
+  ];
 
-export default function App() {
   return (
-    <div>
-      <Button variant="destructive">Remove</Button>
-      <Button variant="secondary">Contact</Button>
-      <Button variant="default">Details</Button>
-      <Button variant="warning">Warning</Button>
-    </div>
+    <BrowserRouter>
+      <div className="flex w-full justify-end">
+        <Navbar links={links} isLogged />
+      </div>
+      <Routes>
+        <Route path="/services" element={<ServiceDetailsPage />} />
+      </Routes>
+    </BrowserRouter>
   );
 }
 
-
+export default App;
