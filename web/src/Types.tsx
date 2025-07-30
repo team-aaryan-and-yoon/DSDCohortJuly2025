@@ -1,8 +1,14 @@
+interface reviewType{
+    reviewer: string;
+    rating: number;
+}
 interface serviceType {
   name: string;
   price: number;
   description: string;
   img_url: string;
+  details: string;
+  reviews: reviewType[];
 }
 interface Link {
   url: string;

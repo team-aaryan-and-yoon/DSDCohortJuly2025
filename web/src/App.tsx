@@ -23,7 +23,7 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="flex w-full justify-end">
+      <div className="flex w-full justify-end pr-4">
         <Navbar links={links} isLogged />
       </div>
       <div className="w-full h-full p-4">

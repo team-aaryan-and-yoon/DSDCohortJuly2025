@@ -14,11 +14,13 @@ import type { serviceType } from "@/Types";
 interface ServiceProps {
   service: serviceType;
   button_action: () => void;
+  card_action_click?: () => void;
 }
 
-const ServiceCard = ({ service, button_action }: ServiceProps) => {
+const ServiceCard = ({ service, button_action, card_action_click }: ServiceProps) => {
+
   return (
-    <Card className="w-full max-w-sm">
+    <Card className="w-full max-w-sm shadow-lg hover:shadow-2xl hover:shadow-blue-400 transition-shadow duration-300" onClick={card_action_click}>
       <CardHeader>
         <CardTitle>
           <div className="flex justify-between">
