@@ -8,13 +8,9 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 import { Button } from "./ui/button";
+import type { serviceType } from "@/Types";
 
-interface serviceType {
-  name: string;
-  price: number;
-  description: string;
-  img_url: string;
-}
+
 interface ServiceProps {
   service: serviceType;
   button_action: () => void;
