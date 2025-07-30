@@ -1,5 +1,6 @@
 import ServiceCard from "@/components/ServiceCard";
 import { Button } from "@/components/ui/button";
+import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
 import { serviceData } from "@/examples/data";
 import type { serviceType } from "@/Types";
 import { useEffect, useState } from "react";
@@ -20,18 +21,30 @@ const ServiceDetailsPage = () => {
   
 
   return (
-    <div className="flex w-full h-full gap-4">
-      <div className="flex flex-col flex-1 w-1/2 h-full justify-center border-2 rounded-md">
-      <div className="flex flex-wrap gap-4 justify-center">
-         {services.map((service: serviceType, key: number) => (
-          <ServiceCard
-            key={key}
-            service={service}
-            button_action={() => console.log("Redirect to booking")} // Need to update to fit purpose
-            card_action_click={() => setSelectedService(service)}
-          />
-          
-        ))}
+    <div className="flex w-full h-full gap-4 ">
+      <div className="flex flex-col h-full w-1/2 border-2 rounded-md ">
+        <div className="flex flex-wrap h-full w-full items-center justify-center gap-4 p-4">
+          <Carousel opts={{
+    align: "start",
+    loop: true,
+  }}>
+             <CarouselContent>
+              {services.map((service: serviceType, key: number) => (
+              <CarouselItem className="flex-grow basis-1/2"key={key}>
+                <ServiceCard
+                  service={service}
+                  button_action={() => console.log("Redirect to booking")} // Need to update to fit purpose
+                  card_action_click={() => setSelectedService(service)}
+                />
+              </CarouselItem>
+               ))}
+      
+            </CarouselContent>
+      
+            <CarouselPrevious className="h-full" />
+
+            <CarouselNext className="h-full" />
+        </Carousel>
         </div>
       </div>
       <div className="flex flex-col flex-1 w-1/2 h-full justify-center gap-2">
