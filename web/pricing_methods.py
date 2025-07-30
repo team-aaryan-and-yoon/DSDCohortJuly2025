@@ -1,58 +1,93 @@
+# get_user_price.py
 
+# Import the necessary classes and enums from our service_pricing module
+# Changed CleaningTier to CleaningJob
+from service_pricing import ServicePricing, CleaningJob, HandymanJob
 
+def main():
+    """
+    Main function to list all prices and then get user input for a specific service.
+    """
+    print("Welcome to the Service Price Estimator!")
+    print("--- All Available Services and Prices ---")
 
-	# Pricing depends on number rooms and bathrooms.
-	# $60 / per rooms.
-	# $30 / per bathroom.
-    # Ideally the price would be received in "input_data", the admin should be able to set the price for each service.
-	# Pricing per room and bathroom will makes it easy to price regardless of how big a house or appartment may be.
-	# We can input the number of rooms and bathrooms in a list.
-	# data would be a dictionary.
+    # Create an instance of the ServicePricing class
+    pricing = ServicePricing()
 
-    # input data example:
+    # Get and display all prices
+    all_prices = pricing.list_all_prices()
 
-    # input_data = {"service": "cleaning", "data" : [{"num": 3, "price": 60},
-    #                                               {"num": 2, "price": 30}
-    #                                               ]
-    #                    }
+    print("\nCleaning Services:")
+    # Changed 'tier' to 'job' to reflect CleaningJob enum
+    for job_name, price in all_prices["cleaning"].items():
+        # Format for display: SINGLE_ROOM -> Single Room
+        display_job_name = job_name.replace('_', ' ').title()
+        print(f"  - CleaningJob.{job_name.upper()}: ${price:.2f}")
 
-    # input_data = {"service": "handyman", "data": [{service: "fixing door", "price": 100}]}
+    print("\nHandyman Services:")
+    for job_name, price in all_prices["handyman"].items():
+        # Format job name for display (e.g., FIX_DOOR -> Fix Door)
+        display_job_name = job_name.replace('_', ' ').title()
+        print(f"  - HandymanJob.{job_name.upper()}: ${price:.2f}")
 
-    # Basic services for handyman:
-    # handyman_data = [
-    #   {"service" : "fix_trash_disposal", "price": 80}, \
-    #   {"service" : "unlocking_door", "price": 100}, \
-    #   {"service" : "fixing_window_leak", "price": 80}, \
-    #   {"service" : "fixing_light", "price": 40}, \
-    #   {"service" : "fixing_faucet", "price": 70}
-    # ]
+    # Create a mapping from string names to actual Enum classes for easy lookup
+    # Changed "CleaningTier" to "CleaningJob"
+    enum_types = {
+        "CleaningJob": CleaningJob, # Updated
+        "HandymanJob": HandymanJob
+    }
 
-    # This is only for single service - MVP
+    print("\n-----------------------------------------")
+    print("Enter the full service item (e.g., CleaningJob.SINGLE_ROOM or HandymanJob.FIX_SINK).")
+    print("Press Enter without typing anything to exit.")
+    print("-----------------------------------------")
 
+    while True:
+        user_input = input("\nEnter service item: ").strip()
 
-class PricingCalculator:
-    """A class to calculate the total price for services based on input data.
-    The class supports different services like cleaning and handyman, each with its own pricing logic."""
+        if not user_input: # If input is empty
+            print("Exiting Service Price Estimator. Goodbye!")
+            break
 
-    def calculate(self):
-        
-        if self.service == "cleaning":
-            total_price = 0
-            for item in self.data:
-                total_price += item["num"] * item["[price"]
-            return total_price
-        
-        elif self.service == "handyman":
-            total_price = 0
-            for item in self.data:
-                total_price += item["price"]
-            # Assuming handyman service has a fixed price for simplicity
-            return 100
-        
-        else:
-            raise ValueError("Service not recognized. Please provide a valid service type.")
+        try:
+            # Split the input into Enum class name and member name
+            parts = user_input.split('.')
+            if len(parts) != 2:
+                print("Invalid format. Please use 'EnumClass.ENUM_MEMBER' (e.g., CleaningJob.SINGLE_ROOM).")
+                continue
 
+            enum_class_name_str = parts[0]
+            enum_member_name_str = parts[1]
 
-    def __init__(self, input_data):
-        self.service = input_data["service"]
-        self.data = input_data["data"]
+            # Get the actual Enum class object from our mapping
+            enum_class = enum_types.get(enum_class_name_str)
+
+            if enum_class is None:
+                print(f"Unknown service type: '{enum_class_name_str}'. Please use CleaningJob or HandymanJob.")
+                continue
+
+            # Get the actual Enum member object (e.g., CleaningJob.SINGLE_ROOM)
+            selected_item = getattr(enum_class, enum_member_name_str.upper()) # .upper() for robustness
+
+            # Get the price using the get_price method
+            price = pricing.get_price(selected_item)
+
+            if price > 0:
+                # For display, reformat the input for clarity
+                # e.g., "CleaningJob.SINGLE_ROOM" -> "Cleaning Job: Single Room"
+                display_enum_class = enum_class_name_str.replace('Job', ' Job')
+                display_enum_member = enum_member_name_str.replace('_', ' ').title()
+                print(f"The price for {display_enum_class}: {display_enum_member} is: ${price:.2f}")
+            else:
+                print(f"Could not find a price for '{user_input}'. Please check the spelling.")
+
+        except AttributeError:
+            # This handles cases where the member name doesn't exist within the enum
+            print(f"Invalid service item: '{user_input}'. The member does not exist in {enum_class_name_str}.")
+        except Exception as e:
+            # Catch any other unexpected errors
+            print(f"An unexpected error occurred: {e}. Please try again.")
+
+# This ensures that main() is called only when the script is executed directly
+if __name__ == "__main__":
+    main()
