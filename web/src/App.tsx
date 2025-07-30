@@ -1,6 +1,7 @@
 // import { useState } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
+
 import ServiceDetailsPage from "./pages/ServiceDetails";
 import SignUpPage from "./pages/SignUp";
 import {
@@ -21,6 +22,7 @@ function App() {
     { url: "/portal", label: "Portal" },
     { url: "/account", label: "Account Info" },
   ];
+
 
   return (
     <BrowserRouter>
