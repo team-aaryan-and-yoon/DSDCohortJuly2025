@@ -15,7 +15,7 @@ class User(AbstractUser):
     role = models.CharField(
         max_length=10,
         choices=Role.choices,
-        deafault=Role.CLIENT,
+        default=Role.CLIENT,
         help_text='User role, e.g., Client or Service Provider'
     )    
 
