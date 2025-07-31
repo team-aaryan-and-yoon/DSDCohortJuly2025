@@ -18,8 +18,8 @@ class Order(models.Model):
 
     STATUS_CHOICES = [
         ("scheduled", "Scheduled"),
-        ("on-the-way", "On the Way"),
-        ("in-progress", "In Progress"),
+        ("on-the-way", "On the way"),
+        ("in-progress", "In progress"),
         ("completed", "Completed"),
     ]
 
@@ -29,19 +29,19 @@ class Order(models.Model):
     }
 
     provider = models.ForeignKey(
-        "users.User", null=True, related_name="provider_orders"
+        "users.User", null=True, blank=True, related_name="provider_orders"
     )
 
-    client = models.ForeignKey("users.User", null=True, related_name="client_orders")
+    client = models.ForeignKey("users.User", related_name="client_orders")
 
-    order_num = models.CharField(max_length=6, unique=True, blank=True)
+    order_num = models.CharField(max_length=6, unique=True)
 
     payment_token = models.CharField(max_length=50, blank=True, null=True)
 
     start_time = models.DateTimeField()
 
     # end_time is calculated based on start_time and service type duration
-    end_time = models.DateTimeField(null=True, blank=True)
+    end_time = models.DateTimeField()
 
     status = models.CharField(
         max_length=20, choices=STATUS_CHOICES, default="scheduled"
