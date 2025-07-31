@@ -17,6 +17,7 @@ interface Link {
 }
 
 function App() {
+  const [rating, setRating] = useState(3);
   const links: Link[] = [
     { url: "/home", label: "Home" },
     { url: "/portal", label: "Portal" },
