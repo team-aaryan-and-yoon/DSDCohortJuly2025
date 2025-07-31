@@ -12,11 +12,11 @@ export default function ProgressBarCheckout(
     const steps: ProgressBarStep[] = ['Cart', 'Payment', 'Confirmation'];
     return (
       <div className='w-full max-w-[600px] flex justify-between relative mb-15'>
-        <div className='absolute top-[70%] left-[18px] right-[48px] h-[6px]  bg-[#ffffff] z-10 border-1 border-gray-900'></div>
+        <div className={`absolute top-[70%] left-[18px] right-[48px] h-[6px] z-10 border-1 border-gray-900 ${currentStep === 'Confirmation' ? 'bg-[#3b4a6b]' : 'bg-[#ffffff]'}`}></div>
         {steps.map((label) => (
           <div key={label} className='flex flex-col items-center relative z-20 p-0 10px'>
             <div className='text-gray-500 text-sm'>{label}</div>
-          {currentStep===label ? <div className='w-[20px] h-[20px] rounded-full bg-[#3b4a6b]'></div> : <div className='w-[20px] h-[20px] rounded-full bg-[#ffffff] border-1 border-gray-900 '></div>}
+          {currentStep===label || (currentStep === 'Confirmation' && label !== 'Confirmation') ? <div className='w-[20px] h-[20px] rounded-full bg-[#3b4a6b]'></div> : <div className='w-[20px] h-[20px] rounded-full bg-[#ffffff] border-1 border-gray-900 '></div>}
           </div>
         ))}
       </div>
