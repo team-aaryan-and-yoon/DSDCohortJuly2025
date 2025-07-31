@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { Calendar } from '@/components/ui/calendar';
 import { Button } from '@/components/ui/button';
+import ProgressBarCheckout from './ui/progress-bar-checkout';
 
 export default function OrderPage() {
   const [selectedServiceIndex, setSelectedServiceIndex] = useState<number | null>(null);
@@ -28,20 +29,7 @@ export default function OrderPage() {
   const [editingTime, setEditingTime] = useState('');
   const [editingDate, setEditingDate] = useState<Date | undefined>(undefined);
 
-  const ProgressBar: React.FC = () => {
-    const steps = ['Cart', 'Payment', 'Confirmation'];
-    return (
-      <div className='w-full max-w-[600px] flex justify-between relative mb-15'>
-        <div className='absolute top-[70%] left-[18px] right-[48px] h-[6px]  bg-[#ffffff] z-10 border-1 border-gray-900'></div>
-        {steps.map((label) => (
-          <div key={label} className='flex flex-col items-center relative z-20 p-0 10px'>
-            <div className='text-gray-500 text-sm'>{label}</div>
-          {label==="Cart" ? <div className='w-[20px] h-[20px] rounded-full bg-[#3b4a6b]'></div> : <div className='w-[20px] h-[20px] rounded-full bg-[#ffffff] border-1 border-gray-900 '></div>}
-          </div>
-        ))}
-      </div>
-    );
-  };
+  
 
   const handleServiceSelect = (index: number) => {
     setSelectedServiceIndex(index);
@@ -70,7 +58,7 @@ export default function OrderPage() {
     <div className="min-h-screen bg-gray-50 px-6 py-10 md:px-20">
       <h1 className="text-3xl font-bold mb-8">Order Page</h1>
       <div className="flex flex-col items-center justify-center">
-        <ProgressBar />
+        <ProgressBarCheckout currentStep="Cart" />
       </div>
 
       {/* Main Grid */}

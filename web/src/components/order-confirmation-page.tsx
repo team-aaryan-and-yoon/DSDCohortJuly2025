@@ -1,5 +1,6 @@
 import React from 'react';
 import { Button } from './ui/button';
+import ProgressBarCheckout from './ui/progress-bar-checkout';
 
 const OrderConfirmationPage: React.FC = () => { 
   const orderNumber = '#2343345646423';
@@ -24,25 +25,12 @@ const OrderConfirmationPage: React.FC = () => {
   );
   
 
-  const ProgressBar: React.FC = () => {
-    const steps = ['Cart', 'Payment', 'Confirmation'];
-    return (
-      <div className='w-full max-w-[600px] flex justify-between relative mb-15'>
-        <div className='absolute top-[70%] left-[18px] right-[48px] h-[6px]  bg-[#3b4a6b] z-10'></div>
-        {steps.map((label) => (
-          <div key={label} className='flex flex-col items-center relative z-20 p-0 10px'>
-            <div className='text-gray-500 text-sm'>{label}</div>
-            <div className='w-[20px] h-[20px] rounded-full bg-[#3b4a6b]'></div>
-          </div>
-        ))}
-      </div>
-    );
-  };
+
 
   return (
     <div className='flex flex-col items-center justify-center h-screen'>
       
-      <ProgressBar />
+      <ProgressBarCheckout currentStep="Confirmation" />
       
       <main className='flex flex-col items-center justify-center'>
         <CheckmarkIcon />
