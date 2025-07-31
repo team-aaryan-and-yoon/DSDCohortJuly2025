@@ -29,8 +29,7 @@ const ServiceDetailsPage = () => {
           <Carousel 
           orientation="vertical"
           opts={{
-          align: "start",
-          
+          align: "start", 
           }}
           className="w-full">
              <CarouselContent className="h-[600px] w-full">
@@ -84,7 +83,16 @@ const ServiceDetailsPage = () => {
         </div>
       </div>
     </div>
+
+    <div>
+      <Button variant="destructive">Remove</Button>
+      <Button variant="secondary">Contact</Button>
+      <Button variant="default">Details</Button>
+      <Button variant="warning">Warning</Button>
+    </div>
+  </>
   );
 };
 
 export default ServiceDetailsPage;
+
