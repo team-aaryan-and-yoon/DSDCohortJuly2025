@@ -4,11 +4,9 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import type { Link } from "@/Types";
 
-interface Link {
-  url: string;
-  label: string;
-}
+
 
 interface NavbarProps {
   links: Link[];

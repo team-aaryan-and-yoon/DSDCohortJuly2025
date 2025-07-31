@@ -4,6 +4,8 @@ import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious
 import { serviceData } from "@/examples/data";
 import type { serviceType } from "@/Types";
 import { useEffect, useState } from "react";
+import ReviewComment from "@/components/ReviewComment";
+import { Rating } from "@smastrom/react-rating";
 
 /* TODO:
  - we need to decide how to handle reviews and details data retrieval
@@ -23,14 +25,17 @@ const ServiceDetailsPage = () => {
   return (
     <div className="flex w-full h-full gap-4 ">
       <div className="flex flex-col h-full w-1/2 border-2 rounded-md ">
-        <div className="flex flex-wrap h-full w-full items-center justify-center gap-4 p-4">
-          <Carousel opts={{
-    align: "start",
-    loop: true,
-  }}>
-             <CarouselContent>
+        <div className="flex  h-full w-full items-center justify-center gap-4 p-4">
+          <Carousel 
+          orientation="vertical"
+          opts={{
+          align: "start",
+          
+          }}
+          className="w-full">
+             <CarouselContent className="h-[600px] w-full">
               {services.map((service: serviceType, key: number) => (
-              <CarouselItem className="flex-grow basis-1/2"key={key}>
+              <CarouselItem className="flex flex-grow basis-full justify-center items-center"key={key}>
                 <ServiceCard
                   service={service}
                   button_action={() => console.log("Redirect to booking")} // Need to update to fit purpose
@@ -40,10 +45,7 @@ const ServiceDetailsPage = () => {
                ))}
       
             </CarouselContent>
-      
-            <CarouselPrevious className="h-full" />
 
-            <CarouselNext className="h-full" />
         </Carousel>
         </div>
       </div>
@@ -51,7 +53,21 @@ const ServiceDetailsPage = () => {
         <div className="w-full h-full border-2 rounded-md">
           <div className="flex flex-col w-full h-full justify-center items-center">
             {/* Need to update to fit purpose */}
-            <div className="flex w-full h-full justify-center items-center">{selectedService?.details } </div>
+            <div className="flex flex-col w-full h-full ">
+              <div className="flex w-full justify-between p-4"> 
+                <div className="font-bold">
+                  {selectedService?.name}
+                </div>
+                <div>
+                {selectedService?.reviews && selectedService.reviews.length > 0
+                    ? <Rating style={{ maxWidth: 125 }} value={selectedService.reviews.reduce((sum, review) => sum + review.rating, 0) /
+                      selectedService.reviews.length} readOnly isDisabled/>: ""}
+                </div>
+              </div>
+            </div>
+            <div>
+              {selectedService?.details } 
+            </div>
             <div className="flex w-full h-full justify-end items-end p-4">
               <Button>
                 Book now
@@ -60,7 +76,12 @@ const ServiceDetailsPage = () => {
           </div>
         </div>
         {/*Need to create reviews component*/}
-        <div className="w-full h-full border-2 rounded-md">Service Reviews</div>
+        <div className="flex flex-col w-full h-full border-2 rounded-md gap-4 p-4">{selectedService?.reviews.map((review, key) => 
+          <div key={key} className="w-full border-2 rounded-md">
+            <ReviewComment rating={review.rating} reviewer={review.reviewer} comment={review.comment}/>
+          </div>
+        )}
+        </div>
       </div>
     </div>
   );

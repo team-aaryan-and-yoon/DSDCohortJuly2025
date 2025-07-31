@@ -1,6 +1,7 @@
 interface reviewType{
     reviewer: string;
     rating: number;
+    comment: string;
 }
 interface serviceType {
   name: string;
@@ -16,4 +17,4 @@ interface Link {
 }
 
 
-export type {serviceType, Link};
+export type { serviceType, Link, reviewType };
