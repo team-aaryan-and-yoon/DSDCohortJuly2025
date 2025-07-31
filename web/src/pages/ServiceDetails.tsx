@@ -1,5 +1,10 @@
+//import React from 'react';
+import { Button } from '@/components/ui/button';
+
+
 const ServiceDetailsPage = () => {
   return (
+    <>
     <div className="flex w-full h-full gap-4">
       <div className="flex flex-col flex-1 w-1/2 h-full justify-center border-2 rounded-md">
         Service Cards
@@ -9,7 +14,16 @@ const ServiceDetailsPage = () => {
         <div className="w-full h-full border-2 rounded-md">Service Reviews</div>
       </div>
     </div>
+
+    <div>
+      <Button variant="destructive">Remove</Button>
+      <Button variant="secondary">Contact</Button>
+      <Button variant="default">Details</Button>
+      <Button variant="warning">Warning</Button>
+    </div>
+  </>
   );
 };
 
 export default ServiceDetailsPage;
+
