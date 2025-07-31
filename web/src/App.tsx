@@ -1,13 +1,10 @@
-import "./App.css";
+
+import './App.css'
 import Navbar from "./components/Navbar";
-import OrderConfirmationPage from './components/order-confirmation-page';
-
-import DatePicker from "./components/DateTimePicker";
-import * as React from "react";
-
+import OrderPage from "./components/order-page";
 
 interface Link {
-  url: string;
+  url: string;  
   label: string;
 }
 
@@ -18,23 +15,19 @@ function App() {
     { url: "/account", label: "Account Info" },
   ];
 
-  const [selectedTimestamp, setSelectedTimestamp] = React.useState<
-    number | undefined
-  >(undefined);
-  const occupiedTimestamps = Array.from({ length: 37 }, (_, i) => {
-    const date = new Date(2025, 6, 25, 9, i * 15);
-    return date.getTime();
-  });
+  // const [selectedTimestamp, setSelectedTimestamp] = React.useState<
+  //   number | undefined
+  // >(undefined);
+  // const occupiedTimestamps = Array.from({ length: 37 }, (_, i) => {
+  //   const date = new Date(2025, 6, 25, 9, i * 15);
+  //   return date.getTime();
+  // });
   return (
     <div className="flex">
       <Navbar links={links} isLogged={false} />
-      <OrderConfirmationPage />
-      <DatePicker
-        selectedTimestamp={selectedTimestamp}
-        setSelectedTimestamp={setSelectedTimestamp}
-        occupiedTimestamps={occupiedTimestamps}
-      />
-    </div>
+      {/* <OrderConfirmationPage /> */}
+      <OrderPage />
+       </div>
   );
 }
 
