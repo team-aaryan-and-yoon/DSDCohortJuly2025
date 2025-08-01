@@ -1,12 +1,20 @@
+// import { useState } from "react";
+import "./App.css";
+import Navbar from "./components/Navbar";
+
+import ServiceDetailsPage from "./pages/ServiceDetails";
+import SignUpPage from "./pages/SignUp";
+import {
+  BrowserRouter,
+  Routes,
+  Route,
+ 
+} from "react-router-dom";
+import type { Link } from "./Types";
 
 import './App.css'
 import Navbar from "./components/Navbar";
 import OrderPage from "./components/order-page";
-
-interface Link {
-  url: string;  
-  label: string;
-}
 
 function App() {
   const links: Link[] = [
@@ -15,19 +23,19 @@ function App() {
     { url: "/account", label: "Account Info" },
   ];
 
-  // const [selectedTimestamp, setSelectedTimestamp] = React.useState<
-  //   number | undefined
-  // >(undefined);
-  // const occupiedTimestamps = Array.from({ length: 37 }, (_, i) => {
-  //   const date = new Date(2025, 6, 25, 9, i * 15);
-  //   return date.getTime();
-  // });
+
   return (
-    <div className="flex">
-      <Navbar links={links} isLogged={false} />
-      {/* <OrderConfirmationPage /> */}
-      <OrderPage />
-       </div>
+    <BrowserRouter>
+      <div className="flex w-full justify-end pr-4">
+        <Navbar links={links} isLogged />
+      </div>
+      <div className="w-full h-full p-4">
+      <Routes>
+        <Route path="/services" element={<ServiceDetailsPage />} />
+        <Route path="/sign-up" element={<SignUpPage />} />
+      </Routes>
+      </div>
+    </BrowserRouter>
   );
 }
 
