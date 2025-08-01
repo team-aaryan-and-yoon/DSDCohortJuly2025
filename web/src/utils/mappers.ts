@@ -1,7 +1,8 @@
 import type { Order, OrderView, ApiOrder } from "@/types/order";
 import type { User, ApiUser } from "@/types/user";
 
-export function mapOrder(apiOrder: ApiOrder): Order {
+// maps orders from API format to app format
+export function mapOrderRequest(apiOrder: ApiOrder): Order {
   return {
     id: apiOrder.id,
     provider: apiOrder.provider
@@ -23,7 +24,8 @@ export function mapOrder(apiOrder: ApiOrder): Order {
   };
 }
 
-export function mapUser(apiUser: ApiUser): User {
+// maps users from API format to app format
+export function mapUserRequest(apiUser: ApiUser): User {
   return {
     id: apiUser.id,
     email: apiUser.email,
@@ -37,6 +39,7 @@ export function mapUser(apiUser: ApiUser): User {
   };
 }
 
+// maps app order format to a view format
 export function mapOrderToView(order: Order): OrderView {
   const startDate = new Date(order.startTime);
   const orderDate = new Date(order.createdAt);
