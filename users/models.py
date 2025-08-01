@@ -24,13 +24,13 @@ class User(models.Model):
     #fields
     id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
     #email = models.EmailField(unique=True)
-    supabase_id = models.UUIDField(unique=True, help_text="user unique ID from Supabase")
+    supabase_id = models.OneToOneField(unique=True, help_text="user unique ID from Supabase")
     street_address = models.CharField(max_length=50, blank=True, null=True)
     city = models.CharField(max_length=50, blank=True, null=True)
     state = models.CharField(max_length=50, blank=True, null=True)
     zip_code = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return str(self.supabase_id)
+        return str(self.supabase_id.username)
 
 
