@@ -32,7 +32,7 @@ const OrderConfirmationPage: React.FC = () => {
       
       <ProgressBarCheckout currentStep="Confirmation" />
       
-      <main className='flex flex-col items-center justify-center'>
+      <div className='flex flex-col items-center justify-center'>
         <CheckmarkIcon />
         <h2 className='text-2xl font-bold p-1 '>{orderNumber}</h2>
         <p className='text-lg font-bold p-1'>ORDER CONFIRMATION RECEIVED</p>
@@ -50,7 +50,7 @@ const OrderConfirmationPage: React.FC = () => {
         >
           Dashboard
         </Button>
-      </main>
+      </div>
     </div>
   );
 };
