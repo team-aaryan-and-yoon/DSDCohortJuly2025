@@ -4,11 +4,9 @@ import {
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import type { Link } from "@/Types";
 
-interface Link {
-  url: string;
-  label: string;
-}
+
 
 interface NavbarProps {
   links: Link[];
@@ -26,7 +24,7 @@ interface NavbarProps {
  */
 const Navbar = ({ links, isLogged }: NavbarProps) => {
   return (
-    <NavigationMenu className="p-2 bg-gray-200 rounded-bl-md ">
+    <NavigationMenu className="p-2 bg-gray-200 rounded-b-md ">
       <NavigationMenuList className="gap-x-4">
         {links.map((link, key) => (
           <NavigationMenuItem key={key}>

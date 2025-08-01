@@ -5,19 +5,15 @@ import Navbar from "./components/Navbar";
 import ServiceDetailsPage from "./pages/ServiceDetails";
 import SignUpPage from "./pages/SignUp";
 import {
-  BrowserRouter as Router,
+  BrowserRouter,
   Routes,
   Route,
-  BrowserRouter,
+ 
 } from "react-router-dom";
+import type { Link } from "./Types";
 
-interface Link {
-  url: string;
-  label: string;
-}
 
 function App() {
-  const [rating, setRating] = useState(3);
   const links: Link[] = [
     { url: "/home", label: "Home" },
     { url: "/portal", label: "Portal" },
@@ -27,13 +23,15 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="flex w-full justify-end">
+      <div className="flex w-full justify-end pr-4">
         <Navbar links={links} isLogged />
       </div>
+      <div className="w-full h-full p-4">
       <Routes>
         <Route path="/services" element={<ServiceDetailsPage />} />
         <Route path="/sign-up" element={<SignUpPage />} />
       </Routes>
+      </div>
     </BrowserRouter>
   );
 }
