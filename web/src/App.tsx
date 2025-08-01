@@ -1,7 +1,7 @@
 // import { useState } from "react";
 import "./App.css";
 import Navbar from "./components/Navbar";
-
+import CustomerPortal from "./pages/CustomerPortal";
 import ServiceDetailsPage from "./pages/ServiceDetails";
 import SignUpPage from "./pages/SignUp";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
@@ -23,6 +23,7 @@ function App() {
         <Routes>
           <Route path="/services" element={<ServiceDetailsPage />} />
           <Route path="/sign-up" element={<SignUpPage />} />
+          <Route path="/customer-portal" element={<CustomerPortal />} />
         </Routes>
       </div>
     </BrowserRouter>
