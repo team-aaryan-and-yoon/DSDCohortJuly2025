@@ -1,8 +1,9 @@
-from django.contrib.auth.models import AbstractUser
+#from django.contrib.auth.models import AbstractUser
+import uuid
 from django.db import models
 
 
-class User(AbstractUser):
+class User(models.Model):
 
     """
     creating custom user model
@@ -10,22 +11,26 @@ class User(AbstractUser):
     """
     class Role(models.TextChoices):
         CLIENT = 'CLIENT', 'Client'
-        PROVIDER = 'PROVIDER', 'Provider'
+        CLEANING = 'CLEANING', 'Cleaning'
+        MAINTENANCE = 'MAINTENANCE', 'Maintenance'
 
     role = models.CharField(
-        max_length=10,
+        max_length=20,
         choices=Role.choices,
         default=Role.CLIENT,
-        help_text='User role, e.g., Client or Service Provider'
+        help_text='User role, e.g., Client, Cleaning, Maintenance Provider'
     )    
 
     #fields
+    id = models.UUIDField(primary_key=True, default=uuid.uuid4, editable=False)
+    #email = models.EmailField(unique=True)
+    supabase_id = models.UUIDField(unique=True, help_text="user unique ID from Supabase")
     street_address = models.CharField(max_length=50, blank=True, null=True)
     city = models.CharField(max_length=50, blank=True, null=True)
-    zip_code = models.IntegerField(max_length=10, blank=True, null=True)
+    state = models.CharField(max_length=50, blank=True, null=True)
+    zip_code = models.IntegerField(blank=True, null=True)
 
     def __str__(self):
-        return self.username
-
+        return str(self.supabase_id)
 
 
