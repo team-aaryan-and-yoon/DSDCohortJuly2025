@@ -1,35 +1,35 @@
-import { useState } from 'react';
-import { Calendar } from '@/components/ui/calendar';
-import { Button } from '@/components/ui/button';
-import ProgressBarCheckout from './ui/progress-bar-checkout';
+import { useState } from "react";
+import { Calendar } from "@/components/ui/calendar";
+import { Button } from "@/components/ui/button";
+import ProgressBarCheckout from "../components/ui/progress-bar-checkout";
 
 export default function OrderPage() {
-  const [selectedServiceIndex, setSelectedServiceIndex] = useState<number | null>(null);
+  const [selectedServiceIndex, setSelectedServiceIndex] = useState<
+    number | null
+  >(null);
   const [cartItems, setCartItems] = useState([
     {
-      title: 'Repair Technician',
-      location: '234 Plum Ln, TX. 77777',
+      title: "Repair Technician",
+      location: "234 Plum Ln, TX. 77777",
       price: 573,
-      icon: '🛠️',
-      date: '2025-08-01',
-      time: '10:00 AM',
-      note: 'Please fix the issue with the car',
+      icon: "🛠️",
+      date: "2025-08-01",
+      time: "10:00 AM",
+      note: "Please fix the issue with the car",
     },
     {
-      title: 'Cleaning Service',
-      location: '234 Plum Ln, TX. 77777',
+      title: "Cleaning Service",
+      location: "234 Plum Ln, TX. 77777",
       price: 578,
-      icon: '🧹',
-      date: '2025-08-01',
-      time: '10:00 AM',
-      note: 'Please clean the car and the inside of the car',
+      icon: "🧹",
+      date: "2025-08-01",
+      time: "10:00 AM",
+      note: "Please clean the car and the inside of the car",
     },
   ]);
-  const [editingNote, setEditingNote] = useState('');
-  const [editingTime, setEditingTime] = useState('');
+  const [editingNote, setEditingNote] = useState("");
+  const [editingTime, setEditingTime] = useState("");
   const [editingDate, setEditingDate] = useState<Date | undefined>(undefined);
-
-  
 
   const handleServiceSelect = (index: number) => {
     setSelectedServiceIndex(index);
@@ -46,7 +46,9 @@ export default function OrderPage() {
         ...updatedItems[selectedServiceIndex],
         note: editingNote,
         time: editingTime,
-        date: editingDate?.toISOString().split('T')[0] || updatedItems[selectedServiceIndex].date,
+        date:
+          editingDate?.toISOString().split("T")[0] ||
+          updatedItems[selectedServiceIndex].date,
       };
       setCartItems(updatedItems);
       // Return to overview after saving
@@ -69,18 +71,21 @@ export default function OrderPage() {
 
           <div className="space-y-4 flex-1">
             {cartItems.map((item, idx) => (
-              <div 
-                key={idx} 
+              <div
+                key={idx}
                 className={`flex items-start space-x-4 border-b pb-4 p-10 cursor-pointer transition-colors ${
-                  selectedServiceIndex === idx ? 'bg-blue-50 border-blue-200' : 'hover:bg-gray-50'
+                  selectedServiceIndex === idx
+                    ? "bg-blue-50 border-blue-200"
+                    : "hover:bg-gray-50"
                 }`}
-                onClick={() => handleServiceSelect(idx)}
-              >
+                onClick={() => handleServiceSelect(idx)}>
                 <div className="text-3xl">{item.icon}</div>
                 <div className="flex-1">
                   <p className="font-medium">{item.title}</p>
                   <p className="text-sm text-gray-500">{item.location}</p>
-                  <p className="text-xs text-gray-400">Date: {item.date} | Time: {item.time}</p>
+                  <p className="text-xs text-gray-400">
+                    Date: {item.date} | Time: {item.time}
+                  </p>
                 </div>
                 <p className="font-semibold">${item.price.toFixed(2)}</p>
               </div>
@@ -106,22 +111,32 @@ export default function OrderPage() {
             <>
               <div>
                 <h3 className="text-md font-semibold mb-2">Service Details</h3>
-                <p className="font-medium">{cartItems[selectedServiceIndex].title}</p>
+                <p className="font-medium">
+                  {cartItems[selectedServiceIndex].title}
+                </p>
                 <p className="text-sm text-gray-600">
                   Location: {cartItems[selectedServiceIndex].location}
                 </p>
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Service Date</label>
-                <Calendar mode="single" selected={editingDate} onSelect={setEditingDate} />
+                <label className="block text-sm font-medium mb-2">
+                  Service Date
+                </label>
+                <Calendar
+                  mode="single"
+                  selected={editingDate}
+                  onSelect={setEditingDate}
+                />
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-2">Service Time</label>
+                <label className="block text-sm font-medium mb-2">
+                  Service Time
+                </label>
                 <input
                   type="time"
-                  value={editingTime.replace(' AM', '').replace(' PM', '')}
+                  value={editingTime.replace(" AM", "").replace(" PM", "")}
                   onChange={(e) => setEditingTime(e.target.value)}
                   className="w-full rounded-md border-gray-300 shadow-sm p-2"
                 />
@@ -138,17 +153,15 @@ export default function OrderPage() {
                 />
               </div>
 
-              <Button 
+              <Button
                 onClick={handleSaveChanges}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white mb-2"
-              >
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white mb-2">
                 Save Changes
               </Button>
 
-              <Button 
+              <Button
                 onClick={() => setSelectedServiceIndex(null)}
-                className="w-full bg-gray-600 hover:bg-gray-700 text-white mb-2"
-              >
+                className="w-full bg-gray-600 hover:bg-gray-700 text-white mb-2">
                 Back to Overview
               </Button>
 
@@ -170,14 +183,18 @@ export default function OrderPage() {
                 {cartItems.map((item, idx) => (
                   <div key={idx} className="border-l-4 border-blue-400 pl-3">
                     <p className="font-medium text-sm">{item.title}</p>
-                    <p className="text-xs text-gray-500">{item.date} at {item.time}</p>
+                    <p className="text-xs text-gray-500">
+                      {item.date} at {item.time}
+                    </p>
                   </div>
                 ))}
               </div>
 
               <div className="bg-white rounded-lg p-4">
                 <h4 className="font-medium mb-2">Quick Summary</h4>
-                <p className="text-sm text-gray-600">Total Services: {cartItems.length}</p>
+                <p className="text-sm text-gray-600">
+                  Total Services: {cartItems.length}
+                </p>
                 <p className="text-sm text-gray-600">Total Amount: $1,773.00</p>
               </div>
 
