@@ -12,9 +12,18 @@ const HomePage = () => {
         
     ]
     const reviews:reviewType[] = [
-        {reviewer:"John S", comment:"The best cleaning service in town!", rating:5},
-        {reviewer:"Mary L", comment:"Truely a saver", rating:5},
-        {reviewer:"Bob H", comment:"Fixed my cleaning OCD", rating:5},
+        {
+            reviewer: "John S", comment: "The best cleaning service in town!", rating: 5,
+            avatar_url: undefined
+        },
+        {
+            reviewer: "Mary L", comment: "Truely a saver", rating: 5,
+            avatar_url: undefined
+        },
+        {
+            reviewer: "Bob H", comment: "Fixed my cleaning OCD", rating: 5,
+            avatar_url: "https://github.com/shadcn.png"
+        },
     ];
 
     const plugin = useRef(AutoScroll({
@@ -55,7 +64,7 @@ const HomePage = () => {
                         <CarouselContent className="w-full py-4">
                             {reviews.map((review, key)=> (
                                 <CarouselItem className="basis-1/2">
-                                <ReviewComment key={key} reviewer={review.reviewer} comment={review.comment} rating={review.rating}/>
+                                <ReviewComment key={key} reviewer={review.reviewer} comment={review.comment} rating={review.rating} avatar_url={review.avatar_url}/>
                                 </CarouselItem>
                             ))}
                         </CarouselContent>

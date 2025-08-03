@@ -1,14 +1,21 @@
 import { Rating } from '@smastrom/react-rating';
 import type { reviewType } from "@/Types";
-
-const ReviewComment = ({rating, reviewer, comment}: reviewType) => {
-
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
+const ReviewComment = ({rating, reviewer, comment, avatar_url=undefined}: reviewType) => {
+    const split_name = reviewer.split(" ")
     return (
         <div className='w-full h-full border-2 border-gray-500 p-2 rounded-md'>
             <div className='flex justify-between items-center mb-2'>
-                <div className='font-semibold text-gray-800'>
-                    {reviewer}
+                <div className='flex gap-3 items-center'>
+                    <Avatar>
+                        <AvatarImage src={avatar_url} />
+                        <AvatarFallback>{split_name[0][0] + split_name[1][0]}</AvatarFallback>
+                    </Avatar>       
+                    <div className='font-semibold text-gray-800'>
+                        {reviewer}
+                    </div>
                 </div>
+
                 <div>
                     <Rating style={{ maxWidth: 125 }} value={rating} readOnly isDisabled/>
                 </div>
