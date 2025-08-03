@@ -5,7 +5,7 @@ interface reviewType{
 }
 interface serviceType {
   name: string;
-  price: number;
+  price: number | string;
   description: string;
   img_url: string;
   details: string;
