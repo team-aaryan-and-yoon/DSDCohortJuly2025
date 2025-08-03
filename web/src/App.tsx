@@ -17,8 +17,11 @@ function App() {
   ];
   return (
     <BrowserRouter>
-      <div className="flex w-full justify-end pr-4">
-        <Navbar links={links} isLogged />
+      <div className="flex w-full">
+        <div className="flex w-full justify-start"><img src="/images/icon.png" alt="icon" height={100} width={100}/></div>
+        <div className="flex w-full h-full justify-end pr-4">
+          <Navbar links={links} isLogged />
+        </div>
       </div>
       <div className="w-full h-full pt-4">
         <Routes>

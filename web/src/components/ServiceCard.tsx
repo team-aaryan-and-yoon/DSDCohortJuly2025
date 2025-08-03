@@ -21,7 +21,7 @@ interface ServiceProps {
 const ServiceCard = ({ service, button_action, card_action_click, size }: ServiceProps) => {
 
   return (
-    <Card className="w-full max-w-lg shadow-lg hover:shadow-2xl hover:shadow-blue-400 transition-shadow duration-300" onClick={card_action_click}>
+    <Card className="w-full mb-16 max-w-lg shadow-lg hover:shadow-2xl hover:shadow-blue-400 transition-shadow duration-300" onClick={card_action_click}>
       <CardHeader>
         <CardTitle>
           <div className="flex justify-between">

@@ -38,29 +38,38 @@ const HomePage = () => {
                 <div>
                     <span className="font-bold pl-10 text-xl">Our services</span>
                 </div>
-            <div className="flex w-full justify-center gap-5  overflow-x-auto">
+            <div className="flex w-full justify-center gap-16 overflow-x-auto">
                 {services.map((service, key) => (
                     <ServiceCard key={key} service={service} button_action={() => console.log(service.name)} size={{width:200, height:200}}/>
                 ))}
             </div>  
             </div>
             {/* Reviews */}
-            <div className="w-full bg-cyan-100">
+            <div className="flex flex-col w-full bg-cyan-100">
                 <div><span className="font-bold pl-10 text-xl">Previous clients</span></div>
-            <div className="flex w-full justify-center items-center ">
-                <Carousel  
-                    plugins={[plugin.current]}
-                    opts={{ loop: true, align: "start" }}
-                    className="flex w-full h-full justify-center">
-                    <CarouselContent>
-                        {reviews.map((review, key)=> (
-                            <CarouselItem >
-                            <ReviewComment key={key} reviewer={review.reviewer} comment={review.comment} rating={review.rating}/>
-                            </CarouselItem>
-                        ))}
-                    </CarouselContent>
-                </Carousel>
+                <div className="flex w-full justify-center items-center ">
+                    <Carousel  
+                        plugins={[plugin.current]}
+                        opts={{ loop: true, align: "start" }}
+                        className="w-11/12 justify-center">
+                        <CarouselContent className="w-full py-4">
+                            {reviews.map((review, key)=> (
+                                <CarouselItem className="basis-1/2">
+                                <ReviewComment key={key} reviewer={review.reviewer} comment={review.comment} rating={review.rating}/>
+                                </CarouselItem>
+                            ))}
+                        </CarouselContent>
+                    </Carousel>
+                </div>
             </div>
+            {/* Provider of the month */}
+            <div className="w-full">
+                <div>
+                  
+                    <div><span className="font-bold pl-10 text-xl">Provider of the Month</span>
+                    </div>
+                    <div></div>
+                </div>
             </div>
         </div>
     );
