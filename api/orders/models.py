@@ -9,7 +9,26 @@ def generate_order_id(length=6):
     chars = string.ascii_uppercase + string.digits
     return "".join(random.choices(chars, k=length))
 
+class SupaUser(models.Model):
+    id = models.UUIDField(primary_key=True) 
 
+    class Meta:
+        managed = False   
+        db_table ='"auth"."users"' 
+
+class Profile(models.Model):
+    id = models.AutoField(primary_key=True)
+    first_name = models.CharField(max_length=20)
+    last_name = models.CharField(max_length=20)
+    street_address = models.CharField(max_length=50)
+    city = models.CharField(max_length=50)
+    state = models.CharField(max_length=50)
+    zip_code = models.CharField(max_length=10)
+    supabase_id = models.OneToOneField(SupaUser, on_delete=models.CASCADE)
+    # create api that uses email to connect supabaseid
+    
+    def __str__(self):
+        return str(self.first_name +" "+self.last_name)
 class Order(models.Model):
     SERVICE_TYPES = [
         ("cleaning", "Cleaning"),
@@ -29,10 +48,10 @@ class Order(models.Model):
     }
 
     provider = models.ForeignKey(
-        "users.User", null=True, blank=True, related_name="provider_orders"
+       Profile, null=True, blank=True, related_name="provider_orders", on_delete=models.DO_NOTHING
     )
 
-    client = models.ForeignKey("users.User", related_name="client_orders")
+    client = models.ForeignKey(Profile, related_name="client_orders", on_delete=models.DO_NOTHING)
 
     order_num = models.CharField(max_length=6, unique=True)
 
