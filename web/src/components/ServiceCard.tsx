@@ -15,26 +15,31 @@ interface ServiceProps {
   service: serviceType;
   button_action: () => void;
   card_action_click?: () => void;
+  size: {width:number, height:number};
 }
 
-const ServiceCard = ({ service, button_action, card_action_click }: ServiceProps) => {
+const ServiceCard = ({ service, button_action, card_action_click, size }: ServiceProps) => {
 
   return (
-    <Card className="w-full max-w-lg shadow-lg hover:shadow-2xl hover:shadow-blue-400 transition-shadow duration-300" onClick={card_action_click}>
+    <Card className="w-full mb-16 max-w-lg shadow-lg hover:shadow-2xl hover:shadow-blue-400 transition-shadow duration-300" onClick={card_action_click}>
       <CardHeader>
         <CardTitle>
           <div className="flex justify-between">
             <div>{service.name}</div>
-            <div>${service.price}</div>
+            <div>{service.price}</div>
           </div>
         </CardTitle>
+        <div className="flex justify-center">
         <img
           src={service.img_url}
           alt={service.name + "_image"}
-          className="flex w-full h-full object-contain flex-shrink-0 rounded-md"
+          className="flex object-contain rounded"
+          width={size.width}
+          height={size.height}
         />
+        </div>
       </CardHeader>
-      <CardContent >
+      <CardContent className="flex justify-center" >
         <CardDescription>{service.description}</CardDescription>
       </CardContent>
       <CardFooter className="w-full justify-end">

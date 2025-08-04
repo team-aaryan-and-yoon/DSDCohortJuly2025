@@ -4,6 +4,8 @@ from django.core.validators import MinValueValidator, MaxValueValidator
 import random
 import string
 
+from users.models import Profile
+
 
 def generate_order_id(length=6):
     chars = string.ascii_uppercase + string.digits
@@ -29,10 +31,10 @@ class Order(models.Model):
     }
 
     provider = models.ForeignKey(
-        "users.User", null=True, blank=True, related_name="provider_orders"
+       Profile, null=True, blank=True, related_name="provider_orders", on_delete=models.DO_NOTHING
     )
 
-    client = models.ForeignKey("users.User", related_name="client_orders")
+    client = models.ForeignKey(Profile, related_name="client_orders", on_delete=models.DO_NOTHING)
 
     order_num = models.CharField(max_length=6, unique=True)
 
