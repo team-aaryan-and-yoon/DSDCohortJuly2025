@@ -1,12 +1,15 @@
 from django.db import models
 
+
 # Create your models here.
 class SupaUser(models.Model):
-    id = models.UUIDField(primary_key=True) 
+    id = models.UUIDField(primary_key=True)
+    email = models.EmailField()
 
     class Meta:
-        managed = False   
-        db_table ='"auth"."users"' 
+        managed = False
+        db_table = '"auth"."users"'
+
 
 class Profile(models.Model):
     id = models.AutoField(primary_key=True)
@@ -18,6 +21,6 @@ class Profile(models.Model):
     zip_code = models.CharField(max_length=10)
     supabase_id = models.OneToOneField(SupaUser, on_delete=models.CASCADE)
     # create api that uses email to connect supabaseid
-    
+
     def __str__(self):
-        return str(self.first_name +" "+self.last_name)
+        return str(self.first_name + " " + self.last_name)
