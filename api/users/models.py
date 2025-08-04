@@ -10,7 +10,7 @@ class SupaUser(models.Model):
 
 class Profile(models.Model):
     id = models.AutoField(primary_key=True)
-    email = models.EmailField(unique=True)
+    #email = models.EmailField(unique=True)
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     street_address = models.CharField(max_length=50)

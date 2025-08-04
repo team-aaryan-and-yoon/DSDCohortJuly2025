@@ -4,7 +4,14 @@ import uuid
 from datetime import datetime
 from django.core.mail import send_mail
 from django.shortcuts import get_object_or_404
-from .models import Order, Profile
+from .models import Order
+from decouple import config
+from supabase import create_client, Client
+import os
+
+url: str = config("DATABASE_URL")
+key: str = config("SECRET_KEY")
+supabase: Client = create_client(url, key)
 
 #new router instance
 router = Router(tags=["Orders"])
@@ -25,8 +32,12 @@ def update_order_status(request, order_id: uuid.UUID, payload: OrderStatusUpdate
 
 
     #send email notifiacation
-    client_email = order.client.email
+    client_supabase_id = str (order.client.supabase_id)
 
+    response = supabase.auth.admin.get_user_by_id(client_supabase_id)
+
+    client_email = response.user.email
+    
     send_mail(
         subject=f"Update on your order: {order.order_num}",
         message=f"Hello, \n\n The status of your {order.service_type} service has ben updated to: {order.get_status_display()}. \n\nThank you!",
