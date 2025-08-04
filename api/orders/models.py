@@ -31,10 +31,20 @@ class Order(models.Model):
     }
 
     provider = models.ForeignKey(
-       Profile, null=True, blank=True, related_name="provider_orders", on_delete=models.DO_NOTHING
+        Profile,
+        null=True,
+        blank=True,
+        related_name="provider_orders",
+        on_delete=models.DO_NOTHING,
     )
 
-    client = models.ForeignKey(Profile, related_name="client_orders", on_delete=models.DO_NOTHING)
+    client = models.ForeignKey(
+        Profile,
+        blank=True,
+        null=True,
+        related_name="client_orders",
+        on_delete=models.DO_NOTHING,
+    )
 
     order_num = models.CharField(max_length=6, unique=True)
 
