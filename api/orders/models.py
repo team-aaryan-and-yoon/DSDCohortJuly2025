@@ -3,7 +3,6 @@ from datetime import timedelta
 from django.core.validators import MinValueValidator, MaxValueValidator
 import random
 import string
-
 from users.models import Profile
 
 

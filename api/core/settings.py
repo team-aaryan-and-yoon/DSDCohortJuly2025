@@ -74,7 +74,7 @@ TEMPLATES = [
 ASGI_APPLICATION = 'core.asgi.application'
 WSGI_APPLICATION = 'core.wsgi.application'
 
-
+ 
 
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
@@ -141,3 +141,5 @@ WHITENOISE_AUTOREFRESH = True
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
