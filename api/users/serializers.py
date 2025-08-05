@@ -1,8 +1,8 @@
-from django.contrib.auth.models import Profile
+from .models import Profile
 from rest_framework import serializers
 
 
-class UserSerializer(serializers.ModelSerializer):
+class ProfileSerializer(serializers.ModelSerializer):
     email = serializers.EmailField(source="supabase_id.email", read_only=True)
 
     class Meta:
