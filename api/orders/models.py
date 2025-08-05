@@ -1,15 +1,15 @@
 from django.db import models
 from datetime import timedelta
 from django.core.validators import MinValueValidator, MaxValueValidator
-import random
-import string
+from random import choices
+from string import ascii_uppercase, digits
 
 from users.models import Profile
 
 
-def generate_order_id(length=6):
-    chars = string.ascii_uppercase + string.digits
-    return "".join(random.choices(chars, k=length))
+def generate_order_num(length=6):
+    chars = ascii_uppercase + digits
+    return "".join(choices(chars, k=length))
 
 
 class Order(models.Model):
@@ -30,6 +30,10 @@ class Order(models.Model):
         "maintenance": timedelta(hours=3),
     }
 
+    id = models.AutoField(primary_key=True)
+
+    order_num = models.CharField(max_length=6, unique=True)
+
     provider = models.ForeignKey(
         Profile,
         null=True,
@@ -45,8 +49,6 @@ class Order(models.Model):
         related_name="client_orders",
         on_delete=models.DO_NOTHING,
     )
-
-    order_num = models.CharField(max_length=6, unique=True)
 
     payment_token = models.CharField(max_length=50, blank=True, null=True)
 
@@ -76,7 +78,7 @@ class Order(models.Model):
     def save(self, *args, **kwargs):
         if not self.order_num:
             for attempt in range(5):
-                self.order_num = generate_order_id()
+                self.order_num = generate_order_num()
                 if not Order.objects.filter(order_num=self.order_num).exists():
                     break
             else:
