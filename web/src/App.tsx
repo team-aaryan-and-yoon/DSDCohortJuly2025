@@ -7,6 +7,7 @@ import SignUpPage from "./pages/SignUp";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import type { Link, serviceType } from "./Types";
 import HomePage from "./pages/HomePage";
+import ProviderPortal from "./pages/ProviderProtal";
 
 
 function App() {
@@ -29,6 +30,7 @@ function App() {
           <Route path="/services" element={<ServiceDetailsPage />} />
           <Route path="/sign-up" element={<SignUpPage />} />
           <Route path="/customer-portal" element={<CustomerPortal />} />
+          <Route path="/provider-portal" element={<ProviderPortal />} />
         </Routes>
       </div>
     </BrowserRouter>
