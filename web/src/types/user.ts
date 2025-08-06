@@ -1,8 +1,8 @@
 import type { Role, State } from "./enums";
 
 export interface User {
-  id: number;
   email: string;
+  userNum: string;
   firstName: string;
   lastName: string;
   role: Role;
@@ -13,15 +13,13 @@ export interface User {
 }
 
 export interface ApiUser {
-  id: number;
   email: string;
-  user_metadata: {
-    first_name: string;
-    last_name: string;
-    role: Role;
-    state: State;
-    street_address: string;
-    city: string;
-    zip_code: string;
-  };
+  user_num: string;
+  first_name: string;
+  last_name: string;
+  role: Role;
+  state: State;
+  street_address: string;
+  city: string;
+  zip_code: string;
 }

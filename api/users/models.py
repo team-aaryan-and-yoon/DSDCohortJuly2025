@@ -1,6 +1,8 @@
 from django.db import models
 from random import choices
 from string import ascii_uppercase, digits
+from django.core.exceptions import ValidationError
+from utils.constants import Role, ServiceType
 
 
 def generate_user_num(length=6):
@@ -18,23 +20,13 @@ class SupaUser(models.Model):
 
 
 class Profile(models.Model):
-    ROLE_CHOICES = [
-        ("client", "Client"),
-        ("provider", "Provider"),
-        ("admin", "Admin"),
-    ]
-    PROVIDER_TYPE_CHOICES = [
-        ("cleaning", "Cleaning"),
-        ("maintenance", "Maintenance"),
-    ]
-
     id = models.AutoField(primary_key=True)
     user_num = models.CharField(max_length=6, unique=True)
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="client")
+    role = models.CharField(max_length=20, choices=Role.choices, default=Role.CLIENT)
     provider_type = models.CharField(
-        max_length=20, choices=PROVIDER_TYPE_CHOICES, default="cleaning"
+        max_length=20, choices=ServiceType.choices, blank=True, null=True
     )
     street_address = models.CharField(max_length=50)
     city = models.CharField(max_length=50)
@@ -44,7 +36,14 @@ class Profile(models.Model):
     # create api that uses email to connect supabaseid
 
     def __str__(self):
-        return str(self.first_name + " " + self.last_name)
+        return f"{self.first_name or ''} {self.last_name or ''}".strip()
+
+    def clean(self):
+        super().clean()
+        if self.role == Role.PROVIDER and not self.provider_type:
+            raise ValidationError("Provider type is required for providers.")
+        if self.role != Role.PROVIDER and self.provider_type:
+            raise ValidationError("Only providers can have a provider type.")
 
     def save(self, *args, **kwargs):
         if not self.user_num:
@@ -56,4 +55,5 @@ class Profile(models.Model):
                 raise ValueError(
                     "Could not generate a unique user_num after 5 attempts."
                 )
+        self.full_clean()
         super().save(*args, **kwargs)
