@@ -18,10 +18,24 @@ class SupaUser(models.Model):
 
 
 class Profile(models.Model):
+    ROLE_CHOICES = [
+        ("client", "Client"),
+        ("provider", "Provider"),
+        ("admin", "Admin"),
+    ]
+    PROVIDER_TYPE_CHOICES = [
+        ("cleaning", "Cleaning"),
+        ("maintenance", "Maintenance"),
+    ]
+
     id = models.AutoField(primary_key=True)
-    order_num = models.CharField(max_length=6, unique=True)
+    user_num = models.CharField(max_length=6, unique=True)
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
+    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="client")
+    provider_type = models.CharField(
+        max_length=20, choices=PROVIDER_TYPE_CHOICES, default="cleaning"
+    )
     street_address = models.CharField(max_length=50)
     city = models.CharField(max_length=50)
     state = models.CharField(max_length=50)
@@ -33,9 +47,9 @@ class Profile(models.Model):
         return str(self.first_name + " " + self.last_name)
 
     def save(self, *args, **kwargs):
-        if not self.order_num:
+        if not self.user_num:
             for attempt in range(5):
-                self.order_num = generate_user_num()
+                self.user_num = generate_user_num()
                 if not Profile.objects.filter(user_num=self.user_num).exists():
                     break
             else:
