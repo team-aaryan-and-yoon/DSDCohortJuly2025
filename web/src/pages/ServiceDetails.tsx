@@ -39,6 +39,7 @@ const ServiceDetailsPage = () => {
                   service={service}
                   button_action={() => console.log("Redirect to booking")} // Need to update to fit purpose
                   card_action_click={() => setSelectedService(service)}
+                  size={{width:500,height:500}}
                 />
               </CarouselItem>
                ))}
