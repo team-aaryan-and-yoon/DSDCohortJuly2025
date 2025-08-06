@@ -1,6 +1,7 @@
 from django.db import models
 from random import choices
 from string import ascii_uppercase, digits
+from django.core.exceptions import ValidationError
 
 
 def generate_user_num(length=6):
@@ -21,7 +22,6 @@ class Profile(models.Model):
     ROLE_CHOICES = [
         ("client", "Client"),
         ("provider", "Provider"),
-        ("admin", "Admin"),
     ]
     PROVIDER_TYPE_CHOICES = [
         ("cleaning", "Cleaning"),
@@ -34,7 +34,7 @@ class Profile(models.Model):
     last_name = models.CharField(max_length=20)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="client")
     provider_type = models.CharField(
-        max_length=20, choices=PROVIDER_TYPE_CHOICES, default="cleaning"
+        max_length=20, choices=PROVIDER_TYPE_CHOICES, blank=True, null=True
     )
     street_address = models.CharField(max_length=50)
     city = models.CharField(max_length=50)
@@ -46,6 +46,13 @@ class Profile(models.Model):
     def __str__(self):
         return str(self.first_name + " " + self.last_name)
 
+    def clean(self):
+        super().clean()
+        if self.role == "provider" and not self.provider_type:
+            raise ValidationError("Provider type is required for providers.")
+        if self.role != "provider" and self.provider_type:
+            raise ValidationError("Only providers can have a provider type.")
+
     def save(self, *args, **kwargs):
         if not self.user_num:
             for attempt in range(5):
@@ -56,4 +63,5 @@ class Profile(models.Model):
                 raise ValueError(
                     "Could not generate a unique user_num after 5 attempts."
                 )
+        self.full_clean()
         super().save(*args, **kwargs)

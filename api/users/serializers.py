@@ -12,6 +12,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "first_name",
             "last_name",
             "role",
+            "provider_type",
             "street_address",
             "city",
             "state",
@@ -19,3 +20,19 @@ class ProfileSerializer(serializers.ModelSerializer):
             "email",
         ]
         read_only_fields = ["user_num", "email"]
+
+    def validate(self, data):
+        role = data.get("role", getattr(self.instance, "role", None))
+        provider_type = data.get(
+            "provider_type", getattr(self.instance, "provider_type", None)
+        )
+
+        if role == "provider" and not provider_type:
+            raise serializers.ValidationError(
+                {"provider_type": "Provider type is required for providers."}
+            )
+        if role != "provider" and provider_type:
+            raise serializers.ValidationError(
+                {"provider_type": "Only providers can have a provider type."}
+            )
+        return data
