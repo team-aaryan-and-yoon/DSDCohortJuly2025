@@ -11,6 +11,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "user_num",
             "first_name",
             "last_name",
+            "role",
             "street_address",
             "city",
             "state",
