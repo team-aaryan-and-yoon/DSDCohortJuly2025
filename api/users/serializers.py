@@ -1,5 +1,6 @@
 from .models import Profile
 from rest_framework import serializers
+from utils.constants import Role
 
 
 class ProfileSerializer(serializers.ModelSerializer):
@@ -27,11 +28,11 @@ class ProfileSerializer(serializers.ModelSerializer):
             "provider_type", getattr(self.instance, "provider_type", None)
         )
 
-        if role == "provider" and not provider_type:
+        if role == Role.PROVIDER and not provider_type:
             raise serializers.ValidationError(
                 {"provider_type": "Provider type is required for providers."}
             )
-        if role != "provider" and provider_type:
+        if role != Role.PROVIDER and provider_type:
             raise serializers.ValidationError(
                 {"provider_type": "Only providers can have a provider type."}
             )

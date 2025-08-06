@@ -36,13 +36,13 @@ class Profile(models.Model):
     # create api that uses email to connect supabaseid
 
     def __str__(self):
-        return str(self.first_name + " " + self.last_name)
+        return f"{self.first_name or ''} {self.last_name or ''}".strip()
 
     def clean(self):
         super().clean()
-        if self.role == "provider" and not self.provider_type:
+        if self.role == Role.PROVIDER and not self.provider_type:
             raise ValidationError("Provider type is required for providers.")
-        if self.role != "provider" and self.provider_type:
+        if self.role != Role.PROVIDER and self.provider_type:
             raise ValidationError("Only providers can have a provider type.")
 
     def save(self, *args, **kwargs):

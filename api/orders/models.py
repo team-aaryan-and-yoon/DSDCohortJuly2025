@@ -1,5 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
+from django.core.exceptions import ValidationError
 from random import choices
 from string import ascii_uppercase, digits
 from users.models import Profile
@@ -51,10 +52,7 @@ class Order(models.Model):
 
     service_type = models.CharField(max_length=20, choices=ServiceType.choices)
 
-    job = models.CharField(
-        max_length=30,
-        choices=[],
-    )
+    job = models.CharField(max_length=30)
 
     comments = models.TextField(blank=True)
 
@@ -65,6 +63,29 @@ class Order(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
     # updated_at = models.DateTimeField(auto_now=True)
+
+    def clean(self):
+        super().clean()
+        # Validate that job is valid for the given service_type
+        if not self.service_type or not self.job:
+            return
+        if not self.client:
+            raise ValidationError("Orders must be associated with a client.")
+
+        if self.service_type == ServiceType.CLEANING:
+            valid_jobs = CleaningJobs.values
+        elif self.service_type == ServiceType.MAINTENANCE:
+            valid_jobs = MaintenanceJobs.values
+        else:
+            raise ValidationError("Invalid service_type")
+
+        if self.job not in valid_jobs:
+            raise ValidationError(
+                f"Job '{self.job}' is not valid for service_type '{self.service_type}'"
+            )
+
+        if self.job not in DURATIONS:
+            raise ValidationError(f"No duration defined for job '{self.job}'")
 
     def save(self, *args, **kwargs):
         # generate unique order_num if not set
@@ -78,26 +99,18 @@ class Order(models.Model):
                     "Could not generate a unique order_num after 5 attempts."
                 )
 
-        # Validate that job belongs to the correct service type and set choices dynamically
-        if self.service_type == ServiceType.CLEANING:
-            valid_jobs = CleaningJobs.values
-        elif self.service_type == ServiceType.MAINTENANCE:
-            valid_jobs = MaintenanceJobs.values
-        else:
-            raise ValueError("Invalid service_type")
-
-        if self.job not in valid_jobs:
-            raise ValueError(
-                f"Job '{self.job}' is not valid for service_type '{self.service_type}'"
-            )
+        self.full_clean()  # Call clean method to validate job and service_type
 
         # Calculate end_time based on start_time and job duration
-        duration = DURATIONS.get(self.job)
-        if duration is None:
-            raise ValueError(f"No duration defined for job '{self.job}'")
-        self.end_time = self.start_time + duration
+        self.end_time = self.start_time + DURATIONS[self.job]
 
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Order {self.order_num}, {self.service_type} - {self.job} for {self.client}"
+        if self.client:
+            client_name = (
+                f"{self.client.first_name or ''} {self.client.last_name or ''}".strip()
+            )
+        else:
+            client_name = "Unassigned"
+        return f"Order {self.order_num}, {self.service_type} - {self.job} for {client_name}"
