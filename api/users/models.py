@@ -20,14 +20,22 @@ class SupaUser(models.Model):
 class Profile(models.Model):
     ROLE_CHOICES = [
         ("client", "Client"),
-        ("cleaner", "Cleaner"),
-        ("handyman", "Handyman"),
+        ("provider", "Provider"),
+        ("admin", "Admin"),
     ]
+    PROVIDER_TYPE_CHOICES = [
+        ("cleaning", "Cleaning"),
+        ("maintenance", "Maintenance"),
+    ]
+
     id = models.AutoField(primary_key=True)
     user_num = models.CharField(max_length=6, unique=True)
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="client")
+    provider_type = models.CharField(
+        max_length=20, choices=PROVIDER_TYPE_CHOICES, default="cleaning"
+    )
     street_address = models.CharField(max_length=50)
     city = models.CharField(max_length=50)
     state = models.CharField(max_length=50)
