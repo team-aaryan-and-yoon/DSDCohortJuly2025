@@ -2,6 +2,7 @@ from django.db import models
 from random import choices
 from string import ascii_uppercase, digits
 from django.core.exceptions import ValidationError
+from utils.constants import Role, ServiceType
 
 
 def generate_user_num(length=6):
@@ -19,22 +20,13 @@ class SupaUser(models.Model):
 
 
 class Profile(models.Model):
-    ROLE_CHOICES = [
-        ("client", "Client"),
-        ("provider", "Provider"),
-    ]
-    PROVIDER_TYPE_CHOICES = [
-        ("cleaning", "Cleaning"),
-        ("maintenance", "Maintenance"),
-    ]
-
     id = models.AutoField(primary_key=True)
     user_num = models.CharField(max_length=6, unique=True)
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
-    role = models.CharField(max_length=20, choices=ROLE_CHOICES, default="client")
+    role = models.CharField(max_length=20, choices=Role.choices, default=Role.CLIENT)
     provider_type = models.CharField(
-        max_length=20, choices=PROVIDER_TYPE_CHOICES, blank=True, null=True
+        max_length=20, choices=ServiceType.choices, blank=True, null=True
     )
     street_address = models.CharField(max_length=50)
     city = models.CharField(max_length=50)

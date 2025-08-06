@@ -2,6 +2,11 @@ from datetime import timedelta
 from django.db import models
 
 
+class Role(models.TextChoices):
+    CLIENT = "client", "Client"
+    PROVIDER = "provider", "Provider"
+
+
 class ServiceType(models.TextChoices):
     CLEANING = "cleaning", "Cleaning"
     MAINTENANCE = "maintenance", "Maintenance"
