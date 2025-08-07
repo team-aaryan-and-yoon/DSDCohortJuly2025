@@ -1,4 +1,5 @@
 import  { FullCalendar, type CalendarEvent } from "@/components/FullSchedule";
+import HourSchedule from "@/components/HourSchedule";
 import ServiceOrderCard from "@/components/ServiceOrderCard";
 import { type OrderView } from "@/types/order";
 import { useState } from "react";
@@ -39,37 +40,41 @@ const ProviderPortal = () => {
 
     // sort history by time and filter by past dates
     const [history, setHistory] = useState([]);
-const events: CalendarEvent[] = [
-  {
-    id: "1",
-    title: "Doctor Visit",
-    start: new Date("2025-08-10T10:00:00"),
-    end: new Date("2025-08-10T11:00:00"),
-    color: "#ef4444",
-  },
-  {
-    id: "2",
-    title: "Team Sync",
-    start: new Date("2025-08-11T13:00:00"),
-    end: new Date("2025-08-11T14:00:00"),
-    color: "#3b82f6",
-  },
+    const events: CalendarEvent[] = [
     {
-    id: "3",
-    title: "Team Sync",
-    start: new Date("2025-08-11T15:00:00"),
-    end: new Date("2025-08-11T16:00:00"),
-    color: "#3b82f6",
-  },
+        id: "1",
+        title: "Maintenance",
+        start: new Date("2025-08-10T10:00:00"),
+        end: new Date("2025-08-10T11:00:00"),
+        color: "#ef4444",
+        description: "AC unit checkup",
+    },
     {
-    id: "4",
-    title: "Team Sync",
-    start: new Date("2025-08-11T17:00:00"),
-    end: new Date("2025-08-11T18:00:00"),
-    color: "#3b82f6",
-  },
-];
-
+        id: "2",
+        title: "Cleaning",
+        start: new Date("2025-08-11T13:00:00"),
+        end: new Date("2025-08-11T14:00:00"),
+        color: "#3b82f6",
+        description: "Kitchen deep clean",
+    },
+    {
+        id: "3",
+        title: "Cleaning",
+        start: new Date("2025-08-11T15:00:00"),
+        end: new Date("2025-08-11T16:00:00"),
+        color: "#3b82f6",
+        description: "Living room and carpets",
+    },
+    {
+        id: "4",
+        title: "Maintenance",
+        start: new Date("2025-08-11T17:00:00"),
+        end: new Date("2025-08-11T18:00:00"),
+        color: "#3b82f6",
+        description: "Fix leaking sink",
+    },
+    ];
+    
     return (
     <div className="w-full h-full px-4 pb-4">
         <div className="flex w-full h-full gap-8">
@@ -85,8 +90,29 @@ const events: CalendarEvent[] = [
                     }}/>
 
                 </div>
-                <div className="flex h-5/12 w-full border-4 ">
-                    Hours 
+                <div className="flex h-5/12 w-full border-4 rounded-lg ">
+                {selectedDate? 
+                    <HourSchedule
+                   
+                    events={events
+                            .filter((event) => {
+                                return (
+                                event.start.toDateString() === selectedDate.toDateString()
+                                );
+                            })
+                            .map((event) => ({
+                                time: event.start.toLocaleTimeString([], {
+                                hour: "numeric",
+                                minute: "2-digit",
+                                }),
+                                title: event.title,
+                                description: event.description,
+                            }))}
+                    />
+                    :
+                    <div className="flex w-full justify-center items-center">
+                        <span className="font-light">Select a date to see time schedueld</span>
+                    </div>}
                 </div> 
             </div>
             {/* Right */}
@@ -100,7 +126,7 @@ const events: CalendarEvent[] = [
                         <div className="flex flex-col h-full w-full items-center overflow-y-auto">
                             {announcement.length > 0?   
                             announcement.map((order, key) => (
-                                <div className="flex w-full">
+                                <div key={key} className="flex w-full">
                                     <ServiceOrderCard order={order}/>
                                 </div>
                             )): 

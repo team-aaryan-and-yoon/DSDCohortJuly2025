@@ -21,6 +21,7 @@ export interface CalendarEvent {
   start: Date;
   end: Date;
   color?: string;
+  description?: string; 
 }
 
 interface FullCalendarProps {
