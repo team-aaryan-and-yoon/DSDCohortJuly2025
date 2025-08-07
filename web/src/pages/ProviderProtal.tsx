@@ -1,8 +1,10 @@
+import  { FullCalendar, type CalendarEvent } from "@/components/FullSchedule";
 import ServiceOrderCard from "@/components/ServiceOrderCard";
 import { type OrderView } from "@/types/order";
 import { useState } from "react";
 
 const ProviderPortal = () => {
+    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
     // Sort announcement by time 
     const [announcement, setAnnouncements] = useState<OrderView[]>([{
     id: 1,
@@ -37,16 +39,53 @@ const ProviderPortal = () => {
 
     // sort history by time and filter by past dates
     const [history, setHistory] = useState([]);
-   
+const events: CalendarEvent[] = [
+  {
+    id: "1",
+    title: "Doctor Visit",
+    start: new Date("2025-08-10T10:00:00"),
+    end: new Date("2025-08-10T11:00:00"),
+    color: "#ef4444",
+  },
+  {
+    id: "2",
+    title: "Team Sync",
+    start: new Date("2025-08-11T13:00:00"),
+    end: new Date("2025-08-11T14:00:00"),
+    color: "#3b82f6",
+  },
+    {
+    id: "3",
+    title: "Team Sync",
+    start: new Date("2025-08-11T15:00:00"),
+    end: new Date("2025-08-11T16:00:00"),
+    color: "#3b82f6",
+  },
+    {
+    id: "4",
+    title: "Team Sync",
+    start: new Date("2025-08-11T17:00:00"),
+    end: new Date("2025-08-11T18:00:00"),
+    color: "#3b82f6",
+  },
+];
+
     return (
     <div className="w-full h-full px-4 pb-4">
         <div className="flex w-full h-full gap-8">
             {/* Left */}
             <div className="flex flex-col w-full h-full gap-4">
-                <div className="flex h-1/2 w-full border-4 rounded-lg">
-                    Schedule Calendar
+                <div className="flex justify-center h-7/12 w-full border-4 rounded-lg">
+                    <FullCalendar   
+                        events={events}
+                        selectedDate={selectedDate}
+                        setSelectedDate={setSelectedDate}
+                        onDayClick={(date) => {
+                        console.log("Clicked:", date.toDateString());
+                    }}/>
+
                 </div>
-                <div className="flex h-full w-full border-4 ">
+                <div className="flex h-5/12 w-full border-4 ">
                     Hours 
                 </div> 
             </div>
@@ -62,14 +101,13 @@ const ProviderPortal = () => {
                             {announcement.length > 0?   
                             announcement.map((order, key) => (
                                 <div className="flex w-full">
-                                 <ServiceOrderCard order={order}/>
-                                 </div>
+                                    <ServiceOrderCard order={order}/>
+                                </div>
                             )): 
                             <div className="flex w-full h-full justify-center items-center">
                                 <span> No announcements for today</span>
                             </div>
-                        }
-                           
+                        }  
                         </div>    
                         
                     </div>
@@ -86,10 +124,10 @@ const ProviderPortal = () => {
                 <div className="flex flex-col w-full h-full">
                     <div className="flex flex-col h-full w-full border-4 rounded-lg ">
                         <div className="flex w-full justify-center border-b-4">
-                            <label className="font-bold text-xl "> History</label>
-                           
+                            <label className="font-bold text-xl "> 
+                                History
+                            </label>
                         </div>
-                        
                     </div>
                 </div>
             </div>
