@@ -6,12 +6,9 @@ import type { ApiOrder } from "@/types/order";
 
 // Mock user object returned from auth.getUser()
 const mockClient = {
-  id: 123,
   email: "testuser@example.com",
-  user_metadata: {
-    first_name: "Matthew",
-    last_name: "Sanner",
-  },
+  first_name: "Matthew",
+  last_name: "Sanner",
 };
 
 // Example service providers
@@ -28,9 +25,7 @@ const mockProvider2 = {
 // Seed data
 const mockApiOrders: ApiOrder[] = [
   {
-    id: 1,
     provider: mockProvider,
-    client: 123,
     order_num: "ORD001",
     payment_token: null,
     start_time: "2025-07-20T14:00:00Z",
@@ -42,9 +37,7 @@ const mockApiOrders: ApiOrder[] = [
     created_at: "2025-07-20T13:00:00Z",
   },
   {
-    id: 2,
     provider: mockProvider2,
-    client: 123,
     order_num: "ORD002",
     payment_token: null,
     start_time: "2025-07-22T16:00:00Z",
@@ -56,9 +49,7 @@ const mockApiOrders: ApiOrder[] = [
     created_at: "2025-07-22T15:00:00Z",
   },
   {
-    id: 3,
     provider: mockProvider,
-    client: 123,
     order_num: "ORD003",
     payment_token: null,
     start_time: "2025-07-24T10:00:00Z",
@@ -70,9 +61,7 @@ const mockApiOrders: ApiOrder[] = [
     created_at: "2025-07-24T09:00:00Z",
   },
   {
-    id: 4,
     provider: mockProvider2,
-    client: 123,
     order_num: "ORD004",
     payment_token: null,
     start_time: "2025-07-26T12:00:00Z",
@@ -84,9 +73,7 @@ const mockApiOrders: ApiOrder[] = [
     created_at: "2025-07-26T11:00:00Z",
   },
   {
-    id: 5,
     provider: mockProvider,
-    client: 123,
     order_num: "ORD005",
     payment_token: null,
     start_time: "2025-07-31T17:30:00Z",
@@ -98,9 +85,7 @@ const mockApiOrders: ApiOrder[] = [
     created_at: "2025-07-31T17:00:00Z",
   },
   {
-    id: 6,
     provider: mockProvider,
-    client: 123,
     order_num: "ORD006",
     payment_token: null,
     start_time: "2025-08-01T14:00:00Z",
@@ -112,9 +97,7 @@ const mockApiOrders: ApiOrder[] = [
     created_at: "2025-08-01T13:00:00Z",
   },
   {
-    id: 7,
     provider: mockProvider2,
-    client: 123,
     order_num: "ORD007",
     payment_token: null,
     start_time: "2025-08-03T09:00:00Z",
@@ -126,9 +109,7 @@ const mockApiOrders: ApiOrder[] = [
     created_at: "2025-08-02T15:00:00Z",
   },
   {
-    id: 8,
     provider: mockProvider,
-    client: 123,
     order_num: "ORD008",
     payment_token: null,
     start_time: "2025-08-05T12:00:00Z",

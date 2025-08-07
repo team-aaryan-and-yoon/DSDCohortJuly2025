@@ -40,6 +40,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "orders",
     "users",
+    "rest_framework",
+    "drf_stripe",
 ]
 
 MIDDLEWARE = [
@@ -77,6 +79,8 @@ WSGI_APPLICATION = "core.wsgi.application"
 # Database
 # https://docs.djangoproject.com/en/5.2/ref/settings/#databases
 
+
+# Hardcoding defaul infor to test stripe
 DATABASES = {
     "default": {
         "ENGINE": "django.db.backends.postgresql",
@@ -138,3 +142,9 @@ WHITENOISE_AUTOREFRESH = True
 # https://docs.djangoproject.com/en/5.2/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
+
+DRF_STRIPE = {
+    "STRIPE_API_SECRET": config("STRIPE_API_SECRET")
+    "STRIPE_WEBHOOK_SECRET": "my_stripe_webhook_key",
+    "FRONT_END_BASE_URL": "http://localhost:",
+}

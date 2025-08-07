@@ -4,7 +4,6 @@ import type { User, ApiUser } from "@/types/user";
 // maps orders from API format to app format
 export function mapOrderRequest(apiOrder: ApiOrder): Order {
   return {
-    id: apiOrder.id,
     provider: apiOrder.provider
       ? {
           firstName: apiOrder.provider.first_name,
@@ -27,15 +26,15 @@ export function mapOrderRequest(apiOrder: ApiOrder): Order {
 // maps users from API format to app format
 export function mapUserRequest(apiUser: ApiUser): User {
   return {
-    id: apiUser.id,
     email: apiUser.email,
-    firstName: apiUser.user_metadata.first_name,
-    lastName: apiUser.user_metadata.last_name,
-    role: apiUser.user_metadata.role,
-    state: apiUser.user_metadata.state,
-    streetAddress: apiUser.user_metadata.street_address,
-    city: apiUser.user_metadata.city,
-    zipCode: apiUser.user_metadata.zip_code,
+    userNum: apiUser.user_num,
+    firstName: apiUser.first_name,
+    lastName: apiUser.last_name,
+    role: apiUser.role,
+    state: apiUser.state,
+    streetAddress: apiUser.street_address,
+    city: apiUser.city,
+    zipCode: apiUser.zip_code,
   };
 }
 
@@ -44,7 +43,6 @@ export function mapOrderToView(order: Order): OrderView {
   const startDate = new Date(order.startTime);
   const orderDate = new Date(order.createdAt);
   return {
-    id: order.id,
     providerName: order.provider
       ? `${order.provider.firstName} ${order.provider.lastName}`
       : "Your provider",

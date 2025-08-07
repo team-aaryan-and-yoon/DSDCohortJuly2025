@@ -11,4 +11,5 @@ dependencies = [
     "python-decouple>=3.8",
     "uvicorn>=0.35.0",
     "whitenoise>=6.9.0",
+    "drf_stripe_subscription>=1.2.2",
 ]
