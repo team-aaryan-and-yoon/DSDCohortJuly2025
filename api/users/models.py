@@ -21,8 +21,7 @@ class SupaUser(models.Model):
 
 class Profile(models.Model):
     id = models.AutoField(primary_key=True)
-    # remove blank and null later
-    user_num = models.CharField(max_length=6, unique=True, blank=True, null=True)
+    user_num = models.CharField(max_length=6, unique=True)
     first_name = models.CharField(max_length=20)
     last_name = models.CharField(max_length=20)
     role = models.CharField(max_length=20, choices=Role.choices, default=Role.CLIENT)

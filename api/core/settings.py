@@ -144,7 +144,5 @@ WHITENOISE_AUTOREFRESH = True
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 DRF_STRIPE = {
-    "STRIPE_API_SECRET": config("STRIPE_API_SECRET")
-    "STRIPE_WEBHOOK_SECRET": "my_stripe_webhook_key",
-    "FRONT_END_BASE_URL": "http://localhost:",
+    "STRIPE_API_SECRET": config("STRIPE_API_SECRET"),
 }
