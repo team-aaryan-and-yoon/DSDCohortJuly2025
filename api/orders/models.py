@@ -52,8 +52,7 @@ class Order(models.Model):
 
     service_type = models.CharField(max_length=20, choices=ServiceType.choices)
 
-    # remove blank and null later
-    job = models.CharField(max_length=30, blank=True, null=True)
+    job = models.CharField(max_length=30)
 
     comments = models.TextField(blank=True)
 

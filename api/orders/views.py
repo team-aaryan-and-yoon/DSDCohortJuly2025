@@ -7,9 +7,8 @@ from django.core.mail import send_mail
 from decouple import config
 from supabase import create_client, Client
 
-url: str = config("DATABASE_URL")
-key: str = config("SECRET_KEY")
-
+url = config("DATABASE_URL")
+key = config("SECRET_KEY")
 
 class OrderViewSet(ModelViewSet):
     serializer_class = OrderSerializer
