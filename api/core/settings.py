@@ -42,9 +42,12 @@ INSTALLED_APPS = [
     "users",
     "rest_framework",
     "drf_stripe",
+    "drf_spectacular",
+    "corsheaders",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -145,4 +148,47 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 DRF_STRIPE = {
     "STRIPE_API_SECRET": config("STRIPE_API_SECRET"),
+}
+
+# Supabase Configuration
+SUPABASE_URL = config("SUPABASE_URL")
+SUPABASE_ANON_KEY = config("SUPABASE_ANON_KEY")
+SUPABASE_SERVICE_KEY = config("SUPABASE_SERVICE_KEY")
+SUPABASE_JWT_SECRET = config("SUPABASE_JWT_SECRET")
+
+# DRF Configuration
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES': [],
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.AllowAny',
+    ],
+    'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
+}
+
+# CORS Configuration
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "http://localhost:5173",
+    "http://127.0.0.1:5173",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+# drf-spectacular Configuration
+SPECTACULAR_SETTINGS = {
+    'TITLE': 'Team Service API',
+    'DESCRIPTION': 'Service platform API for profile and order management',
+    'VERSION': '1.0.0',
+    'SERVE_INCLUDE_SCHEMA': False,
+    'COMPONENT_SPLIT_REQUEST': True,
+    'SECURITY': [],
+    'ENUM_NAME_OVERRIDES': {
+        'ProviderTypeEnum': 'utils.constants.ServiceType',
+    },
+    'EXTENSIONS_INFO': {
+        'x-logo': {
+            'url': 'https://via.placeholder.com/120x40?text=API',
+        }
+    },
 }

@@ -1,4 +1,5 @@
 from rest_framework import serializers
+from drf_spectacular.utils import extend_schema_field
 from .models import Order, Profile
 from utils.constants import (
     PRICES,
@@ -22,9 +23,11 @@ class OrderSerializer(serializers.ModelSerializer):
     price = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
 
+    @extend_schema_field(serializers.FloatField)
     def get_price(self, obj):
         return PRICES.get(obj.job, 0.0)
 
+    @extend_schema_field(serializers.CharField)
     def get_description(self, obj):
         return DESCRIPTIONS.get(obj.job, "No description available.")
 
@@ -59,5 +62,7 @@ class OrderSerializer(serializers.ModelSerializer):
             "comments",
             "rating",
             "created_at",
+            "price",
+            "description",
         ]
-        read_only_fields = ["order_num", "start_time", "end_time", "created_at"]
+        read_only_fields = ["order_num", "start_time", "end_time", "created_at", "price", "description"]

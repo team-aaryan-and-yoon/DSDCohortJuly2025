@@ -1,10 +1,18 @@
-// import { createClient } from "@supabase/supabase-js";
-// export const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-// Mock Supabase client for testing purposes
+import { createClient } from "@supabase/supabase-js";
 import type { ApiOrder } from "@/types/order";
 
-// Mock user object returned from auth.getUser()
+// Supabase configuration
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
+  auth: {
+    persistSession: true,
+    autoRefreshToken: true,
+  }
+});
+
+// Mock user object for fallback/testing
 const mockClient = {
   email: "testuser@example.com",
   first_name: "Matthew",
@@ -124,7 +132,7 @@ const mockApiOrders: ApiOrder[] = [
 
 // Mock Supabase client interface with minimal auth and query functionality
 
-export const supabase = {
+export const mockSupabase = {
   auth: {
     // Simulates a successful call to supabase.auth.getUser()
     getUser: async () => ({ data: { user: mockClient }, error: null }),

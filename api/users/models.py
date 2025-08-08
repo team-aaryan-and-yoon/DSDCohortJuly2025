@@ -33,7 +33,6 @@ class Profile(models.Model):
     state = models.CharField(max_length=50)
     zip_code = models.CharField(max_length=10)
     supabase_id = models.OneToOneField(SupaUser, on_delete=models.CASCADE)
-    # create api that uses email to connect supabaseid
 
     def __str__(self):
         return f"{self.first_name or ''} {self.last_name or ''}".strip()

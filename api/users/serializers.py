@@ -19,6 +19,7 @@ class ProfileSerializer(serializers.ModelSerializer):
             "state",
             "zip_code",
             "email",
+            "supabase_id",
         ]
         read_only_fields = ["user_num", "email"]
 
