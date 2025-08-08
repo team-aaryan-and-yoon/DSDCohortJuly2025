@@ -3,6 +3,7 @@ import  { FullCalendar, type CalendarEvent } from "@/components/FullSchedule";
 import HourSchedule from "@/components/HourSchedule";
 import ServiceOrderCard from "@/components/ServiceOrderCard";
 import { Button } from "@/components/ui/button";
+import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@/components/ui/table";
 import { type ProviderOrderView } from "@/types/order";
 import { useState } from "react";
 
@@ -45,7 +46,30 @@ const ProviderPortal = () => {
   }]);
 
     // sort history by time and filter by past dates
-    const [history, setHistory] = useState([]);
+    const [history, setHistory] = useState([
+        {
+            id: "1",
+            service_type: "Cleaning",
+            service_date: new Date(2025, 5,3),
+            ordered_date: new Date(2025,5,1),
+            rating: 5
+        },
+           {
+            id: "1",
+            service_type: "Cleaning",
+            service_date: new Date(2025, 5,3),
+            ordered_date: new Date(2025,5,1),
+            rating: 5
+        }
+        ,   {
+            id: "1",
+            service_type: "Cleaning",
+            service_date: new Date(2025, 5,3),
+            ordered_date: new Date(2025,5,1),
+            rating: 5
+        }
+    ]);
+
     const events: CalendarEvent[] = [
     {
         id: "1",
@@ -125,14 +149,14 @@ const ProviderPortal = () => {
             <div className="flex w-full h-full gap-4">
                 <div className="flex flex-col w-full h-full gap-4 ">
                     {/* Announcement Panel */}
-                    <div className="flex flex-col h-4/6 w-full border-4 rounded-lg bg-white">
+                    <div className="flex flex-col h-4/6 w-full border-4 rounded-lg bg-gray-100">
                         <div className="flex w-full justify-center border-b-4">
                             <label className="font-bold text-xl ">Anouncements</label>
                         </div>
-                        <div className="flex flex-col h-full w-full items-center gap-2 p-2 overflow-y-auto">
+                        <div className="flex flex-col h-full w-full items-center gap-2 p-2 overflow-y-scroll">
                             {announcement.length > 0?   
                             announcement.map((order, key) => (
-                                <div key={key} className="flex w-full justify-center border-2 rounded-md">
+                                <div key={key} className="flex w-full justify-center border-2 rounded-md bg-white">
                                     <AnnouncementCard order={order}/>
                                 </div>
                             )): 
@@ -144,7 +168,7 @@ const ProviderPortal = () => {
                         
                     </div>
                     {/* Control Panel */}
-                    <div className="flex flex-col h-2/6 w-full border-4 rounded-lg bg-white">
+                    <div className="flex flex-col h-2/6 w-full border-4 rounded-lg bg-gray-100">
                         <div className="flex w-full justify-center border-b-4">
                             <label className="font-bold text-xl">Control Panel</label>
                         </div>
@@ -156,12 +180,35 @@ const ProviderPortal = () => {
                     </div>
                 </div>
                 <div className="flex flex-col w-full h-full">
-                    <div className="flex flex-col h-full w-full border-4 rounded-lg bg-white">
+                    <div className="flex flex-col h-full w-full border-4 rounded-lg bg-gray-100">
                         <div className="flex w-full justify-center border-b-4">
                             <label className="font-bold text-xl "> 
                                 History
                             </label>
+                       
                         </div>
+                        <div className="flex w-full h-full ">
+                            <Table className="bg-white border-2">
+                                <TableHeader>
+                                    <TableRow className="sticky top-0 bg-gray-100 z-10">
+                                        <TableHead >Service Type</TableHead>
+                                        <TableHead className="border-l border-gray-300">Service Date</TableHead>
+                                        <TableHead className="border-l border-gray-300">Order Date</TableHead>
+                                        <TableHead className="border-l border-gray-300">Rating</TableHead>
+                                    </TableRow>
+                                </TableHeader>
+                                <TableBody>
+                                    {history.map((data, key) => (
+                                        <TableRow key={key}>
+                                            <TableCell className="border-l border-gray-300">{data.service_type}</TableCell>
+                                            <TableCell className="border-l border-gray-300">{data.service_date.toDateString()}</TableCell>
+                                            <TableCell className="border-l border-gray-300">{data.ordered_date.toDateString()}</TableCell>
+                                            <TableCell className="border-l border-gray-300">{data.rating}</TableCell>
+                                        </TableRow>
+                                    ))}
+                                </TableBody>
+                            </Table>
+                    </div>
                     </div>
                 </div>
             </div>
