@@ -8,36 +8,28 @@ import {
 } from "@/utils/mappers";
 import type { Order } from "@/types/order";
 import type { User, ApiUser } from "@/types/user";
+import { useAuth } from "@/contexts/AuthContext";
 
 const CustomerPortalPage = () => {
-  const [user, setUser] = useState<User | null>(null);
+  const { user: authUser } = useAuth();
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchUserAndOrders = async () => {
+    const fetchOrders = async () => {
       setLoading(true);
       try {
-        const {
-          data: { user: supabaseUser },
-          error: userError,
-        } = await supabase.auth.getUser();
-
-        if (userError || !supabaseUser) {
-          console.error("Error fetching user", userError);
-          setUser(null);
+        if (!authUser) {
+          setOrders([]);
+          setLoading(false);
           return;
         }
-
-        // Map Supabase user (with user_metadata) to app's User model
-        const mappedUser = mapUserRequest(supabaseUser as unknown as ApiUser);
-        setUser(mappedUser);
 
         // Fetch orders for the user
         const { data: ordersData, error: ordersError } = await supabase
           .from("orders")
           .select()
-          .eq("client", mappedUser.id)
+          .eq("client", authUser.id)
           .order();
 
         if (ordersError) {
@@ -55,11 +47,11 @@ const CustomerPortalPage = () => {
       }
     };
 
-    fetchUserAndOrders();
-  }, []);
+    fetchOrders();
+  }, [authUser]);
 
   if (loading) return <div>Loading...</div>;
-  if (!user) return <div>Please log in to view your portal.</div>;
+  if (!authUser) return <div>Please log in to view your portal.</div>;
 
   // Filter orders into current, upcoming, and past categories
   const current = orders.filter(
@@ -72,10 +64,11 @@ const CustomerPortalPage = () => {
     <div className="p-4">
       <h1 className="text-2xl font-semibold mb-4">
         Welcome,{" "}
-        {user.firstName && user.lastName
-          ? `${user.firstName} ${user.lastName}!`
+        {authUser.first_name
+          ? `${authUser.first_name}!`
           : "Valued Customer!"}
       </h1>
+      
 
       <section>
         <h2 className="text-xl font-bold mb-2">Current Orders</h2>

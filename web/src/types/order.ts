@@ -11,9 +11,7 @@ export interface ApiProvider {
 }
 
 export interface Order {
-  id: number;
   provider: Provider | null;
-  client: number;
   orderNum: string;
   paymentToken: string | null;
   startTime: string;
@@ -26,7 +24,6 @@ export interface Order {
 }
 
 export interface OrderView {
-  id: number;
   providerName: string;
   serviceDate: string;
   serviceTime: string;
@@ -49,9 +46,7 @@ export interface ProviderOrderView {
 }
 
 export interface ApiOrder {
-  id: number;
   provider: ApiProvider | null;
-  client: number;
   order_num: string;
   payment_token: string | null;
   start_time: string;

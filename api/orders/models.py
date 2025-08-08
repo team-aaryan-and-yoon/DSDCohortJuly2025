@@ -1,42 +1,43 @@
 from django.db import models
-from datetime import timedelta
 from django.core.validators import MinValueValidator, MaxValueValidator
-import random
-import string
-
+from django.core.exceptions import ValidationError
+from random import choices
+from string import ascii_uppercase, digits
 from users.models import Profile
+from utils.constants import (
+    ServiceType,
+    StatusChoices,
+    CleaningJobs,
+    MaintenanceJobs,
+    DURATIONS,
+)
 
 
-def generate_order_id(length=6):
-    chars = string.ascii_uppercase + string.digits
-    return "".join(random.choices(chars, k=length))
+def generate_order_num(length=6):
+    chars = ascii_uppercase + digits
+    return "".join(choices(chars, k=length))
 
 
 class Order(models.Model):
-    SERVICE_TYPES = [
-        ("cleaning", "Cleaning"),
-        ("maintenance", "Maintenance"),
-    ]
-
-    STATUS_CHOICES = [
-        ("scheduled", "Scheduled"),
-        ("on-the-way", "On the way"),
-        ("in-progress", "In progress"),
-        ("completed", "Completed"),
-    ]
-
-    SERVICE_DURATIONS = {
-        "cleaning": timedelta(hours=2),
-        "maintenance": timedelta(hours=3),
-    }
-
-    provider = models.ForeignKey(
-       Profile, null=True, blank=True, related_name="provider_orders", on_delete=models.DO_NOTHING
-    )
-
-    client = models.ForeignKey(Profile, related_name="client_orders", on_delete=models.DO_NOTHING)
+    id = models.AutoField(primary_key=True)
 
     order_num = models.CharField(max_length=6, unique=True)
+
+    provider = models.ForeignKey(
+        Profile,
+        null=True,
+        blank=True,
+        related_name="provider_orders",
+        on_delete=models.SET_NULL,
+    )
+
+    client = models.ForeignKey(
+        Profile,
+        blank=True,
+        null=True,
+        related_name="client_orders",
+        on_delete=models.SET_NULL,
+    )
 
     payment_token = models.CharField(max_length=50, blank=True, null=True)
 
@@ -46,12 +47,12 @@ class Order(models.Model):
     end_time = models.DateTimeField()
 
     status = models.CharField(
-        max_length=20, choices=STATUS_CHOICES, default="scheduled"
+        max_length=20, choices=StatusChoices.choices, default=StatusChoices.SCHEDULED
     )
 
-    service_type = models.CharField(
-        max_length=20, choices=SERVICE_TYPES, default="cleaning"
-    )
+    service_type = models.CharField(max_length=20, choices=ServiceType.choices)
+
+    job = models.CharField(max_length=30)
 
     comments = models.TextField(blank=True)
 
@@ -63,19 +64,53 @@ class Order(models.Model):
 
     # updated_at = models.DateTimeField(auto_now=True)
 
+    def clean(self):
+        super().clean()
+        # Validate that job is valid for the given service_type
+        if not self.service_type or not self.job:
+            return
+        if not self.client:
+            raise ValidationError("Orders must be associated with a client.")
+
+        if self.service_type == ServiceType.CLEANING:
+            valid_jobs = CleaningJobs.values
+        elif self.service_type == ServiceType.MAINTENANCE:
+            valid_jobs = MaintenanceJobs.values
+        else:
+            raise ValidationError("Invalid service_type")
+
+        if self.job not in valid_jobs:
+            raise ValidationError(
+                f"Job '{self.job}' is not valid for service_type '{self.service_type}'"
+            )
+
+        if self.job not in DURATIONS:
+            raise ValidationError(f"No duration defined for job '{self.job}'")
+
     def save(self, *args, **kwargs):
+        # generate unique order_num if not set
         if not self.order_num:
             for attempt in range(5):
-                self.order_num = generate_order_id()
+                self.order_num = generate_order_num()
                 if not Order.objects.filter(order_num=self.order_num).exists():
                     break
             else:
                 raise ValueError(
                     "Could not generate a unique order_num after 5 attempts."
                 )
-        duration = self.SERVICE_DURATIONS[self.service_type]
-        self.end_time = self.start_time + duration
+
+        self.full_clean()  # Call clean method to validate job and service_type
+
+        # Calculate end_time based on start_time and job duration
+        self.end_time = self.start_time + DURATIONS[self.job]
+
         super().save(*args, **kwargs)
 
     def __str__(self):
-        return f"Order {self.order_num} ({self.service_type}) for {self.client}"
+        if self.client:
+            client_name = (
+                f"{self.client.first_name or ''} {self.client.last_name or ''}".strip()
+            )
+        else:
+            client_name = "Unassigned"
+        return f"Order {self.order_num}, {self.service_type} - {self.job} for {client_name}"
