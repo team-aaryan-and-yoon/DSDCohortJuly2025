@@ -7,7 +7,7 @@ from django.core.mail import send_mail
 from decouple import config
 from supabase import create_client, Client
 
-url = config("DATABASE_URL")
+url = config("SUPABASE_URL")
 key = config("SECRET_KEY")
 supabase: Client = create_client(url, key)
 
