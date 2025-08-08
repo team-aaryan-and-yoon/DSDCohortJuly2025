@@ -46,7 +46,7 @@ export const FullCalendar: React.FC<FullCalendarProps> = ({
   const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
 
   const renderHeader = () => (
-    <div className="flex justify-between items-center px-4 py-2 border-b border-gray-300 bg-gray-100 text-gray-800">
+    <div className="flex justify-between items-center px-4 py-2 border-b border-gray-300 bg-gray-100 text-gray-800 rounded-t-md">
       <Button variant="ghost"    onClick={prevMonth}>
         <ChevronLeft className="w-5 h-5" />
       </Button> 
@@ -145,7 +145,7 @@ export const FullCalendar: React.FC<FullCalendarProps> = ({
   return (
     <div
       className={cn(
-        "bg-gray-100 border border-gray-300 rounded-md shadow text-gray-800 w-full max-w-5xl mx-auto",
+        "bg-gray-100  border-4 border-gray-300 rounded-lg shadow text-gray-800 w-full max-w-5xl mx-auto ",
         className
       )}
     >

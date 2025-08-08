@@ -1,26 +1,31 @@
+import AnnouncementCard from "@/components/AnnouncementCard";
 import  { FullCalendar, type CalendarEvent } from "@/components/FullSchedule";
 import HourSchedule from "@/components/HourSchedule";
 import ServiceOrderCard from "@/components/ServiceOrderCard";
-import { type OrderView } from "@/types/order";
+import { Button } from "@/components/ui/button";
+import { type ProviderOrderView } from "@/types/order";
 import { useState } from "react";
 
 const ProviderPortal = () => {
-    const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+    const [selectedDate, setSelectedDate] = useState<Date | null>(new Date());
     // Sort announcement by time 
-    const [announcement, setAnnouncements] = useState<OrderView[]>([{
+    const [announcement, setAnnouncements] = useState<ProviderOrderView[]>([{
     id: 1,
-    providerName: "Bright & Shine",
+    clientName: "Joe Doe",
     serviceDate: "2025-08-10",
     serviceTime: "13:00",
+    serviceLocation: "123 Main st",
     serviceType: "Cleaning",
     status: "Scheduled",
     rating: 4,
     orderDate: "2025-08-01"
+
   },
   {
     id: 2,
-    providerName: "FixIt Pros",
+    clientName: "Mary Su",
     serviceDate: "2025-08-12",
+    serviceLocation: "456 Palm way",
     serviceTime: "10:30",
     serviceType: "Maintenance",
     status: "Scheduled",
@@ -29,9 +34,10 @@ const ProviderPortal = () => {
   },
   {
     id: 3,
-    providerName: "Quick Clean Co.",
+    clientName: "Perry Stu",
     serviceDate: "2025-08-15",
     serviceTime: "09:15",
+    serviceLocation: "789 Free Crossing",
     serviceType: "Cleaning",
     status: "Scheduled",
     rating: null,
@@ -80,7 +86,7 @@ const ProviderPortal = () => {
         <div className="flex w-full h-full gap-8">
             {/* Left */}
             <div className="flex flex-col w-full h-full gap-4">
-                <div className="flex justify-center h-7/12 w-full border-4 rounded-lg">
+                <div className="flex justify-center h-7/12 w-full rounded-lg">
                     <FullCalendar   
                         events={events}
                         selectedDate={selectedDate}
@@ -119,15 +125,15 @@ const ProviderPortal = () => {
             <div className="flex w-full h-full gap-4">
                 <div className="flex flex-col w-full h-full gap-4 ">
                     {/* Announcement Panel */}
-                    <div className="flex flex-col h-4/6 w-full border-4 rounded-lg ">
+                    <div className="flex flex-col h-4/6 w-full border-4 rounded-lg bg-white">
                         <div className="flex w-full justify-center border-b-4">
                             <label className="font-bold text-xl ">Anouncements</label>
                         </div>
-                        <div className="flex flex-col h-full w-full items-center overflow-y-auto">
+                        <div className="flex flex-col h-full w-full items-center gap-2 p-2 overflow-y-auto">
                             {announcement.length > 0?   
                             announcement.map((order, key) => (
-                                <div key={key} className="flex w-full">
-                                    <ServiceOrderCard order={order}/>
+                                <div key={key} className="flex w-full justify-center border-2 rounded-md">
+                                    <AnnouncementCard order={order}/>
                                 </div>
                             )): 
                             <div className="flex w-full h-full justify-center items-center">
@@ -138,17 +144,19 @@ const ProviderPortal = () => {
                         
                     </div>
                     {/* Control Panel */}
-                    <div className="flex flex-col h-full w-full border-4 rounded-lg ">
+                    <div className="flex flex-col h-2/6 w-full border-4 rounded-lg bg-white">
                         <div className="flex w-full justify-center border-b-4">
                             <label className="font-bold text-xl">Control Panel</label>
                         </div>
-                        <div className="flex w-full h-full justify-center items-center">
-                            Control Actions
+                        <div className="flex w-full h-full justify-center items-center gap-4 p-4">
+                            <Button>Manage Profile</Button>
+                            <Button >Manage Payments</Button>
+                            <Button>Manage Schedule</Button>
                         </div>
                     </div>
                 </div>
                 <div className="flex flex-col w-full h-full">
-                    <div className="flex flex-col h-full w-full border-4 rounded-lg ">
+                    <div className="flex flex-col h-full w-full border-4 rounded-lg bg-white">
                         <div className="flex w-full justify-center border-b-4">
                             <label className="font-bold text-xl "> 
                                 History
