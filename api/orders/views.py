@@ -9,10 +9,11 @@ from supabase import create_client, Client
 
 url = config("DATABASE_URL")
 key = config("SECRET_KEY")
+supabase: Client = create_client(url, key)
 
 class OrderViewSet(ModelViewSet):
+    queryset = Order.objects.all()
     serializer_class = OrderSerializer
-
     permission_classes = [IsAuthenticated, IsProviderOrAdmin]
 
     def update(self, request, *args, **kwargs):
@@ -36,7 +37,7 @@ class OrderViewSet(ModelViewSet):
 
                 send_mail(
                     subject=f"Update on your order: {original_order.order_num}",
-                    message=f"Hello, \n\nThe status of your service {original_order.service_type} has been updated to: {new_status} .\n\nThank you!",
+                    message=f"Hello, \n\nThe status of your service {original_order.service_type} has been updated to: {updated_order.get_status_display()} .\n\nThank you!",
                     from_email="noreply@handsoff.com",
                     recipient_list=[client_email],
                     fail_silently=False,
