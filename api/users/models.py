@@ -13,6 +13,15 @@ def generate_user_num(length=6):
 class SupaUser(models.Model):
     id = models.UUIDField(primary_key=True)
     email = models.EmailField()
+    
+    # Add properties to make it compatible with DRF's authentication
+    @property
+    def is_authenticated(self):
+        return True
+    
+    @property
+    def is_anonymous(self):
+        return False
 
     class Meta:
         managed = False

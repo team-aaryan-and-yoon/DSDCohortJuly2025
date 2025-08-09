@@ -14,15 +14,18 @@ import ProviderPortal from "./pages/ProviderProtal";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthCallback from "./pages/AuthCallback";
+
 import { CartProvider } from "./contexts/CartContext";
 import OrderPage from "./pages/OrderPage";
+
+import LandingPage from "./pages/LandingPage";
+
 
 
 function App() {
   const links: Link[] = [
     { url: "/home", label: "Home" },
     { url: "/portal", label: "Portal" },
-    { url: "/account", label: "Account Info" },
   ];
   return (
     <AuthProvider>

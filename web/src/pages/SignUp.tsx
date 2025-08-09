@@ -66,8 +66,8 @@ export function SignUpPage() {
     if (isProfileCompletion && oauthData?.supabase_id) {
       try {
         // Create profile for Google OAuth user
+        // Note: supabase_id is extracted from the JWT token on the backend
         const response = await apiClient.post('/profiles/', {
-          supabase_id: oauthData.supabase_id,
           email: oauthData.email,
           first_name: firstName,
           last_name: lastName,
@@ -76,7 +76,7 @@ export function SignUpPage() {
           state,
           zip_code: zipCode,
           role: signupas.toLowerCase() === 'service provider' ? 'provider' : 'client',
-          provider_type: signupas === 'Service Provider' ? skill : null,
+          provider_type: signupas === 'Service Provider' ? skill.toLowerCase() : null,
         });
 
         
@@ -89,10 +89,13 @@ export function SignUpPage() {
         // Refresh user data in AuthContext to include the new profile
         await checkUser();
         
-        // Navigate to customer portal
-        navigate('/customer-portal');
+        // Add a small delay to ensure auth state is fully updated
+        await new Promise(resolve => setTimeout(resolve, 200));
+        
+        // Navigate to home
+        navigate('/', { replace: true });
       } catch (err: any) {
-        console.error('Profile creation error:', err);
+        // Profile creation error
         setError(err.response?.data?.message || 'Failed to create profile. Please try again.');
       }
       setLoading(false);
@@ -420,33 +423,15 @@ export function SignUpPage() {
                     <DropdownMenuContent className="w-full">
                       <DropdownMenuItem
                         className="h-10"
-                        onClick={() => setSkill("Furniture Repair")}
+                        onClick={() => setSkill("Cleaning")}
                       >
-                        <span>Furniture Repair</span>
+                        <span>Cleaning</span>
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         className="h-10"
-                        onClick={() => setSkill("Cleaning Service")}
+                        onClick={() => setSkill("Maintenance")}
                       >
-                        <span>Cleaning Service</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="h-10"
-                        onClick={() => setSkill("Electrical Service")}
-                      >
-                        <span>Electrical Service</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="h-10"
-                        onClick={() => setSkill("Plumbing Service")}
-                      >
-                        <span>Plumbing Service</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="h-10"
-                        onClick={() => setSkill("Painting & Decorations")}
-                      >
-                        <span>Painting & Decorations</span>
+                        <span>Maintenance</span>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>

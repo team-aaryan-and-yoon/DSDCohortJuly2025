@@ -13,50 +13,61 @@ const AuthCallback = () => {
         const { data: { session }, error } = await supabase.auth.getSession();
         
         if (error) {
-          console.error('Error during auth callback:', error);
+          // Auth callback error - redirect to sign in
           navigate('/sign-in');
           return;
         }
 
         if (session?.user) {
-          console.log('OAuth successful, user:', session.user);
+          // OAuth successful
           
           // Check if profile exists
           let profileExists = false;
           try {
-            const profileResponse = await apiClient.get(`/profiles/?supabase_id=${session.user.id}`);
-            console.log('Profile check response:', profileResponse.data);
+            const profileResponse = await apiClient.get('/profiles/');
             
-            // Check if profile actually exists and has required fields
-            if (profileResponse.data && profileResponse.data.user_num) {
+            // Status 204 means authenticated but no profile
+            // Any other 2xx status means profile exists
+            if (profileResponse.status === 200 && profileResponse.data?.user_num) {
               profileExists = true;
             }
-          } catch (profileError) {
-            console.log('Profile does not exist yet');
+          } catch (profileError: any) {
+            // 204 is returned as an error by axios sometimes
+            if (profileError?.response?.status === 204) {
+              // Profile does not exist yet
+              profileExists = false;
+            } else {
+              // Error checking profile - continue anyway
+            }
           }
           
           if (!profileExists) {
             // For Google OAuth users without a profile, redirect to signup page to complete profile
-            // Store the OAuth data in sessionStorage for the signup page
-            sessionStorage.setItem('oauthUser', JSON.stringify({
-              supabase_id: session.user.id,
-              email: session.user.email,
-              full_name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || '',
-              avatar_url: session.user.user_metadata?.avatar_url || '',
-              isGoogleAuth: true
-            }));
-            
-            console.log('Redirecting to signup for profile completion');
-            navigate('/sign-up?complete=true');
+            if (session.user.app_metadata?.provider === 'google') {
+              sessionStorage.setItem('oauthUser', JSON.stringify({
+                supabase_id: session.user.id,
+                email: session.user.email,
+                full_name: session.user.user_metadata?.full_name || session.user.user_metadata?.name || '',
+                avatar_url: session.user.user_metadata?.avatar_url || '',
+                isGoogleAuth: true
+              }));
+              
+              // Redirect to signup for profile completion
+              navigate('/sign-up?complete=true');
+            } else {
+              // Regular email user without profile - shouldn't happen with new flow
+              // but go to home anyway
+              navigate('/');
+            }
           } else {
-            // Profile exists, go to customer portal
-            navigate('/customer-portal');
+            // Profile exists, go to home
+            navigate('/');
           }
         } else {
           navigate('/sign-in');
         }
       } catch (error) {
-        console.error('Auth callback error:', error);
+        // Unexpected error - redirect to sign in
         navigate('/sign-in');
       }
     };

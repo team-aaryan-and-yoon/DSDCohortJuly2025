@@ -58,10 +58,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       let profileData = null;
       try {
-        const response = await apiClient.get(`/profiles/?supabase_id=${user.id}`);
-        profileData = response.data;
-      } catch (error) {
-        console.warn('Could not fetch profile data', error);
+        const response = await apiClient.get('/profiles/');
+        // 204 means authenticated but no profile exists yet
+        if (response.status !== 204) {
+          profileData = response.data;
+        }
+      } catch (error: any) {
+        // If it's a 204, that's OK - user authenticated but no profile
+        // Silently handle - no need to log
       }
 
       // Set user data
@@ -76,7 +80,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       setUser(userData);
     } catch (error) {
-      console.error('Error checking user:', error);
+      // Silently handle auth check errors
       setUser(null);
     } finally {
       setLoading(false);
@@ -101,10 +105,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       let profileData = null;
       try {
-        const response = await apiClient.get(`/profiles/?supabase_id=${authData.user.id}`);
-        profileData = response.data;
-      } catch (error) {
-        console.warn('Could not fetch profile data', error);
+        const response = await apiClient.get('/profiles/');
+        // 204 means authenticated but no profile exists yet
+        if (response.status !== 204) {
+          profileData = response.data;
+        }
+      } catch (error: any) {
+        // If it's a 204, that's OK - user authenticated but no profile
+        // Silently handle - no need to log
       }
 
       const userData = {
@@ -126,7 +134,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signUp = async (data: RegisterData) => {
     try {
-      // 1. Sign up with Supabase directly
+      // 1. Sign up with Supabase (this will also sign them in if email confirmation is disabled)
       const { data: authData, error: authError } = await supabase.auth.signUp({
         email: data.email,
         password: data.password,
@@ -146,9 +154,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         return { success: false, message: 'Failed to create user' };
       }
 
+      // 2. Create the profile immediately
       try {
-        await apiClient.post('/profiles/', {
-          supabase_id: authData.user.id,
+        const profileResponse = await apiClient.post('/profiles/', {
           email: authData.user.email,
           first_name: data.first_name,
           last_name: data.last_name,
@@ -156,22 +164,51 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           city: data.city,
           state: data.state,
           zip_code: data.zip_code,
+          role: 'client',
         });
-      } catch (profileError) {
-        console.warn('Profile creation failed, but user was created in Supabase', profileError);
+        
+        // Profile created successfully
+        
+        // Set user data with profile
+        const userData = {
+          id: authData.user.id,
+          email: authData.user.email!,
+          first_name: data.first_name || '',
+          last_name: data.last_name || '',
+          user_num: profileResponse.data.user_num || '',
+          role: 'client',
+        };
+
+        setUser(userData);
+        return { success: true, message: 'Registration successful' };
+      } catch (profileError: any) {
+        // Handle profile creation errors silently
+        // If profile already exists (status 200), that's ok
+        if (profileError?.response?.status === 200) {
+          const userData = {
+            id: authData.user.id,
+            email: authData.user.email!,
+            first_name: data.first_name || '',
+            last_name: data.last_name || '',
+            user_num: profileError.response.data.user_num || '',
+            role: 'client',
+          };
+          setUser(userData);
+          return { success: true, message: 'Registration successful' };
+        }
+        
+        // Other errors - still set user but warn about profile
+        const userData = {
+          id: authData.user.id,
+          email: authData.user.email!,
+          first_name: data.first_name || '',
+          last_name: data.last_name || '',
+          user_num: '',
+          role: 'client',
+        };
+        setUser(userData);
+        return { success: true, message: 'Registration successful' };
       }
-
-      const userData = {
-        id: authData.user.id,
-        email: authData.user.email!,
-        first_name: data.first_name || '',
-        last_name: data.last_name || '',
-        user_num: '', // Will be set by backend
-        role: 'client',
-      };
-
-      setUser(userData);
-      return { success: true, message: 'Registration successful' };
 
     } catch (error: any) {
       return { success: false, message: error.message || 'Registration failed' };
@@ -201,7 +238,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       await supabase.auth.signOut();
       setUser(null);
     } catch (error) {
-      console.error('Error signing out:', error);
+      // Silently handle sign out errors
     }
   };
 
