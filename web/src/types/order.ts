@@ -33,6 +33,18 @@ export interface OrderView {
   orderDate: string;
 }
 
+export interface ProviderOrderView {
+  id: number;
+  clientName: string;
+  serviceDate: string;
+  serviceLocation: string;
+  serviceTime: string;
+  serviceType: ServiceType;
+  status: Status;
+  rating: number | null;
+  orderDate: string;
+}
+
 export interface ApiOrder {
   provider: ApiProvider | null;
   order_num: string;
