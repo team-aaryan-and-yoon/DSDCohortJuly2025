@@ -21,7 +21,6 @@ function App() {
   const links: Link[] = [
     { url: "/home", label: "Home" },
     { url: "/portal", label: "Portal" },
-    { url: "/account", label: "Account Info" },
   ];
   return (
     <AuthProvider>
