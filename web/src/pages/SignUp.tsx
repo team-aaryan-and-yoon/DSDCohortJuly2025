@@ -420,33 +420,15 @@ export function SignUpPage() {
                     <DropdownMenuContent className="w-full">
                       <DropdownMenuItem
                         className="h-10"
-                        onClick={() => setSkill("Furniture Repair")}
+                        onClick={() => setSkill("Cleaning")}
                       >
-                        <span>Furniture Repair</span>
+                        <span>Cleaning</span>
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         className="h-10"
-                        onClick={() => setSkill("Cleaning Service")}
+                        onClick={() => setSkill("Maintenance")}
                       >
-                        <span>Cleaning Service</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="h-10"
-                        onClick={() => setSkill("Electrical Service")}
-                      >
-                        <span>Electrical Service</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="h-10"
-                        onClick={() => setSkill("Plumbing Service")}
-                      >
-                        <span>Plumbing Service</span>
-                      </DropdownMenuItem>
-                      <DropdownMenuItem
-                        className="h-10"
-                        onClick={() => setSkill("Painting & Decorations")}
-                      >
-                        <span>Painting & Decorations</span>
+                        <span>Maintenance</span>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
                   </DropdownMenu>
