@@ -8,6 +8,9 @@ import { SignInPage } from "./pages/SignIn";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import type { Link, serviceType } from "./Types";
 import HomePage from "./pages/HomePage";
+
+import ProviderPortal from "./pages/ProviderProtal";
+
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthCallback from "./pages/AuthCallback";
@@ -29,6 +32,7 @@ function App() {
             <Navbar links={links} isLogged={false} />
           </div>
         </div>
+
         <div className="w-full h-full pt-4">
           <Routes>
             <Route path="/" element={<HomePage/>} />
@@ -41,11 +45,12 @@ function App() {
                 <CustomerPortal />
               </ProtectedRoute>
             } />
-            <Route path="/landing-page" element={<LandingPage />} />
+            <Route path="/provider-portal" element={<ProviderPortal />} />
           </Routes>
         </div>
       </BrowserRouter>
     </AuthProvider>
+
   );
 }
 
