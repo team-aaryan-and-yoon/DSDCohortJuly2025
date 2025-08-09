@@ -35,7 +35,7 @@ function App() {
         <div className="w-full h-full pt-4">
           <Routes>
             <Route path="/" element={<HomePage/>} />
-            <Route path="/services" element={<ServiceDetailsPage />} />
+            <Route path="/services/:type" element={<ServiceDetailsPage />} />
             <Route path="/sign-up" element={<SignUpPage />} />
             <Route path="/sign-in" element={<SignInPage />} />
             <Route path="/auth/callback" element={<AuthCallback />} />

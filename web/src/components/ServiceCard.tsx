@@ -13,7 +13,7 @@ import type { serviceType } from "@/Types";
 
 interface ServiceProps {
   service: serviceType;
-  button_action: () => void;
+  button_action?: () => void;
   card_action_click?: () => void;
   size: {width:number, height:number};
 }

@@ -1,25 +1,50 @@
 import ServiceCard from "@/components/ServiceCard";
 import { Button } from "@/components/ui/button";
 import { Carousel, CarouselContent, CarouselItem, CarouselNext, CarouselPrevious } from "@/components/ui/carousel";
-import { serviceData } from "@/examples/data";
+import { cleaningServiceData, maintenanceServiceData } from "@/examples/data";
 import type { serviceType } from "@/Types";
 import { useEffect, useState } from "react";
 import ReviewComment from "@/components/ReviewComment";
 import { Rating } from "@smastrom/react-rating";
+import { useNavigate, useParams } from "react-router-dom";
 
 /* TODO:
  - we need to decide how to handle reviews and details data retrieval
  - add the fetching mechanism/logic
  - improve UI/UX 
 */
+
+
+const VALID = ["cleaning", "maintenance"] as const;
+type RouteType = (typeof VALID)[number];
+
 const ServiceDetailsPage = () => {
-  const [services, setServices] = useState<serviceType[]>(serviceData); 
+  const { type } = useParams<{ type: string }>();
+  const navigate = useNavigate();
+
+  const urlType = (type ?? "").toLowerCase() as RouteType;
+
+  // Redirect invalid types to a default
+  useEffect(() => {
+    if (urlType && !VALID.includes(urlType)) {
+      navigate("/services/cleaning", { replace: true });
+    }
+  }, [urlType, navigate]);
+
+  const [services, setServices] = useState<serviceType[]>(cleaningServiceData); 
   const [selectedService, setSelectedService] = useState<serviceType>();
 
   // use this to update the selected service details and reviews through axios or fetch
   useEffect(()=> {
-
-  }, []) 
+    if (urlType == "maintenance") {
+      setServices(maintenanceServiceData);
+      setSelectedService(maintenanceServiceData[0])
+    }
+    else{ 
+      setServices(cleaningServiceData);
+      setSelectedService(cleaningServiceData[0])
+    }
+  }, [urlType]) 
   
 
   return (
