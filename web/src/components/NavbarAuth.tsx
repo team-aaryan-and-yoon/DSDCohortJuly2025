@@ -52,7 +52,7 @@ const NavbarAuth = () => {
               Sign Out   ({user.first_name})
             </NavigationMenuLink>
           ) : (
-            <NavigationMenuLink asChild className="bg-blue-50">
+            <NavigationMenuLink asChild  className="hover:bg-white">
               <RouterLink to="/sign-in" className="text-lg text-gray-700 hover:text-blue-600 transition-colors">
                 Sign In
               </RouterLink>
