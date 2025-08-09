@@ -76,7 +76,7 @@ export function SignUpPage() {
           state,
           zip_code: zipCode,
           role: signupas.toLowerCase() === 'service provider' ? 'provider' : 'client',
-          provider_type: signupas === 'Service Provider' ? skill : null,
+          provider_type: signupas === 'Service Provider' ? skill.toLowerCase() : null,
         });
 
         
@@ -89,8 +89,11 @@ export function SignUpPage() {
         // Refresh user data in AuthContext to include the new profile
         await checkUser();
         
-        // Navigate to customer portal
-        navigate('/customer-portal');
+        // Add a small delay to ensure auth state is fully updated
+        await new Promise(resolve => setTimeout(resolve, 200));
+        
+        // Navigate to home
+        navigate('/', { replace: true });
       } catch (err: any) {
         // Profile creation error
         setError(err.response?.data?.message || 'Failed to create profile. Please try again.');

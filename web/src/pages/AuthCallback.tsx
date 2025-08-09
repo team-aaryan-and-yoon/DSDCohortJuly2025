@@ -56,12 +56,12 @@ const AuthCallback = () => {
               navigate('/sign-up?complete=true');
             } else {
               // Regular email user without profile - shouldn't happen with new flow
-              // but go to portal anyway
-              navigate('/customer-portal');
+              // but go to home anyway
+              navigate('/');
             }
           } else {
-            // Profile exists, go to customer portal
-            navigate('/customer-portal');
+            // Profile exists, go to home
+            navigate('/');
           }
         } else {
           navigate('/sign-in');
