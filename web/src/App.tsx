@@ -11,6 +11,7 @@ import HomePage from "./pages/HomePage";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthCallback from "./pages/AuthCallback";
+import LandingPage from "./pages/LandingPage";
 
 
 function App() {
@@ -40,6 +41,7 @@ function App() {
                 <CustomerPortal />
               </ProtectedRoute>
             } />
+            <Route path="/landing-page" element={<LandingPage />} />
           </Routes>
         </div>
       </BrowserRouter>

@@ -4,6 +4,7 @@ from utils.constants import Role
 
 
 class ProfileSerializer(serializers.ModelSerializer):
+    """Full profile serializer for the authenticated user's own profile"""
     email = serializers.EmailField(source="supabase_id.email", read_only=True)
 
     class Meta:
@@ -19,7 +20,6 @@ class ProfileSerializer(serializers.ModelSerializer):
             "state",
             "zip_code",
             "email",
-            "supabase_id",
         ]
         read_only_fields = ["user_num", "email"]
 
@@ -38,3 +38,16 @@ class ProfileSerializer(serializers.ModelSerializer):
                 {"provider_type": "Only providers can have a provider type."}
             )
         return data
+
+
+class PublicProfileSerializer(serializers.ModelSerializer):
+    """Limited profile info for public/provider views"""
+    class Meta:
+        model = Profile
+        fields = [
+            "user_num",
+            "first_name",
+            "role",
+            "provider_type",
+        ]
+        read_only_fields = fields
