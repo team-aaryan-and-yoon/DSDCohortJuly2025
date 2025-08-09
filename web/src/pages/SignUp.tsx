@@ -66,8 +66,8 @@ export function SignUpPage() {
     if (isProfileCompletion && oauthData?.supabase_id) {
       try {
         // Create profile for Google OAuth user
+        // Note: supabase_id is extracted from the JWT token on the backend
         const response = await apiClient.post('/profiles/', {
-          supabase_id: oauthData.supabase_id,
           email: oauthData.email,
           first_name: firstName,
           last_name: lastName,
@@ -92,7 +92,7 @@ export function SignUpPage() {
         // Navigate to customer portal
         navigate('/customer-portal');
       } catch (err: any) {
-        console.error('Profile creation error:', err);
+        // Profile creation error
         setError(err.response?.data?.message || 'Failed to create profile. Please try again.');
       }
       setLoading(false);

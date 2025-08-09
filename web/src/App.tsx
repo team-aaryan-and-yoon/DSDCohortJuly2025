@@ -14,6 +14,7 @@ import ProviderPortal from "./pages/ProviderProtal";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthCallback from "./pages/AuthCallback";
+import LandingPage from "./pages/LandingPage";
 
 
 function App() {
