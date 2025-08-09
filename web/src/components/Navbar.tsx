@@ -49,9 +49,6 @@ const Navbar = ({ links }: NavbarProps) => {
             linkUrl = getPortalUrl();
           } else if (link.url === '/home') {
             linkUrl = '/';
-          } else if (link.url === '/account') {
-            // For now, redirect account to customer portal
-            linkUrl = '/customer-portal';
           }
 
           return (
