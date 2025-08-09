@@ -15,6 +15,7 @@ import { Rating } from "@smastrom/react-rating";
 import { useNavigate, useParams } from "react-router-dom";
 import type { EmblaCarouselType } from "embla-carousel";
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
+import { useCart } from "@/contexts/CartContext";
 
 const VALID = ["cleaning", "maintenance"] as const;
 type RouteType = (typeof VALID)[number];
@@ -24,9 +25,17 @@ const ServiceDetailsPage = () => {
   const navigate = useNavigate();
   const urlType = (type ?? "").toLowerCase() as RouteType;
 
-  const [services, setServices] = useState<serviceType[]>(cleaningServiceData);
-  const [selectedService, setSelectedService] = useState<serviceType>();
+  const initialServices =
+  urlType === "maintenance" ? maintenanceServiceData : cleaningServiceData;
+  const [services, setServices] = useState<serviceType[]>(initialServices);
+  const [selectedService, setSelectedService] = useState<serviceType>(initialServices[0]);
+
   const [embla, setEmbla] = useState<EmblaCarouselType | undefined>(undefined);
+
+  const {items, setItems } = useCart();  
+  const addItem = (item: serviceType) => {
+    setItems(prev => [...prev, item]); 
+  };
 
   // Redirect invalid types
   useEffect(() => {
@@ -111,7 +120,6 @@ const ServiceDetailsPage = () => {
                 </CarouselItem>
               ))}
             </CarouselContent>
-
             <CarouselPrevious />
             <CarouselNext />
           </Carousel>
@@ -147,7 +155,12 @@ const ServiceDetailsPage = () => {
             </div>
             <div className="px-4 pb-2">{selectedService?.details}</div>
             <div className="flex w-full h-full justify-end items-end p-4">
-              <Button>Book now</Button>
+              <Button onClick={()=> {
+                addItem(selectedService);
+                navigate('/orders');
+                }}>
+                  Book now
+                </Button>
             </div>
           </div>
         </div>
