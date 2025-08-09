@@ -1,6 +1,6 @@
 // import { useState } from "react";
 import "./App.css";
-import Navbar from "./components/Navbar";
+
 import CustomerPortal from "./pages/CustomerPortal";
 import ServiceDetailsPage from "./pages/ServiceDetails";
 import SignUpPage from "./pages/SignUp";
@@ -15,6 +15,8 @@ import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthCallback from "./pages/AuthCallback";
 import LandingPage from "./pages/LandingPage";
+import NavbarPages from "./components/NavbarPages";
+import NavbarAuth from "./components/NavbarAuth";
 
 
 function App() {
@@ -25,13 +27,21 @@ function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <div className="flex w-full">
-          <div className="flex w-full justify-start"><img src="/images/icon.png" alt="icon" height={100} width={100}/></div>
-          <div className="flex w-full h-full justify-end pr-4">
-            <Navbar links={links} isLogged={false} />
+        {/* Header */}
+        <div className="flex bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50">
+          <div className="flex w-2/12 h-full justify-end items-center gap-2 px-4 py-2 ">
+            <img src="/images/icon_no_text.png" alt="icon" height={50} width={50}/>   
+            <span className="text-xl text-center font-bold text-gray-900">HandsOff</span>
+          </div>
+          <div className="flex w-full h-full justify-center">
+            <NavbarPages links={links} />
+          </div>
+          <div className="flex w-2/12 justify-center">
+            <NavbarAuth/>
           </div>
         </div>
 
+        {/* Body */}
         <div className="w-full h-full pt-4">
           <Routes>
             <Route path="/" element={<HomePage/>} />
@@ -45,6 +55,7 @@ function App() {
               </ProtectedRoute>
             } />
             <Route path="/provider-portal" element={<ProviderPortal />} />
+            <Route path="/landing" element={<LandingPage/>}/>
           </Routes>
         </div>
       </BrowserRouter>
