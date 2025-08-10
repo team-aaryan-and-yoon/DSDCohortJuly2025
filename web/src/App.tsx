@@ -6,7 +6,7 @@ import ServiceDetailsPage from "./pages/ServiceDetails";
 import SignUpPage from "./pages/SignUp";
 import { SignInPage } from "./pages/SignIn";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
-import type { Link, serviceType } from "./Types";
+import type { Link } from "./Types";
 import HomePage from "./pages/HomePage";
 
 import ProviderPortal from "./pages/ProviderProtal";
