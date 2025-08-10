@@ -28,11 +28,12 @@ function App() {
     <AuthProvider>
       <BrowserRouter>
         {/* Header */}
-        <div className="flex bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50">
+        <div className="fixed top-0 inset-x-0 z-50 flex bg-white/90 backdrop-blur-md shadow-sm">
           <div className="flex w-2/12 h-full justify-end items-center gap-2 px-4 py-2 ">
             <img src="/images/icon_no_text.png" alt="icon" height={50} width={50}/>   
             <span className="text-xl text-center font-bold text-gray-900">HandsOff</span>
           </div>
+
           <div className="flex w-full h-full justify-center">
             <NavbarPages links={links} />
           </div>
@@ -40,9 +41,8 @@ function App() {
             <NavbarAuth/>
           </div>
         </div>
-
         {/* Body */}
-        <div className="w-full h-full pt-4">
+        <div className="w-full h-full ">
           <Routes>
             <Route path="/" element={<HomePage/>} />
             <Route path="/services" element={<ServiceDetailsPage />} />
