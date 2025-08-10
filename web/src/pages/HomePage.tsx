@@ -7,15 +7,11 @@ import type { reviewType, serviceType } from "@/Types";
 import AutoScroll from 'embla-carousel-auto-scroll'
 import { Award, Calendar, CheckCircle, ChevronRight, Clock, Shield, Star } from "lucide-react";
 import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
-
-
 
 const HomePage = () => {
-    const navigate = useNavigate();
     const services:serviceType[] = [
         {name: "Cleaning", price:'Starting at $100', description: "Our cleaning service description", details:"", img_url:"/images/cleaning.png",reviews:[]},
-        {name: "Maintenance", price:'Starting at $100', description: "Our plumbing service description", details:"", img_url:"/images/handyman.png",reviews:[]},
+        {name: "Plumbing", price:'Starting at $100', description: "Our plumbing service description", details:"", img_url:"/images/handyman.png",reviews:[]},
         
     ]
     const reviews:reviewType[] = [
@@ -122,6 +118,7 @@ const HomePage = () => {
               </p>
             </div>
 
+
             <div className="text-center">
               <div className="w-16 h-16 bg-blue-600 rounded-full flex items-center justify-center mx-auto mb-6">
                 <Shield className="h-8 w-8 text-white" />
@@ -133,6 +130,7 @@ const HomePage = () => {
                 All our technicians are licensed, bonded, and insured for your
                 complete peace of mind.
               </p>
+
             </div>
 
             <div className="text-center">
