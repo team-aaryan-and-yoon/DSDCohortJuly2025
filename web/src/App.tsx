@@ -43,7 +43,7 @@ function App() {
         </div>
 
         {/* Body */}
-        <div className="w-full h-full pt-4">
+        <div className="w-full h-full ">
           <Routes>
             <Route path="/" element={<HomePage/>} />
             <Route path="/services" element={<ServiceDetailsPage />} />
