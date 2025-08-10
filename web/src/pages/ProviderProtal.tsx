@@ -19,8 +19,8 @@ const ProviderPortal = () => {
     serviceType: "Cleaning",
     status: "Scheduled",
     rating: 4,
-    orderDate: "2025-08-01"
-
+    orderDate: "2025-08-01",
+    orderDetails: "Clean bathroom",
   },
   {
     id: 2,
@@ -31,7 +31,8 @@ const ProviderPortal = () => {
     serviceType: "Maintenance",
     status: "Scheduled",
     rating: null,
-    orderDate: "2025-08-03"
+    orderDate: "2025-08-03",
+    orderDetails:"Fix sink",
   },
   {
     id: 3,
@@ -123,7 +124,6 @@ const ProviderPortal = () => {
                 <div className="flex h-5/12 w-full border-4 rounded-lg ">
                 {selectedDate? 
                     <HourSchedule
-                   
                     events={events
                             .filter((event) => {
                                 return (
@@ -149,14 +149,14 @@ const ProviderPortal = () => {
             <div className="flex w-full h-full gap-4">
                 <div className="flex flex-col w-full h-full gap-4 ">
                     {/* Announcement Panel */}
-                    <div className="flex flex-col h-4/6 w-full border-4 rounded-lg bg-gray-100">
-                        <div className="flex w-full justify-center border-b-4">
+                    <div className="flex flex-col h-4/6 w-full border-4 rounded-lg bg-white">
+                        <div className="flex w-full h-10 justify-center border-b-2 bg-gradient-to-br from-blue-50 to-indigo-100">
                             <label className="font-bold text-xl ">Anouncements</label>
-                        </div>
+                        </div>  
                         <div className="flex flex-col h-full w-full items-center gap-2 p-2 overflow-y-scroll">
                             {announcement.length > 0?   
                             announcement.map((order, key) => (
-                                <div key={key} className="flex w-full justify-center border-2 rounded-md bg-white">
+                                <div key={key} className="flex w-full justify-center border-4 rounded-lg  bg-white">
                                     <AnnouncementCard order={order}/>
                                 </div>
                             )): 
@@ -165,11 +165,10 @@ const ProviderPortal = () => {
                             </div>
                         }  
                         </div>    
-                        
                     </div>
                     {/* Control Panel */}
                     <div className="flex flex-col h-2/6 w-full border-4 rounded-lg bg-gray-100">
-                        <div className="flex w-full justify-center border-b-4">
+                        <div className="flex w-full h-10 justify-center border-b-4 bg-gradient-to-br from-blue-50 to-indigo-100">
                             <label className="font-bold text-xl">Control Panel</label>
                         </div>
                         <div className="flex w-full h-full justify-center items-center gap-4 p-4">
@@ -181,11 +180,11 @@ const ProviderPortal = () => {
                 </div>
                 <div className="flex flex-col w-full h-full">
                     <div className="flex flex-col h-full w-full border-4 rounded-lg bg-gray-100">
-                        <div className="flex w-full justify-center border-b-4">
+                        <div className="flex w-full h-10 justify-center border-b-4 bg-gradient-to-br from-blue-50 to-indigo-100">
                             <label className="font-bold text-xl "> 
                                 History
                             </label>
-                       
+                        
                         </div>
                         <div className="flex w-full h-full ">
                             <Table className="bg-white border-2">
