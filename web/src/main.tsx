@@ -6,7 +6,7 @@ import App from './App.tsx'
 import '@smastrom/react-rating/style.css'
 
 createRoot(document.getElementById("root")!).render(
-  <StrictMode>
+  <StrictMode>  
     <App />
   </StrictMode>
 );

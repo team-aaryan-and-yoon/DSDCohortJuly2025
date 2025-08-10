@@ -7,6 +7,7 @@ import {
 import type { Link } from "@/Types";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
+import { useCart } from "@/contexts/CartContext";
 
 
 
@@ -38,7 +39,8 @@ const Navbar = ({ links }: NavbarProps) => {
     if (!user) return '/sign-in';
     return '/customer-portal';
   };
-
+  const { items } = useCart();
+  
   return (
     <NavigationMenu className="p-2 bg-gray-200 rounded-b-md ">
       <NavigationMenuList className="gap-x-4">
