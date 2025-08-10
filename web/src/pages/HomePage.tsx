@@ -4,15 +4,11 @@ import { Carousel, CarouselContent, CarouselItem } from "@/components/ui/carouse
 import type { reviewType, serviceType } from "@/Types";
 import AutoScroll from 'embla-carousel-auto-scroll'
 import { useRef } from "react";
-import { useNavigate } from "react-router-dom";
-
-
 
 const HomePage = () => {
-    const navigate = useNavigate();
     const services:serviceType[] = [
         {name: "Cleaning", price:'Starting at $100', description: "Our cleaning service description", details:"", img_url:"/images/cleaning.png",reviews:[]},
-        {name: "Maintenance", price:'Starting at $100', description: "Our plumbing service description", details:"", img_url:"/images/handyman.png",reviews:[]},
+        {name: "Plumbing", price:'Starting at $100', description: "Our plumbing service description", details:"", img_url:"/images/handyman.png",reviews:[]},
         
     ]
     const reviews:reviewType[] = [
@@ -53,7 +49,7 @@ const HomePage = () => {
                 </div>
             <div className="flex w-full justify-center gap-16 overflow-x-auto">
                 {services.map((service, key) => (
-                    <ServiceCard key={key} service={service} card_action_click={()=> navigate(`services/${service.name.toLowerCase()}`)} size={{width:200, height:200}}/>
+                    <ServiceCard key={key} service={service} button_action={() => console.log(service.name)} size={{width:200, height:200}}/>
                 ))}
             </div>  
             </div>

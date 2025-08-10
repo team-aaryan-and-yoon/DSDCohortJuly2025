@@ -1,6 +1,6 @@
 // import { useState } from "react";
 import "./App.css";
-import Navbar from "./components/Navbar";
+
 import CustomerPortal from "./pages/CustomerPortal";
 import ServiceDetailsPage from "./pages/ServiceDetails";
 import SignUpPage from "./pages/SignUp";
@@ -14,12 +14,9 @@ import ProviderPortal from "./pages/ProviderProtal";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthCallback from "./pages/AuthCallback";
-
-import { CartProvider } from "./contexts/CartContext";
-import OrderPage from "./pages/OrderPage";
-
 import LandingPage from "./pages/LandingPage";
-
+import NavbarPages from "./components/NavbarPages";
+import NavbarAuth from "./components/NavbarAuth";
 
 
 function App() {
@@ -29,33 +26,39 @@ function App() {
   ];
   return (
     <AuthProvider>
-      <CartProvider>
-        <BrowserRouter>
-          <div className="flex w-full">
-            <div className="flex w-full justify-start"><img src="/images/icon.png" alt="icon" height={100} width={100}/></div>
-            <div className="flex w-full h-full justify-end pr-4">
-              <Navbar links={links} isLogged={false} />
-            </div>
+      <BrowserRouter>
+        {/* Header */}
+        <div className="flex bg-white/90 backdrop-blur-md shadow-sm sticky top-0 z-50">
+          <div className="flex w-2/12 h-full justify-end items-center gap-2 px-4 py-2 ">
+            <img src="/images/icon_no_text.png" alt="icon" height={50} width={50}/>   
+            <span className="text-xl text-center font-bold text-gray-900">HandsOff</span>
           </div>
+          <div className="flex w-full h-full justify-center">
+            <NavbarPages links={links} />
+          </div>
+          <div className="flex w-2/12 justify-center">
+            <NavbarAuth/>
+          </div>
+        </div>
 
-          <div className="w-full h-full pt-4">
-            <Routes>
-              <Route path="/" element={<HomePage/>} />
-              <Route path="/services/:type" element={<ServiceDetailsPage />} />
-              <Route path="/sign-up" element={<SignUpPage />} />
-              <Route path="/sign-in" element={<SignInPage />} />
-              <Route path="/auth/callback" element={<AuthCallback />} />
-              <Route path="/customer-portal" element={
-                <ProtectedRoute>
-                  <CustomerPortal />
-                </ProtectedRoute>
-              } />
-              <Route path="/provider-portal" element={<ProviderPortal />} />
-              <Route path="orders" element={<OrderPage/>} />
-            </Routes>
-          </div>
-        </BrowserRouter>
-      </CartProvider>
+        {/* Body */}
+        <div className="w-full h-full pt-4">
+          <Routes>
+            <Route path="/" element={<HomePage/>} />
+            <Route path="/services" element={<ServiceDetailsPage />} />
+            <Route path="/sign-up" element={<SignUpPage />} />
+            <Route path="/sign-in" element={<SignInPage />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
+            <Route path="/customer-portal" element={
+              <ProtectedRoute>
+                <CustomerPortal />
+              </ProtectedRoute>
+            } />
+            <Route path="/provider-portal" element={<ProviderPortal />} />
+            <Route path="/landing" element={<LandingPage/>}/>
+          </Routes>
+        </div>
+      </BrowserRouter>
     </AuthProvider>
 
   );
