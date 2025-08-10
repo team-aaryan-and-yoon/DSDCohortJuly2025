@@ -46,7 +46,7 @@ const ServiceCard = ({ service, button_action, card_action_click, size, disableB
       <CardFooter className="w-full justify-end">
          {!disableButton &&
         <CardAction>
-          <Button onClick={button_action}>Reserve</Button>
+          <Button onClick={button_action} className="bg-blue-600 hover:bg-blue-700">Reserve</Button>
         </CardAction>
         }
       </CardFooter>

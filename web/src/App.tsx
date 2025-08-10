@@ -51,7 +51,8 @@ function App() {
                 </ProtectedRoute>
               } />
               <Route path="/provider-portal" element={<ProviderPortal />} />
-              <Route path="orders" element={<OrderPage/>} />
+              <Route path="/orders" element={<OrderPage/>} />
+              <Route path="/landing" element={<LandingPage/>}/>
             </Routes>
           </div>
         </BrowserRouter>
