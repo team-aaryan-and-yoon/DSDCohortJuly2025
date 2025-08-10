@@ -43,6 +43,7 @@ export interface ProviderOrderView {
   status: Status;
   rating: number | null;
   orderDate: string;
+  orderDetails?: string;
 }
 
 export interface ApiOrder {

@@ -46,7 +46,7 @@ const HourSchedule = ({
           key={`${hour}-${quarter}`}
           onClick={() => console.log(event?.time + "\n" + event?.description)}
         >
-          <TableCell className="w-24 font-bold ">
+          <TableCell className="w-24 font-bold">
             {label}
           </TableCell>
           <TableCell className="border-l border-gray-300">
@@ -71,14 +71,14 @@ const HourSchedule = ({
   return (
     <Table className="bg-white">
       <TableHeader>
-        <TableRow className="sticky top-0 bg-gray-100 z-10">
+        <TableRow className="sticky top-0 z-10 bg-gradient-to-br from-blue-50 to-indigo-100 text-lg ">
           <TableHead className="w-24">Time</TableHead>
           <TableHead className="border-l border-gray-300">Event</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>{slots}</TableBody>
     </Table>
-  );
+  );  
 };
 
 export default HourSchedule;
