@@ -2,7 +2,7 @@ interface reviewType{
     reviewer: string;
     rating: number;
     comment: string;
-    avatar_url: string | undefined;
+    avatar_url?: string | undefined;
 }
 interface serviceType {
   name: string;
@@ -11,6 +11,7 @@ interface serviceType {
   img_url: string;
   details: string;
   reviews: reviewType[];
+  
 }
 interface Link {
   url: string;

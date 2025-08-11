@@ -7,8 +7,10 @@ import type { reviewType, serviceType } from "@/Types";
 import AutoScroll from 'embla-carousel-auto-scroll'
 import { Award, Calendar, CheckCircle, ChevronRight, Clock, Shield, Star } from "lucide-react";
 import { useRef } from "react";
+import { useNavigate } from "react-router-dom";
 
 const HomePage = () => {
+    const navigate = useNavigate();
     const services:serviceType[] = [
         {name: "Cleaning", price:'Starting at $100', description: "Our cleaning service description", details:"", img_url:"/images/cleaning.png",reviews:[]},
         {name: "Plumbing", price:'Starting at $100', description: "Our plumbing service description", details:"", img_url:"/images/handyman.png",reviews:[]},

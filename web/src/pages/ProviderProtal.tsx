@@ -107,7 +107,7 @@ const ProviderPortal = () => {
     ];
     
     return (
-    <div className="w-full h-full px-4 pb-4">
+    <div className="w-full h-[100svh] px-4  py-8">
         <div className="flex w-full h-full gap-8">
             {/* Left */}
             <div className="flex flex-col w-full h-full gap-4">
@@ -121,35 +121,38 @@ const ProviderPortal = () => {
                     }}/>
 
                 </div>
-                <div className="flex h-5/12 w-full border-4 rounded-lg ">
-                {selectedDate? 
-                    <HourSchedule
-                    events={events
-                            .filter((event) => {
-                                return (
-                                event.start.toDateString() === selectedDate.toDateString()
-                                );
-                            })
-                            .map((event) => ({
-                                time: event.start.toLocaleTimeString([], {
-                                hour: "numeric",
-                                minute: "2-digit",
-                                }),
-                                title: event.title,
-                                description: event.description,
-                            }))}
-                    />
-                    :
-                    <div className="flex w-full justify-center items-center">
-                        <span className="font-light">Select a date to see time schedueld</span>
-                    </div>}
+                
+                <div className="flex h-5/12 w-full border-4 rounded-lg">
+                   
+                    {selectedDate? 
+                        <HourSchedule
+                        events={events
+                                .filter((event) => {
+                                    return (
+                                    event.start.toDateString() === selectedDate.toDateString()
+                                    );
+                                })
+                                .map((event) => ({
+                                    time: event.start.toLocaleTimeString([], {
+                                    hour: "numeric",
+                                    minute: "2-digit",
+                                    }),
+                                    title: event.title,
+                                    description: event.description,
+                                }))}
+                        />
+                        :
+                        <div className="flex w-full justify-center items-center">
+                            <span className="font-light">Select a date to see time schedueld</span>
+                        </div>}
+            
                 </div> 
             </div>
             {/* Right */}
             <div className="flex w-full h-full gap-4">
                 <div className="flex flex-col w-full h-full gap-4 ">
                     {/* Announcement Panel */}
-                    <div className="flex flex-col h-4/6 w-full border-4 rounded-lg bg-white">
+                    <div className="flex flex-col h-2/3 w-full border-4 rounded-lg bg-white">
                         <div className="flex w-full h-10 justify-center border-b-2 bg-gradient-to-br from-blue-50 to-indigo-100">
                             <label className="font-bold text-xl ">Anouncements</label>
                         </div>  
@@ -167,7 +170,7 @@ const ProviderPortal = () => {
                         </div>    
                     </div>
                     {/* Control Panel */}
-                    <div className="flex flex-col h-2/6 w-full border-4 rounded-lg bg-gray-100">
+                    <div className="flex flex-col h-1/3 w-full border-4 rounded-lg bg-gray-100">
                         <div className="flex w-full h-10 justify-center border-b-4 bg-gradient-to-br from-blue-50 to-indigo-100">
                             <label className="font-bold text-xl">Control Panel</label>
                         </div>
