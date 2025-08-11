@@ -24,7 +24,12 @@ urlpatterns = [
     path("api/", include("users.urls")),
     path("api/", include("orders.urls")),
     path("stripe/", include("drf_stripe.urls")),
+    
     # API documentation
     path("api/schema/", SpectacularAPIView.as_view(), name="schema"),
     path("docs/", SpectacularSwaggerView.as_view(url_name="schema"), name="docs"),
+    path('api-auth/', include(
+      'rest_framework.urls', namespace=
+      'rest_framework')),
+
 ]
