@@ -1,7 +1,7 @@
 services:
   api:
     build:
-      context: ./api 
+      context: ./api
       dockerfile: Dockerfile
     command: >
       sh -c ". /app/.venv/bin/activate &&

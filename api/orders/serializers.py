@@ -14,14 +14,15 @@ from utils.constants import (
 class MinimalProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ["first_name", "last_name", "user_num"]
+        fields = ["first_name", "last_name"]
 
 
 class OrderSerializer(serializers.ModelSerializer):
     provider = MinimalProfileSerializer(read_only=True)
-    client = MinimalProfileSerializer(read_only=True)
     price = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
+    status = serializers.SerializerMethodField()
+    service_type = serializers.SerializerMethodField()
 
     @extend_schema_field(serializers.FloatField)
     def get_price(self, obj):
@@ -30,6 +31,21 @@ class OrderSerializer(serializers.ModelSerializer):
     @extend_schema_field(serializers.CharField)
     def get_description(self, obj):
         return DESCRIPTIONS.get(obj.job, "No description available.")
+
+    @extend_schema_field(serializers.CharField)
+    def get_status(self, obj):
+        status_mapping = {
+            "scheduled": "Scheduled",
+            "on-the-way": "On the way",
+            "in-progress": "In progress",
+            "completed": "Completed",
+        }
+        return status_mapping.get(obj.status, obj.status)
+
+    @extend_schema_field(serializers.CharField)
+    def get_service_type(self, obj):
+        service_mapping = {"cleaning": "Cleaning", "maintenance": "Maintenance"}
+        return service_mapping.get(obj.service_type, obj.service_type)
 
     def validate(self, data):
         service = data.get("service_type")
@@ -52,7 +68,6 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = [
             "order_num",
             "provider",
-            "client",
             "payment_token",
             "start_time",
             "end_time",
@@ -65,4 +80,13 @@ class OrderSerializer(serializers.ModelSerializer):
             "price",
             "description",
         ]
-        read_only_fields = ["order_num", "start_time", "end_time", "created_at", "price", "description"]
+        read_only_fields = [
+            "order_num",
+            "start_time",
+            "end_time",
+            "created_at",
+            "price",
+            "description",
+            "status",
+            "service_type",
+        ]
