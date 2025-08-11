@@ -18,12 +18,16 @@ export interface Order {
   endTime: string;
   status: Status;
   serviceType: ServiceType;
+  job: string;
   comments: string;
   rating: number | null;
   createdAt: string;
+  price: number;
+  description: string;
 }
 
 export interface OrderView {
+  orderNum: string;
   providerName: string;
   serviceDate: string;
   serviceTime: string;
@@ -34,7 +38,7 @@ export interface OrderView {
 }
 
 export interface ProviderOrderView {
-  id: number;
+  orderNum: string;
   clientName: string;
   serviceDate: string;
   serviceLocation: string;
@@ -54,7 +58,10 @@ export interface ApiOrder {
   end_time: string;
   status: Status;
   service_type: ServiceType;
+  job: string;
   comments: string;
   rating: number | null;
   created_at: string;
+  price: number;
+  description: string;
 }

@@ -10,16 +10,18 @@ export function mapOrderRequest(apiOrder: ApiOrder): Order {
           lastName: apiOrder.provider.last_name,
         }
       : null,
-    client: apiOrder.client,
     orderNum: apiOrder.order_num,
     paymentToken: apiOrder.payment_token,
     startTime: apiOrder.start_time,
     endTime: apiOrder.end_time,
     status: apiOrder.status,
     serviceType: apiOrder.service_type,
+    job: apiOrder.job,
     comments: apiOrder.comments,
     rating: apiOrder.rating,
     createdAt: apiOrder.created_at,
+    price: apiOrder.price,
+    description: apiOrder.description,
   };
 }
 
@@ -43,6 +45,7 @@ export function mapOrderToView(order: Order): OrderView {
   const startDate = new Date(order.startTime);
   const orderDate = new Date(order.createdAt);
   return {
+    orderNum: order.orderNum,
     providerName: order.provider
       ? `${order.provider.firstName} ${order.provider.lastName}`
       : "Your provider",
