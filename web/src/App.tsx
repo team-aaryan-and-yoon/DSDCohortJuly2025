@@ -20,7 +20,6 @@ import NavbarAuth from "./components/NavbarAuth";
 import { CartProvider } from "./contexts/CartContext";
 import OrderPage from "./pages/OrderPage";
 
-
 function App() {
   const links: Link[] = [
     { url: "/home", label: "Home" },
@@ -44,6 +43,7 @@ function App() {
               <NavbarAuth/>
             </div>
           </div>
+
           {/* Body */}
           <div className="w-full h-full ">
             <Routes>
@@ -66,7 +66,6 @@ function App() {
         </BrowserRouter>
       </CartProvider>
     </AuthProvider>
-
   );
 }
 

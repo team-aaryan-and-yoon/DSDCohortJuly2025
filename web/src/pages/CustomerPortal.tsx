@@ -1,13 +1,8 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/utils/supabaseClient";
+import { apiClient } from "@/utils/apiClient";
 import ServiceOrderCard from "@/components/ServiceOrderCard";
-import {
-  mapOrderRequest,
-  mapUserRequest,
-  mapOrderToView,
-} from "@/utils/mappers";
+import { mapOrderRequest, mapOrderToView } from "@/utils/mappers";
 import type { Order } from "@/types/order";
-import type { User, ApiUser } from "@/types/user";
 import { useAuth } from "@/contexts/AuthContext";
 
 const CustomerPortalPage = () => {
@@ -25,23 +20,33 @@ const CustomerPortalPage = () => {
           return;
         }
 
-        // Fetch orders for the user
-        const { data: ordersData, error: ordersError } = await supabase
-          .from("orders")
-          .select()
-          .eq("client", authUser.id)
-          .order();
+        // Fetch orders for the user from Django API with retry logic
+        let retries = 3;
+        let response;
 
-        if (ordersError) {
-          console.error("Error fetching orders", ordersError);
-          setOrders([]);
-          return;
+        while (retries > 0) {
+          try {
+            response = await apiClient.get("/orders/");
+            break; // Success
+          } catch (error) {
+            retries--;
+            if (retries === 0) {
+              throw error; // Error if no retries left
+            }
+            // Wait 2 seconds before retry
+            await new Promise((resolve) => setTimeout(resolve, 2000));
+            console.log(`Retrying API call... ${retries} attempts left`);
+          }
         }
 
+        const ordersData = response?.data;
+        console.log("Raw API response:", ordersData);
         const orders = (ordersData ?? []).map(mapOrderRequest);
         setOrders(orders);
       } catch (e) {
-        console.error("Unexpected error", e);
+        console.error("Unexpected error fetching orders", e);
+        // Set empty orders array on error
+        setOrders([]);
       } finally {
         setLoading(false);
       }
@@ -64,18 +69,18 @@ const CustomerPortalPage = () => {
     <div className="p-4">
       <h1 className="text-2xl font-semibold mb-4">
         Welcome,{" "}
-        {authUser.first_name
-          ? `${authUser.first_name}!`
-          : "Valued Customer!"}
+        {authUser.first_name ? `${authUser.first_name}!` : "Valued Customer!"}
       </h1>
-      
 
       <section>
         <h2 className="text-xl font-bold mb-2">Current Orders</h2>
         <div className="flex flex-wrap gap-4">
           {current.length > 0 ? (
             current.map((order) => (
-              <ServiceOrderCard key={order.id} order={mapOrderToView(order)} />
+              <ServiceOrderCard
+                key={order.orderNum}
+                order={mapOrderToView(order)}
+              />
             ))
           ) : (
             <p>No current orders.</p>
@@ -85,10 +90,13 @@ const CustomerPortalPage = () => {
 
       <section>
         <h2 className="text-xl font-bold mb-2">Upcoming Orders</h2>
-        <div className="flex flex-wrapgap-4">
+        <div className="flex flex-wrap gap-4">
           {upcoming.length > 0 ? (
             upcoming.map((order) => (
-              <ServiceOrderCard key={order.id} order={mapOrderToView(order)} />
+              <ServiceOrderCard
+                key={order.orderNum}
+                order={mapOrderToView(order)}
+              />
             ))
           ) : (
             <p>No upcoming orders.</p>
@@ -112,7 +120,7 @@ const CustomerPortalPage = () => {
               </thead>
               <tbody>
                 {past.map(mapOrderToView).map((orderView) => (
-                  <tr key={orderView.id}>
+                  <tr key={orderView.orderNum}>
                     <td className="border px-4 py-2">
                       {orderView.serviceType}
                     </td>
