@@ -107,7 +107,7 @@ const ProviderPortal = () => {
     ];
     
     return (
-    <div className="w-full h-full px-4 pb-4">
+    <div className="w-full h-full px-4 pb-4 pt-20">
         <div className="flex w-full h-full gap-8">
             {/* Left */}
             <div className="flex flex-col w-full h-full gap-4">
