@@ -57,7 +57,7 @@ export default function OrderPage() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-50 px-6 py-10 md:px-20 pt-20">
+    <div className="min-h-screen bg-gray-50 px-6 py-8 md:px-20 ">
       <h1 className="text-3xl font-bold mb-8">Order Page</h1>
       <div className="flex flex-col items-center justify-center">
         <ProgressBarCheckout currentStep="Cart" />

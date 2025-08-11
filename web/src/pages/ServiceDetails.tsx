@@ -77,7 +77,7 @@ const ServiceDetailsPage = () => {
 }, [embla, services]);
 
   return (
-    <div className="flex w-full h-full gap-4 pt-20 px-4">
+    <div className="flex w-full h-[100svh] gap-4  px-4 py-8">
       {/* Left: Carousel */}
       <div className="flex flex-col h-full w-1/2 border-2 rounded-md">
         <div className="flex h-full w-full items-center justify-center gap-4 p-4">
