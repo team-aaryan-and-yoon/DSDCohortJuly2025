@@ -18,6 +18,7 @@ import LandingPage from "./pages/LandingPage";
 import NavbarPages from "./components/NavbarPages";
 import NavbarAuth from "./components/NavbarAuth";
 import { CartProvider } from "./contexts/CartContext";
+import OrderPage from "./pages/OrderPage";
 
 
 function App() {
@@ -44,7 +45,7 @@ function App() {
             </div>
           </div>
           {/* Body */}
-          <div className="w-full h-full ">
+          <div className="w-full h-full">
             <Routes>
               <Route path="/" element={<HomePage/>} />
               <Route path="/services" element={<Navigate to="/services/cleaning" replace />} />
@@ -59,6 +60,7 @@ function App() {
               } />
               <Route path="/provider-portal" element={<ProviderPortal />} />
               <Route path="/landing" element={<LandingPage/>}/>
+              <Route path="/orders" element={<OrderPage/>}/>
             </Routes>
           </div>
         </BrowserRouter>
