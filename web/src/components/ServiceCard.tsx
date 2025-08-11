@@ -13,12 +13,13 @@ import type { serviceType } from "@/Types";
 
 interface ServiceProps {
   service: serviceType;
-  button_action: () => void;
+  button_action?: () => void;
   card_action_click?: () => void;
   size: {width:number, height:number};
+  disableButton?: boolean;
 }
 
-const ServiceCard = ({ service, button_action, card_action_click, size }: ServiceProps) => {
+const ServiceCard = ({ service, button_action, card_action_click, size, disableButton=false }: ServiceProps) => {
 
   return (
     <Card className="w-full mb-16 max-w-lg shadow-lg hover:shadow-2xl hover:shadow-blue-400 transition-shadow duration-300" onClick={card_action_click}>
@@ -43,9 +44,11 @@ const ServiceCard = ({ service, button_action, card_action_click, size }: Servic
         <CardDescription>{service.description}</CardDescription>
       </CardContent>
       <CardFooter className="w-full justify-end">
+        {!disableButton &&
         <CardAction>
           <Button onClick={button_action} className="bg-blue-600 hover:bg-blue-700">Reserve</Button>
         </CardAction>
+        }
       </CardFooter>
     </Card>
   );
