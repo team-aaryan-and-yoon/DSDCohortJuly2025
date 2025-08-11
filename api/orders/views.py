@@ -18,6 +18,8 @@ class OrderViewSet(ModelViewSet):
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated, IsProviderOrAdmin]
 
+    lookup_field = 'order_num'
+
     def update(self, request, *args, **kwargs):
         
         # get original status
@@ -27,7 +29,7 @@ class OrderViewSet(ModelViewSet):
         # validate the data
         response = super().update(request, *args, **kwargs)
 
-        if 'status' in request.data and response.status == 200:
+        if 'status' in request.data and response.status_code == 200:
             new_status = request.data['status']
 
             if new_status != original_status:
@@ -39,7 +41,7 @@ class OrderViewSet(ModelViewSet):
                     key: str = config("SUPABASE_SERVICE_KEY")
                     supabase: Client = create_client(url, key)
 
-                    client_supabase_id = str(updated_order.client.supabase_id)
+                    client_supabase_id = str(updated_order.client.supabase_id.id)
                     user_response = supabase.auth.admin.get_user_by_id(client_supabase_id)
                     client_email = user_response.user.email
                 except Exception as e:
