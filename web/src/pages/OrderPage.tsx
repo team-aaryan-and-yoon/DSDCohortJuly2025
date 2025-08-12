@@ -2,6 +2,7 @@ import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import ProgressBarCheckout from "../components/ui/progress-bar-checkout";
+import HandlePayButton from "@/components/HandlePayButton";
 
 export default function OrderPage() {
   const [selectedServiceIndex, setSelectedServiceIndex] = useState<
@@ -78,7 +79,8 @@ export default function OrderPage() {
                     ? "bg-blue-50 border-blue-200"
                     : "hover:bg-gray-50"
                 }`}
-                onClick={() => handleServiceSelect(idx)}>
+                onClick={() => handleServiceSelect(idx)}
+              >
                 <div className="text-3xl">{item.icon}</div>
                 <div className="flex-1">
                   <p className="font-medium">{item.title}</p>
@@ -155,13 +157,15 @@ export default function OrderPage() {
 
               <Button
                 onClick={handleSaveChanges}
-                className="w-full bg-blue-600 hover:bg-blue-700 text-white mb-2">
+                className="w-full bg-blue-600 hover:bg-blue-700 text-white mb-2"
+              >
                 Save Changes
               </Button>
 
               <Button
                 onClick={() => setSelectedServiceIndex(null)}
-                className="w-full bg-gray-600 hover:bg-gray-700 text-white mb-2">
+                className="w-full bg-gray-600 hover:bg-gray-700 text-white mb-2"
+              >
                 Back to Overview
               </Button>
 
@@ -198,9 +202,10 @@ export default function OrderPage() {
                 <p className="text-sm text-gray-600">Total Amount: $1,773.00</p>
               </div>
 
-              <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
+              <HandlePayButton priceId="" />
+              {/* <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
                 Click to Pay
-              </Button>
+              </Button> */}
             </>
           )}
         </div>
