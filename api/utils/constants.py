@@ -98,3 +98,77 @@ DESCRIPTIONS = {
     MaintenanceJobs.FAUCET_REPLACEMENT: "Remove old faucets and install new models to improve function and aesthetics. Ensures leak-free and secure fittings.",
     MaintenanceJobs.TOILET_REPAIR: "Diagnose and fix toilet issues such as leaks, clogs, and flushing problems. Restores proper function and conserves water.",
 }
+
+IMAGE_URLS = {
+    CleaningJobs.SINGLE_ROOM: "/images/cleaning.png",
+    CleaningJobs.APARTMENT: "/images/cleaning.png",
+    CleaningJobs.HOUSE: "/images/cleaning.png",
+    MaintenanceJobs.FIX_DOOR: "/images/maintenance.png",
+    MaintenanceJobs.FIX_SINK: "/images/maintenance.png",
+    MaintenanceJobs.INSTALL_SHELF: "/images/maintenance.png",
+    MaintenanceJobs.MOUNT_TV: "/images/maintenance.png",
+    MaintenanceJobs.PAINTING: "/images/maintenance.png",
+    MaintenanceJobs.YARD_WORK: "/images/maintenance.png",
+    MaintenanceJobs.FURNITURE_ASSEMBLY: "/images/maintenance.png",
+    MaintenanceJobs.DRYWALL_REPAIR: "/images/maintenance.png",
+    MaintenanceJobs.LIGHT_FIXTURE_INSTALLATION: "/images/maintenance.png",
+    MaintenanceJobs.APPLIANCE_INSTALLATION: "/images/maintenance.png",
+    MaintenanceJobs.FAUCET_REPLACEMENT: "/images/maintenance.png",
+    MaintenanceJobs.TOILET_REPAIR: "/images/maintenance.png",
+}
+
+REVIEWS = {
+    CleaningJobs.SINGLE_ROOM: [
+        {"reviewer": "John S", "comment": "cool service", "rating": 5}, 
+        {"reviewer": "Bob M", "comment": "meh service", "rating": 3}, 
+        {"reviewer": "Jane K", "comment": "she ate my burrito", "rating": 1},
+    ],
+    CleaningJobs.APARTMENT: [
+        {"reviewer": "John M", "comment": "fine service", "rating": 4}, 
+        {"reviewer": "Bob K", "comment": "fast service", "rating": 4}, 
+        {"reviewer": "Jane L", "comment": "could be better", "rating": 3},
+    ],
+    MaintenanceJobs.APPLIANCE_INSTALLATION: [
+        {"reviewer": "John S", "comment": "cool service", "rating": 5}, 
+        {"reviewer": "Bob M", "comment": "meh service", "rating": 3}, 
+        {"reviewer": "Jane K", "comment": "she ate my burrito", "rating": 1},
+    ],
+    MaintenanceJobs.DRYWALL_REPAIR: [
+        {"reviewer": "John M", "comment": "fine service", "rating": 4}, 
+        {"reviewer": "Bob K", "comment": "fast service", "rating": 4}, 
+        {"reviewer": "Jane L", "comment": "could be better", "rating": 3},
+    ]
+}
+
+
+CLEANING_SERVICES = [
+    {
+        "id": job.value,
+        "name": job.label,
+        "details": DESCRIPTIONS[job],
+        "price": PRICES[job],
+        "duration": DURATIONS[job],
+        "reviews": REVIEWS.get(job, []),
+        "image_url": IMAGE_URLS[job],
+    }
+    for job in CleaningJobs
+]
+
+MAINTENANCE_SERVICES = [
+    {
+        "id": job.value,
+        "name": job.label,
+        "details": DESCRIPTIONS[job],
+        "price": PRICES[job],
+        "duration": DURATIONS[job],
+        "reviews": REVIEWS.get(job, []),
+        "image_url": IMAGE_URLS[job],
+    }
+    for job in MaintenanceJobs
+]
+
+
+ALL_SERVICES = {
+    ServiceType.CLEANING.value: CLEANING_SERVICES,
+    ServiceType.MAINTENANCE.value: MAINTENANCE_SERVICES,
+}

@@ -6,10 +6,29 @@ from django.core.mail import send_mail
 from decouple import config
 from supabase import create_client, Client
 
+import copy
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from utils.constants import ALL_SERVICES
 
 # url: str = config("SUPABASE_URL")
 # key: str = config("SUPABASE_SERVICE_KEY")
 # supabase: Client = create_client(url, key)
+
+
+@api_view(['GET'])
+def get_services(request):
+    """
+    a view to get all services
+    """
+    services_data = copy.deepcopy(ALL_SERVICES)
+    
+    for service_category in services_data.values():
+        for service in service_category:
+            service['duration'] = str(service['duration'])
+
+    return Response(services_data)
+
 
 
 class OrderViewSet(ModelViewSet):
