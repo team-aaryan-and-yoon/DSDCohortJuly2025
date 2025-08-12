@@ -7,7 +7,7 @@ import {
   CarouselNext,
   CarouselPrevious,
 } from "@/components/ui/carousel";
-import { cleaningServiceData, maintenanceServiceData } from "@/examples/data";
+//import { cleaningServiceData, maintenanceServiceData } from "@/examples/data";
 import type { serviceType } from "@/Types";
 import { useEffect, useState } from "react";
 import ReviewComment from "@/components/ReviewComment";
@@ -24,11 +24,11 @@ const ServiceDetailsPage = () => {
   const { type } = useParams<{ type: string }>();
   const navigate = useNavigate();
   const urlType = (type ?? "").toLowerCase() as RouteType;
+  const [allServices, setAllServices] = useState<{ [key: string]: serviceType[] } | null>(null);
 
-  const initialServices =
-  urlType === "maintenance" ? maintenanceServiceData : cleaningServiceData;
-  const [services, setServices] = useState<serviceType[]>(initialServices);
-  const [selectedService, setSelectedService] = useState<serviceType>(initialServices[0]);
+  //const initialServices = urlType === "maintenance" ? maintenanceServiceData : cleaningServiceData;
+  const [services, setServices] = useState<serviceType[]>([]);
+  const [selectedService, setSelectedService] = useState<serviceType | null>(null);
 
   const [embla, setEmbla] = useState<EmblaCarouselType | undefined>(undefined);
 
@@ -36,6 +36,18 @@ const ServiceDetailsPage = () => {
   const addItem = (item: serviceType) => {
     setItems(prev => [...prev, item]); 
   };
+
+  useEffect(() => {
+    fetch('/api/services/')
+      .then(response => {
+        if (!response.ok) {
+          throw new Error("Network response was not ok");
+        }
+        return response.json();
+      })
+      .then(data => setAllServices(data))
+      .catch(error => console.error("Failed to fetch services:", error));
+  }, []); //runs once on mount
 
   // Redirect invalid types
   useEffect(() => {
@@ -50,14 +62,14 @@ const ServiceDetailsPage = () => {
 
   // Update dataset & selection on route change
   useEffect(() => {
-    if (urlType === "maintenance") {
-      setServices(maintenanceServiceData);
-      setSelectedService(maintenanceServiceData[0]);
-    } else {
-      setServices(cleaningServiceData);
-      setSelectedService(cleaningServiceData[0]);
-    }
-  }, [urlType]);
+    if (allServices && urlType && allServices[urlType]) {
+      const currentServices = allServices[urlType];
+      setServices(allServices[urlType]);
+      if (currentServices.length > 0) {
+        setSelectedService(allServices[urlType][0]);
+      }
+    } 
+  }, [urlType, allServices]);
 
  useEffect(() => {
   if (!embla) return;
@@ -147,10 +159,10 @@ const ServiceDetailsPage = () => {
                     <Rating
                       style={{ maxWidth: 125 }}
                       value={
-                        selectedService.reviews.reduce(
+                        selectedService?.reviews.reduce(
                           (sum, review) => sum + review.rating,
                           0
-                        ) / selectedService.reviews.length
+                        ) / selectedService?.reviews.length
                       }
                       readOnly
                       isDisabled
