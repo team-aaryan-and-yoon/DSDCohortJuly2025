@@ -100,21 +100,21 @@ DESCRIPTIONS = {
 }
 
 IMAGE_URLS = {
-    CleaningJobs.SINGLE_ROOM: "/images/cleaning.png",
-    CleaningJobs.APARTMENT: "/images/cleaning.png",
-    CleaningJobs.HOUSE: "/images/cleaning.png",
-    MaintenanceJobs.FIX_DOOR: "/images/maintenance.png",
-    MaintenanceJobs.FIX_SINK: "/images/maintenance.png",
-    MaintenanceJobs.INSTALL_SHELF: "/images/maintenance.png",
-    MaintenanceJobs.MOUNT_TV: "/images/maintenance.png",
-    MaintenanceJobs.PAINTING: "/images/maintenance.png",
-    MaintenanceJobs.YARD_WORK: "/images/maintenance.png",
-    MaintenanceJobs.FURNITURE_ASSEMBLY: "/images/maintenance.png",
-    MaintenanceJobs.DRYWALL_REPAIR: "/images/maintenance.png",
-    MaintenanceJobs.LIGHT_FIXTURE_INSTALLATION: "/images/maintenance.png",
-    MaintenanceJobs.APPLIANCE_INSTALLATION: "/images/maintenance.png",
-    MaintenanceJobs.FAUCET_REPLACEMENT: "/images/maintenance.png",
-    MaintenanceJobs.TOILET_REPAIR: "/images/maintenance.png",
+    CleaningJobs.SINGLE_ROOM: "/images/cleaning.jpg",
+    CleaningJobs.APARTMENT: "/images/cleaning.jpg",
+    CleaningJobs.HOUSE: "/images/cleaning.jpg",
+    MaintenanceJobs.FIX_DOOR: "/images/maintenance.jpg",
+    MaintenanceJobs.FIX_SINK: "/images/maintenance.jpg",
+    MaintenanceJobs.INSTALL_SHELF: "/images/maintenance.jpg",
+    MaintenanceJobs.MOUNT_TV: "/images/maintenance.jpg",
+    MaintenanceJobs.PAINTING: "/images/maintenance.jpg",
+    MaintenanceJobs.YARD_WORK: "/images/maintenance.jpg",
+    MaintenanceJobs.FURNITURE_ASSEMBLY: "/images/maintenance.jpg",
+    MaintenanceJobs.DRYWALL_REPAIR: "/images/maintenance.jpg",
+    MaintenanceJobs.LIGHT_FIXTURE_INSTALLATION: "/images/maintenance.jpg",
+    MaintenanceJobs.APPLIANCE_INSTALLATION: "/images/maintenance.jpg",
+    MaintenanceJobs.FAUCET_REPLACEMENT: "/images/maintenance.jpg",
+    MaintenanceJobs.TOILET_REPAIR: "/images/maintenance.jpg",
 }
 
 REVIEWS = {
