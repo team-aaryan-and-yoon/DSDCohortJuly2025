@@ -165,7 +165,8 @@ const ServiceDetailsPage = () => {
             <div className="flex w-full h-full justify-end items-end p-4">
               <Button onClick={()=> {
                 addItem(selectedService);
-                navigate('/orders');
+                navigate('/book-service', { state: {service:
+                  selectedService }});
                 }}>
                   Book now
                 </Button>
