@@ -1,22 +1,20 @@
-interface reviewType{
-    reviewer: string;
-    rating: number;
-    comment: string;
-    avatar_url?: string | undefined;
+export interface reviewType {
+  reviewer: string;
+  rating: number;
+  comment: string;
+  avatar_url?: string;
 }
-interface serviceType {
+
+export interface serviceType {
   name: string;
   price: number | string;
   description: string;
-  img_url: string;
+  image_url?: string;
   details: string;
   reviews: reviewType[];
-  
 }
-interface Link {
+
+export interface Link {
   url: string;
   label: string;
 }
-
-
-export type { serviceType, Link, reviewType };
