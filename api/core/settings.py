@@ -148,6 +148,7 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 DRF_STRIPE = {
     "STRIPE_API_SECRET": config("STRIPE_API_SECRET"),
+    "FRONT_END_BASE_URL": "http://localhost:3000"
 }
 
 # Supabase Configuration
