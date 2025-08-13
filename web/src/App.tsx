@@ -8,6 +8,7 @@ import { SignInPage } from "./pages/SignIn";
 import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import type { Link } from "./Types";
 import HomePage from "./pages/HomePage";
+import SelectedOrderPage from "./pages/SelectedOrderPage";
 
 import ProviderPortal from "./pages/ProviderProtal";
 
@@ -61,6 +62,7 @@ function App() {
               <Route path="/provider-portal" element={<ProviderPortal />} />
               <Route path="/landing" element={<LandingPage/>}/>
               <Route path="/orders" element={<OrderPage/>}/>
+              <Route path="/book-service" element={<SelectedOrderPage />} />
             </Routes>
           </div>
         </BrowserRouter>
