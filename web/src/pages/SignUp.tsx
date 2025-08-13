@@ -31,17 +31,19 @@ export function SignUpPage() {
   const [skill, setSkill] = useState("");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
-  
+
   // Check if this is Google OAuth profile completion
-  const isProfileCompletion = searchParams.get('complete') === 'true';
-  const oauthData = isProfileCompletion ? JSON.parse(sessionStorage.getItem('oauthUser') || '{}') : null;
-  
+  const isProfileCompletion = searchParams.get("complete") === "true";
+  const oauthData = isProfileCompletion
+    ? JSON.parse(sessionStorage.getItem("oauthUser") || "{}")
+    : null;
+
   // Parse name from Google OAuth if available
-  const nameParts = oauthData?.full_name?.split(' ') || [];
-  
+  const nameParts = oauthData?.full_name?.split(" ") || [];
+
   // Form fields
   const [firstName, setFirstName] = useState(nameParts[0] || "");
-  const [lastName, setLastName] = useState(nameParts.slice(1).join(' ') || "");
+  const [lastName, setLastName] = useState(nameParts.slice(1).join(" ") || "");
   const [email, setEmail] = useState(oauthData?.email || "");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
@@ -49,11 +51,25 @@ export function SignUpPage() {
   const [city, setCity] = useState("");
   const [state, setState] = useState("");
   const [zipCode, setZipCode] = useState("");
-  
+
+  // Helper function to handle navigation based on role
+  const navigateBasedOnRole = (role: string | undefined | null) => {
+    const normalizedRole = role?.toLowerCase() || "";
+
+    // On the backend, roles are stored as "provider" or "client"
+    if (normalizedRole === "provider") {
+      navigate("/provider-portal", { replace: true });
+    } else if (normalizedRole === "client") {
+      navigate("/customer-portal", { replace: true });
+    } else {
+      navigate("/", { replace: true });
+    }
+  };
+
   useEffect(() => {
     // If this is OAuth completion but no OAuth data, redirect to sign-in
     if (isProfileCompletion && !oauthData?.supabase_id) {
-      navigate('/sign-in');
+      navigate("/sign-in");
     }
   }, [isProfileCompletion, oauthData, navigate]);
 
@@ -67,7 +83,7 @@ export function SignUpPage() {
       try {
         // Create profile for Google OAuth user
         // Note: supabase_id is extracted from the JWT token on the backend
-        const response = await apiClient.post('/profiles/', {
+        await apiClient.post("/profiles/", {
           email: oauthData.email,
           first_name: firstName,
           last_name: lastName,
@@ -75,28 +91,53 @@ export function SignUpPage() {
           city,
           state,
           zip_code: zipCode,
-          role: signupas.toLowerCase() === 'service provider' ? 'provider' : 'client',
-          provider_type: signupas === 'Service Provider' ? skill.toLowerCase() : null,
+          // Convert UI selection "Service Provider"/"Customer" to backend role "provider"/"client"
+          role:
+            signupas.toLowerCase() === "service provider"
+              ? "provider"
+              : "client",
+          provider_type:
+            signupas === "Service Provider" ? skill.toLowerCase() : null,
         });
 
-        
         // Clear OAuth data from sessionStorage
-        sessionStorage.removeItem('oauthUser');
-        
+        sessionStorage.removeItem("oauthUser");
+
         // Small delay to ensure profile is committed to database
-        await new Promise(resolve => setTimeout(resolve, 500));
-        
+        await new Promise((resolve) => setTimeout(resolve, 500));
+
         // Refresh user data in AuthContext to include the new profile
         await checkUser();
-        
+
         // Add a small delay to ensure auth state is fully updated
-        await new Promise(resolve => setTimeout(resolve, 200));
-        
-        // Navigate to home
-        navigate('/', { replace: true });
-      } catch (err: any) {
+        await new Promise((resolve) => setTimeout(resolve, 200));
+
+        // Refresh user data
+        await checkUser();
+
+        // Convert UI selection to backend role format for navigation
+        const backendRole =
+          signupas === "Service Provider" ? "provider" : "client";
+
+        // Use our helper function to navigate based on role
+        navigateBasedOnRole(backendRole);
+      } catch (err: unknown) {
         // Profile creation error
-        setError(err.response?.data?.message || 'Failed to create profile. Please try again.');
+        const errorMessage =
+          err instanceof Error
+            ? err.message
+            : typeof err === "object" && err && "response" in err
+            ? err.response &&
+              typeof err.response === "object" &&
+              "data" in err.response &&
+              typeof err.response.data === "object" &&
+              err.response.data &&
+              "message" in err.response.data
+              ? String(err.response.data.message)
+              : "Failed to create profile. Please try again."
+            : "Failed to create profile. Please try again.";
+
+        setError(errorMessage);
       }
       setLoading(false);
       return;
@@ -127,7 +168,9 @@ export function SignUpPage() {
     });
 
     if (result.success) {
-      navigate("/");
+      // result.userData.role should already be in backend format ("provider" or "client")
+      // from the API response, so we pass it directly to the navigation helper
+      navigateBasedOnRole(result.userData?.role);
     } else {
       setError(result.message);
     }
@@ -151,8 +194,7 @@ export function SignUpPage() {
           backgroundSize: "cover",
           backgroundPosition: "center",
           backgroundRepeat: "no-repeat",
-        }}
-      >
+        }}>
         {/* Overlay for better readability */}
         <div className="absolute inset-0 bg-black/40"></div>
       </div>
@@ -166,8 +208,7 @@ export function SignUpPage() {
           <Button
             variant="ghost"
             onClick={() => navigate("/")}
-            className="mb-4 text-white hover:text-gray-200 hover:bg-white/10"
-          >
+            className="mb-4 text-white hover:text-gray-200 hover:bg-white/10">
             <ArrowLeft className="h-4 w-4 mr-2" />
             Back to Home
           </Button>
@@ -176,16 +217,17 @@ export function SignUpPage() {
         <Card className="shadow-xl bg-white/95 backdrop-blur-sm">
           <CardHeader className="space-y-1 text-center">
             <CardTitle className="text-2xl font-bold">
-              {isProfileCompletion ? 'Complete Your Profile' : 'Create Account'}
+              {isProfileCompletion ? "Complete Your Profile" : "Create Account"}
             </CardTitle>
             <CardDescription>
-              {isProfileCompletion 
-                ? 'Please provide your address information to complete your HandsOff account'
-                : 'Join HandsOff and get access to trusted handyman and cleaning services'}
+              {isProfileCompletion
+                ? "Please provide your address information to complete your HandsOff account"
+                : "Join HandsOff and get access to trusted handyman and cleaning services"}
             </CardDescription>
             {isProfileCompletion && oauthData?.email && (
               <p className="text-sm text-gray-600 mt-2">
-                Signed in as: <span className="font-medium">{oauthData.email}</span>
+                Signed in as:{" "}
+                <span className="font-medium">{oauthData.email}</span>
               </p>
             )}
           </CardHeader>
@@ -198,9 +240,9 @@ export function SignUpPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="firstName">First Name</Label>
-                  <Input 
-                    id="firstName" 
-                    placeholder="John" 
+                  <Input
+                    id="firstName"
+                    placeholder="John"
                     className="h-12"
                     value={firstName}
                     onChange={(e) => setFirstName(e.target.value)}
@@ -209,9 +251,9 @@ export function SignUpPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="lastName">Last Name</Label>
-                  <Input 
-                    id="lastName" 
-                    placeholder="Doe" 
+                  <Input
+                    id="lastName"
+                    placeholder="Doe"
                     className="h-12"
                     value={lastName}
                     onChange={(e) => setLastName(e.target.value)}
@@ -250,9 +292,9 @@ export function SignUpPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="city">City</Label>
-                  <Input 
-                    id="city" 
-                    placeholder="Los Angeles" 
+                  <Input
+                    id="city"
+                    placeholder="Los Angeles"
                     className="h-12"
                     value={city}
                     onChange={(e) => setCity(e.target.value)}
@@ -261,9 +303,9 @@ export function SignUpPage() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="state">State</Label>
-                  <Input 
-                    id="state" 
-                    placeholder="CA" 
+                  <Input
+                    id="state"
+                    placeholder="CA"
                     className="h-12"
                     value={state}
                     onChange={(e) => setState(e.target.value)}
@@ -303,8 +345,7 @@ export function SignUpPage() {
                         variant="ghost"
                         size="sm"
                         className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                        onClick={() => setShowPassword(!showPassword)}
-                      >
+                        onClick={() => setShowPassword(!showPassword)}>
                         {showPassword ? (
                           <EyeOff className="h-4 w-4 text-gray-400" />
                         ) : (
@@ -331,8 +372,9 @@ export function SignUpPage() {
                         variant="ghost"
                         size="sm"
                         className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      >
+                        onClick={() =>
+                          setShowConfirmPassword(!showConfirmPassword)
+                        }>
                         {showConfirmPassword ? (
                           <EyeOff className="h-4 w-4 text-gray-400" />
                         ) : (
@@ -352,11 +394,11 @@ export function SignUpPage() {
                       type="button"
                       variant="outline"
                       className="w-full h-12 justify-between text-left font-normal"
-                      id="signupas"
-                    >
+                      id="signupas">
                       <span
-                        className={signupas ? "text-gray-900" : "text-gray-500"}
-                      >
+                        className={
+                          signupas ? "text-gray-900" : "text-gray-500"
+                        }>
                         {signupas || "Select account type"}
                       </span>
                       <svg
@@ -367,8 +409,7 @@ export function SignUpPage() {
                         stroke="currentColor"
                         strokeWidth="2"
                         strokeLinecap="round"
-                        strokeLinejoin="round"
-                      >
+                        strokeLinejoin="round">
                         <polyline points="6,9 12,15 18,9" />
                       </svg>
                     </Button>
@@ -376,14 +417,12 @@ export function SignUpPage() {
                   <DropdownMenuContent className="w-full">
                     <DropdownMenuItem
                       className="h-10"
-                      onClick={() => setSignupas("Customer")}
-                    >
+                      onClick={() => setSignupas("Customer")}>
                       <span>Customer</span>
                     </DropdownMenuItem>
                     <DropdownMenuItem
                       className="h-10"
-                      onClick={() => setSignupas("Service Provider")}
-                    >
+                      onClick={() => setSignupas("Service Provider")}>
                       <span>Service Provider</span>
                     </DropdownMenuItem>
                   </DropdownMenuContent>
@@ -399,11 +438,9 @@ export function SignUpPage() {
                         type="button"
                         variant="outline"
                         className="w-full h-12 justify-between text-left font-normal"
-                        id="skill"
-                      >
+                        id="skill">
                         <span
-                          className={skill ? "text-gray-900" : "text-gray-500"}
-                        >
+                          className={skill ? "text-gray-900" : "text-gray-500"}>
                           {skill || "Select skill"}
                         </span>
                         <svg
@@ -414,8 +451,7 @@ export function SignUpPage() {
                           stroke="currentColor"
                           strokeWidth="2"
                           strokeLinecap="round"
-                          strokeLinejoin="round"
-                        >
+                          strokeLinejoin="round">
                           <polyline points="6,9 12,15 18,9" />
                         </svg>
                       </Button>
@@ -423,14 +459,12 @@ export function SignUpPage() {
                     <DropdownMenuContent className="w-full">
                       <DropdownMenuItem
                         className="h-10"
-                        onClick={() => setSkill("Cleaning")}
-                      >
+                        onClick={() => setSkill("Cleaning")}>
                         <span>Cleaning</span>
                       </DropdownMenuItem>
                       <DropdownMenuItem
                         className="h-10"
-                        onClick={() => setSkill("Maintenance")}
-                      >
+                        onClick={() => setSkill("Maintenance")}>
                         <span>Maintenance</span>
                       </DropdownMenuItem>
                     </DropdownMenuContent>
@@ -439,35 +473,41 @@ export function SignUpPage() {
               )}
 
               <div className="flex items-center space-x-2">
-                <input type="checkbox" id="terms" className="rounded" required />
+                <input
+                  type="checkbox"
+                  id="terms"
+                  className="rounded"
+                  required
+                />
                 <Label htmlFor="terms" className="text-sm text-gray-600">
                   I agree to the{" "}
                   <Button
                     type="button"
                     variant="link"
-                    className="text-blue-600 p-0 h-auto text-sm"
-                  >
+                    className="text-blue-600 p-0 h-auto text-sm">
                     Terms of Service
                   </Button>{" "}
                   and{" "}
                   <Button
                     type="button"
                     variant="link"
-                    className="text-blue-600 p-0 h-auto text-sm"
-                  >
+                    className="text-blue-600 p-0 h-auto text-sm">
                     Privacy Policy
                   </Button>
                 </Label>
               </div>
 
-              <Button 
+              <Button
                 type="submit"
                 disabled={loading}
-                className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-lg"
-              >
-                {loading 
-                  ? (isProfileCompletion ? "Completing Profile..." : "Creating Account...")
-                  : (isProfileCompletion ? "Complete Profile" : "Create Account")}
+                className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-lg">
+                {loading
+                  ? isProfileCompletion
+                    ? "Completing Profile..."
+                    : "Creating Account..."
+                  : isProfileCompletion
+                  ? "Complete Profile"
+                  : "Create Account"}
               </Button>
             </form>
 
@@ -488,8 +528,7 @@ export function SignUpPage() {
                   type="button"
                   variant="outline"
                   onClick={handleGoogleSignUp}
-                  className="w-full h-12"
-                >
+                  className="w-full h-12">
                   <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                     <path
                       d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -519,8 +558,7 @@ export function SignUpPage() {
                 type="button"
                 variant="link"
                 className="text-blue-600 p-0 h-auto font-normal"
-                onClick={() => navigate("/sign-in")}
-              >
+                onClick={() => navigate("/sign-in")}>
                 Sign in here
               </Button>
             </div>

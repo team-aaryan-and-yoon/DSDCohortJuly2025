@@ -1,6 +1,6 @@
-import React, { createContext, useContext, useEffect, useState } from 'react';
-import { supabase } from '@/utils/supabaseClient';
-import { apiClient } from '@/utils/apiClient';
+import React, { createContext, useContext, useEffect, useState } from "react";
+import { supabase } from "@/utils/supabaseClient";
+import { apiClient } from "@/utils/apiClient";
 
 interface User {
   id: string;
@@ -15,11 +15,18 @@ interface User {
 interface AuthContextType {
   user: User | null;
   loading: boolean;
-  signIn: (email: string, password: string) => Promise<{ success: boolean; message: string }>;
-  signUp: (data: RegisterData) => Promise<{ success: boolean; message: string }>;
+  signIn: (
+    email: string,
+    password: string
+  ) => Promise<{ success: boolean; message: string; userData?: User }>;
+  signUp: (
+    data: RegisterData
+  ) => Promise<{ success: boolean; message: string; userData?: User }>;
   signInWithGoogle: () => Promise<{ success: boolean; message: string }>;
   signOut: () => Promise<void>;
-  forgotPassword: (email: string) => Promise<{ success: boolean; message: string }>;
+  forgotPassword: (
+    email: string
+  ) => Promise<{ success: boolean; message: string }>;
   checkUser: () => Promise<void>;
 }
 
@@ -36,7 +43,9 @@ interface RegisterData {
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
-export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
+export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({
+  children,
+}) => {
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
 
@@ -48,8 +57,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const checkUser = async () => {
     try {
       // Check Supabase session
-      const { data: { user }, error } = await supabase.auth.getUser();
-      
+      const {
+        data: { user },
+        error,
+      } = await supabase.auth.getUser();
+
       if (error || !user) {
         setUser(null);
         setLoading(false);
@@ -58,7 +70,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
       let profileData = null;
       try {
-        const response = await apiClient.get('/profiles/');
+        const response = await apiClient.get("/profiles/");
         // 204 means authenticated but no profile exists yet
         if (response.status !== 204) {
           profileData = response.data;
@@ -72,10 +84,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const userData = {
         id: user.id,
         email: user.email!,
-        first_name: profileData?.first_name || user.user_metadata?.first_name || '',
-        last_name: profileData?.last_name || user.user_metadata?.last_name || '',
-        user_num: profileData?.user_num || '',
-        role: profileData?.role || 'client',
+        first_name:
+          profileData?.first_name || user.user_metadata?.first_name || "",
+        last_name:
+          profileData?.last_name || user.user_metadata?.last_name || "",
+        user_num: profileData?.user_num || "",
+        role: profileData?.role || "client",
       };
 
       setUser(userData);
@@ -90,22 +104,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signIn = async (email: string, password: string) => {
     try {
       // 1. Sign in with Supabase directly
-      const { data: authData, error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password
-      });
+      const { data: authData, error: authError } =
+        await supabase.auth.signInWithPassword({
+          email,
+          password,
+        });
 
       if (authError) {
         return { success: false, message: authError.message };
       }
 
       if (!authData.user) {
-        return { success: false, message: 'Login failed' };
+        return { success: false, message: "Login failed" };
       }
 
       let profileData = null;
       try {
-        const response = await apiClient.get('/profiles/');
+        const response = await apiClient.get("/profiles/");
         // 204 means authenticated but no profile exists yet
         if (response.status !== 204) {
           profileData = response.data;
@@ -118,17 +133,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const userData = {
         id: authData.user.id,
         email: authData.user.email!,
-        first_name: profileData?.first_name || authData.user.user_metadata?.first_name || '',
-        last_name: profileData?.last_name || authData.user.user_metadata?.last_name || '',
-        user_num: profileData?.user_num || '',
-        role: profileData?.role || 'client',
+        first_name:
+          profileData?.first_name ||
+          authData.user.user_metadata?.first_name ||
+          "",
+        last_name:
+          profileData?.last_name ||
+          authData.user.user_metadata?.last_name ||
+          "",
+        user_num: profileData?.user_num || "",
+        role: profileData?.role || "client",
       };
 
       setUser(userData);
-      return { success: true, message: 'Login successful' };
-
+      return { success: true, message: "Login successful", userData };
     } catch (error: any) {
-      return { success: false, message: error.message || 'Login failed' };
+      return { success: false, message: error.message || "Login failed" };
     }
   };
 
@@ -142,8 +162,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           data: {
             first_name: data.first_name,
             last_name: data.last_name,
-          }
-        }
+          },
+        },
       });
 
       if (authError) {
@@ -151,12 +171,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
 
       if (!authData.user) {
-        return { success: false, message: 'Failed to create user' };
+        return { success: false, message: "Failed to create user" };
       }
 
       // 2. Create the profile immediately
       try {
-        const profileResponse = await apiClient.post('/profiles/', {
+        const profileResponse = await apiClient.post("/profiles/", {
           email: authData.user.email,
           first_name: data.first_name,
           last_name: data.last_name,
@@ -164,23 +184,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           city: data.city,
           state: data.state,
           zip_code: data.zip_code,
-          role: 'client',
+          role: "client",
         });
-        
+
         // Profile created successfully
-        
+
         // Set user data with profile
         const userData = {
           id: authData.user.id,
           email: authData.user.email!,
-          first_name: data.first_name || '',
-          last_name: data.last_name || '',
-          user_num: profileResponse.data.user_num || '',
-          role: 'client',
+          first_name: data.first_name || "",
+          last_name: data.last_name || "",
+          user_num: profileResponse.data.user_num || "",
+          role: "client",
         };
 
         setUser(userData);
-        return { success: true, message: 'Registration successful' };
+        return { success: true, message: "Registration successful", userData };
       } catch (profileError: any) {
         // Handle profile creation errors silently
         // If profile already exists (status 200), that's ok
@@ -188,30 +208,36 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
           const userData = {
             id: authData.user.id,
             email: authData.user.email!,
-            first_name: data.first_name || '',
-            last_name: data.last_name || '',
-            user_num: profileError.response.data.user_num || '',
-            role: 'client',
+            first_name: data.first_name || "",
+            last_name: data.last_name || "",
+            user_num: profileError.response.data.user_num || "",
+            role: "client",
           };
           setUser(userData);
-          return { success: true, message: 'Registration successful' };
+          return {
+            success: true,
+            message: "Registration successful",
+            userData,
+          };
         }
-        
+
         // Other errors - still set user but warn about profile
         const userData = {
           id: authData.user.id,
           email: authData.user.email!,
-          first_name: data.first_name || '',
-          last_name: data.last_name || '',
-          user_num: '',
-          role: 'client',
+          first_name: data.first_name || "",
+          last_name: data.last_name || "",
+          user_num: "",
+          role: "client",
         };
         setUser(userData);
-        return { success: true, message: 'Registration successful' };
+        return { success: true, message: "Registration successful", userData };
       }
-
     } catch (error: any) {
-      return { success: false, message: error.message || 'Registration failed' };
+      return {
+        success: false,
+        message: error.message || "Registration failed",
+      };
     }
   };
 
@@ -219,17 +245,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     try {
       // Use Supabase Google OAuth
       const { data, error } = await supabase.auth.signInWithOAuth({
-        provider: 'google',
+        provider: "google",
         options: {
           redirectTo: `${window.location.origin}/auth/callback`,
-        }
+        },
       });
-      
+
       if (error) throw error;
-      
-      return { success: true, message: 'Redirecting to Google...' };
+
+      return { success: true, message: "Redirecting to Google..." };
     } catch (error: any) {
-      return { success: false, message: error.message || 'Google login failed' };
+      return {
+        success: false,
+        message: error.message || "Google login failed",
+      };
     }
   };
 
@@ -245,16 +274,22 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const forgotPassword = async (email: string) => {
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
-        redirectTo: `${window.location.origin}/reset-password`
+        redirectTo: `${window.location.origin}/reset-password`,
       });
 
       if (error) {
         return { success: false, message: error.message };
       }
 
-      return { success: true, message: 'Password reset email sent! Check your inbox.' };
+      return {
+        success: true,
+        message: "Password reset email sent! Check your inbox.",
+      };
     } catch (error: any) {
-      return { success: false, message: error.message || 'Password reset failed' };
+      return {
+        success: false,
+        message: error.message || "Password reset failed",
+      };
     }
   };
 
@@ -275,7 +310,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 export const useAuth = () => {
   const context = useContext(AuthContext);
   if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
+    throw new Error("useAuth must be used within an AuthProvider");
   }
   return context;
 };

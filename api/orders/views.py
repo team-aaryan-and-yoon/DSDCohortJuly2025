@@ -4,7 +4,8 @@ from .serializers import OrderSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.core.mail import send_mail
 from decouple import config
-from supabase import create_client, Client
+from supabase import create_client
+from utils.constants import get_display_status
 
 
 # url: str = config("SUPABASE_URL")
@@ -20,43 +21,70 @@ class OrderViewSet(ModelViewSet):
     lookup_field = "order_num"
 
     def update(self, request, *args, **kwargs):
-        # get original status
+        # Get original order for later comparison
         original_order = self.get_object()
         original_status = original_order.status
 
-        # validate the data
+        # Process the request through the serializer
         response = super().update(request, *args, **kwargs)
 
+        # If this was a status update and it was successful, send an email notification
         if "status" in request.data and response.status_code == 200:
-            new_status = request.data["status"]
+            # Get the updated order
+            updated_order = self.get_object()
 
-            if new_status != original_status:
-                updated_order = self.get_object()
+            # Only send email if status actually changed
+            if updated_order.status != original_status:
+                self._send_status_update_email(updated_order)
 
-                # initialize supabase client and get email
-                try:
-                    url: str = config("SUPABASE_URL")
-                    key: str = config("SUPABASE_SERVICE_KEY")
-                    supabase: Client = create_client(url, key)
+        return response
 
-                    client_supabase_id = str(updated_order.client.supabase_id.id)
-                    user_response = supabase.auth.admin.get_user_by_id(
-                        client_supabase_id
-                    )
-                    client_email = user_response.user.email
-                except Exception as e:
-                    print(f"Could not get user email from Supabase, Errror: {e}")
-                    return response
-                try:
-                    send_mail(
-                        subject=f"Update on your order: {original_order.order_num}",
-                        message=f"Hello, \n\nThe status of your service {original_order.service_type} has been updated to: {updated_order.get_status_display()} .\n\nThank you!",
-                        from_email=config("EMAIL_HOST_USER"),
-                        recipient_list=[client_email],
-                        fail_silently=False,
-                    )
-                except Exception as e:
-                    print(f"Failed to send status update email. Error: {e}")
+    def _send_status_update_email(self, order):
+        """Helper method to send status update emails"""
+        try:
+            # Get client email from Supabase
+            url = config("SUPABASE_URL")
+            key = config("SUPABASE_SERVICE_KEY")
+            supabase = create_client(url, key)
+
+            if not order.client or not order.client.supabase_id:
+                return
+
+            client_supabase_id = str(order.client.supabase_id.id)
+            user_response = supabase.auth.admin.get_user_by_id(client_supabase_id)
+            client_email = user_response.user.email
+
+            # Get display status for the email
+            status_display = get_display_status(order.status)
+
+            # Send the email
+            send_mail(
+                subject=f"Update on your order: {order.order_num}",
+                message=f"Hello,\n\nThe status of your service {order.service_type} has been updated to: {status_display}.\n\nThank you!",
+                from_email=config("EMAIL_HOST_USER"),
+                recipient_list=[client_email],
+                fail_silently=False,
+            )
+        except Exception:
+            # Don't let email failures affect the API response
+            pass
+
+    def partial_update(self, request, *args, **kwargs):
+        # Get original order for later comparison
+        original_order = self.get_object()
+        original_status = original_order.status
+
+        # Process the request through the serializer
+        response = super().partial_update(request, *args, **kwargs)
+
+        # If this was a status update and it was successful, send an email notification
+        if "status" in request.data and response.status_code == 200:
+            # Get the updated order
+            updated_order = self.get_object()
+
+            # Only send email if status actually changed
+            if updated_order.status != original_status:
+                self._send_status_update_email(updated_order)
 
         return response
 
