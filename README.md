@@ -31,7 +31,7 @@ git clone https://github.com/team-aaryan-and-yoon/DSDCohortJuly2025.git
 cd DSDCohortJuly2025
 ```
 
-## 2. Orepare your environment
+## 2. Prepare your environment
 
 - Before bringing up the containers, make sure you have docker, docker-compose, and python installed in your local environmnet.
 - You will also need set .env files for the backend (/api) and the frontend (/web) directories.
