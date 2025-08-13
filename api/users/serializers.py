@@ -20,8 +20,9 @@ class ProfileSerializer(serializers.ModelSerializer):
             "state",
             "zip_code",
             "email",
+            "supabase_id"
         ]
-        read_only_fields = ["user_num", "email"]
+        read_only_fields = ["user_num", "email", "supabase_id"]
 
     def validate(self, data):
         role = data.get("role", getattr(self.instance, "role", None))
@@ -51,3 +52,29 @@ class PublicProfileSerializer(serializers.ModelSerializer):
             "provider_type",
         ]
         read_only_fields = fields
+
+
+from drf_stripe.stripe_api.customers import get_or_create_stripe_user
+from drf_stripe.stripe_api.checkout import stripe_api_create_checkout_session
+from drf_stripe.serializers import CheckoutRequestSerializer
+from rest_framework.exceptions import ValidationError
+from stripe.error import StripeError
+
+
+class CustomCheckoutRequestSerializer(CheckoutRequestSerializer):
+    """Handle creation of a custom checkout session where parameters are customized."""
+
+    def validate(self, attrs):
+        stripe_user = get_or_create_stripe_user(user_id=self.context['request'].user.id)
+        try:
+            checkout_session = stripe_api_create_checkout_session(
+                customer_id=stripe_user.customer_id,
+                line_items=[
+                    {"price_id": "stripe_price_id", "quantity": 1}
+                ],
+                payment_method_types=["card", "alipay"],
+                checkout_mode="payment")
+            attrs['session_id'] = checkout_session['id']
+        except StripeError as e:
+            raise ValidationError(e.error)
+        return attrs

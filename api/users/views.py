@@ -1,62 +1,103 @@
+import logging
+
+from django.db import transaction
 from rest_framework.viewsets import ModelViewSet
 from rest_framework.response import Response
 from rest_framework.permissions import IsAuthenticated
+from rest_framework.exceptions import NotFound
+from django.contrib.auth.models import AbstractBaseUser
+
 from .models import Profile, SupaUser
 from .serializers import ProfileSerializer
 from .permissions import IsProfileOwner
+
+log = logging.getLogger(__name__)
 
 
 class ProfileViewSet(ModelViewSet):
     serializer_class = ProfileSerializer
     permission_classes = [IsAuthenticated, IsProfileOwner]
 
+    def _get_supa(self):
+        supa = getattr(self.request, "supa_user", None)
+        if supa:
+            return supa
+
+        if isinstance(self.request.user, AbstractBaseUser):
+            u = getattr(self.request.user, "username", "")
+            if u.startswith("sb_"):
+                return SupaUser.objects.get(id=u[3:])
+        raise NotFound("No Supabase user on request")
+
     def get_queryset(self):
-        # Users can only see their own profile
         if not self.request.user.is_authenticated:
             return Profile.objects.none()
-        
-        # Filter to only the authenticated user's profile
-        return Profile.objects.filter(supabase_id=self.request.user)
-    
-    def create(self, request):
-        # Check if profile already exists for this user
-        try:
-            existing_profile = Profile.objects.get(supabase_id__id=request.user.id)
-            # Profile already exists, return it
-            serializer = self.get_serializer(existing_profile)
-            return Response(serializer.data, status=200)
-        except Profile.DoesNotExist:
-            pass  # Continue with creation
-        
+
+        supa = getattr(self.request, "supa_user", None)
+        if supa:
+            qs = Profile.objects.filter(supabase_id_id=supa.id)
+            log.debug("profiles.get_queryset supa=%s count=%s", supa.id, qs.count())
+            return qs
+
+        u = getattr(self.request.user, "username", "")
+        if u.startswith("sb_"):
+            qs = Profile.objects.filter(supabase_id_id=u[3:])
+            log.debug("profiles.get_queryset fallback username=%s count=%s", u, qs.count())
+            return qs
+
+        return Profile.objects.none()
+
+    def list(self, request, *args, **kwargs):
+        qs = self.filter_queryset(self.get_queryset())
+        if qs.exists():
+            return Response(self.get_serializer(qs.first()).data, status=200)
+        return Response(None, status=204)
+
+    @transaction.atomic
+    def create(self, request, *args, **kwargs):
+        supa = self._get_supa()
+
+        existing = Profile.objects.filter(supabase_id=supa).first()
+        if existing:
+            return Response(self.get_serializer(existing).data, status=200)
+
         data = request.data.copy()
-        
-        # Ensure the supabase_id matches the authenticated user
-        data['supabase_id'] = str(request.user.id)
-        
-        # Get or create the SupaUser
-        email = data.get('email', getattr(request.user, 'email', ''))
-        supa_user, created = SupaUser.objects.get_or_create(
-            id=request.user.id,
-            defaults={'email': email}
-        )
-            
-        serializer = self.get_serializer(data=data)
-        serializer.is_valid(raise_exception=True)
-        
-        # Save with the authenticated user's SupaUser instance
-        profile = serializer.save(supabase_id=supa_user)
-            
-        return Response(serializer.data, status=201)
-    
-    def list(self, request):
-        queryset = self.filter_queryset(self.get_queryset())
-        
-        # For authenticated users, return their profile if it exists
-        if queryset.exists():
-            profile = queryset.first()
-            serializer = self.get_serializer(profile)
-            return Response(serializer.data)
-        else:
-            # Return empty response with 204 No Content for missing profile
-            # This indicates success but no profile exists yet
-            return Response(None, status=204)
+        data.pop("supabase_id", None)
+
+        ser = self.get_serializer(data=data)
+        ser.is_valid(raise_exception=True)
+        profile = ser.save(supabase_id=supa)
+        return Response(self.get_serializer(profile).data, status=201)
+
+    def retrieve(self, request, *args, **kwargs):
+        obj = self.get_queryset().first()
+        if not obj:
+            raise NotFound("Profile not found")
+        self.check_object_permissions(request, obj)
+        return Response(self.get_serializer(obj).data)
+
+    @transaction.atomic
+    def update(self, request, *args, **kwargs):
+        obj = self.get_queryset().first()
+        if not obj:
+            raise NotFound("Profile not found")
+        self.check_object_permissions(request, obj)
+
+        data = request.data.copy()
+        data.pop("supabase_id", None)
+
+        partial = kwargs.pop("partial", False)
+        ser = self.get_serializer(obj, data=data, partial=partial)
+        ser.is_valid(raise_exception=True)
+        ser.save()
+        return Response(ser.data)
+
+    partial_update = update
+
+    def destroy(self, request, *args, **kwargs):
+        obj = self.get_queryset().first()
+        if not obj:
+            raise NotFound("Profile not found")
+        self.check_object_permissions(request, obj)
+        obj.delete()
+        return Response(status=204)
