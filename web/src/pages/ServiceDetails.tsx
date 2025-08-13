@@ -16,6 +16,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import type { EmblaCarouselType } from "embla-carousel";
 import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import { useCart } from "@/contexts/CartContext";
+import apiClient from "@/utils/apiClient";
 
 const VALID = ["cleaning", "maintenance"] as const;
 type RouteType = (typeof VALID)[number];
@@ -38,15 +39,13 @@ const ServiceDetailsPage = () => {
   };
 
   useEffect(() => {
-    fetch('/api/services/')
+    apiClient.get('services/')
       .then(response => {
-        if (!response.ok) {
-          throw new Error("Network response was not ok");
-        }
-        return response.json();
+        setAllServices(response.data);
       })
-      .then(data => setAllServices(data))
-      .catch(error => console.error("Failed to fetch services:", error));
+      .catch(error => {
+        console.error("Failed to fetch services:", error);
+      });
   }, []); //runs once on mount
 
   // Redirect invalid types
