@@ -2,6 +2,7 @@ from rest_framework.viewsets import ModelViewSet
 from .models import Order
 from .serializers import OrderSerializer
 from rest_framework.permissions import IsAuthenticated
+from .permissions import IsProviderOrAdmin
 from django.core.mail import send_mail
 from decouple import config
 from supabase import create_client, Client
@@ -34,7 +35,7 @@ def get_services(request):
 class OrderViewSet(ModelViewSet):
     queryset = Order.objects.all().select_related("client", "provider")
     serializer_class = OrderSerializer
-    permission_classes = [IsAuthenticated]
+    permission_classes = [IsProviderOrAdmin]
 
     lookup_field = "order_num"
 
