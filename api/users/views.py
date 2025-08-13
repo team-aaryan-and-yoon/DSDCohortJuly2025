@@ -11,7 +11,7 @@ from .models import Profile, SupaUser
 from .serializers import ProfileSerializer
 from .permissions import IsProfileOwner
 
-log = logging.getLogger(__name__)
+logger = logging.getLogger(__name__)
 
 
 class ProfileViewSet(ModelViewSet):
@@ -36,13 +36,13 @@ class ProfileViewSet(ModelViewSet):
         supa = getattr(self.request, "supa_user", None)
         if supa:
             qs = Profile.objects.filter(supabase_id_id=supa.id)
-            log.debug("profiles.get_queryset supa=%s count=%s", supa.id, qs.count())
+            logger.debug("profiles.get_queryset supa=%s count=%s", supa.id, qs.count())
             return qs
 
         u = getattr(self.request.user, "username", "")
         if u.startswith("sb_"):
             qs = Profile.objects.filter(supabase_id_id=u[3:])
-            log.debug("profiles.get_queryset fallback username=%s count=%s", u, qs.count())
+            logger.debug("profiles.get_queryset fallback username=%s count=%s", u, qs.count())
             return qs
 
         return Profile.objects.none()
