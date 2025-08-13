@@ -16,6 +16,10 @@ User = get_user_model()
 
 
 class SupabaseAuthentication(authentication.BaseAuthentication):
+    """
+    Custom authentication class that validates Supabase JWT tokens.
+    Extracts the user ID from the token and attaches the profile to the request.
+    """
     def authenticate(self, request):
         auth_header = authentication.get_authorization_header(request).decode("utf-8")
         if not auth_header or not auth_header.startswith("Bearer "):
@@ -85,4 +89,8 @@ class SupabaseAuthentication(authentication.BaseAuthentication):
         return (django_user, None)
 
     def authenticate_header(self, request):
+        """
+        Return a string to be used as the value of the `WWW-Authenticate`
+        header in a `401 Unauthenticated` response.
+        """
         return "Bearer"

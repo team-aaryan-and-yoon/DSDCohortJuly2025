@@ -1,3 +1,9 @@
+from drf_stripe.stripe_api.customers import get_or_create_stripe_user
+from drf_stripe.stripe_api.checkout import stripe_api_create_checkout_session
+from drf_stripe.serializers import CheckoutRequestSerializer
+from rest_framework.exceptions import ValidationError
+from stripe.error import StripeError
+
 from .models import Profile
 from rest_framework import serializers
 from utils.constants import Role
@@ -54,16 +60,8 @@ class PublicProfileSerializer(serializers.ModelSerializer):
         read_only_fields = fields
 
 
-from drf_stripe.stripe_api.customers import get_or_create_stripe_user
-from drf_stripe.stripe_api.checkout import stripe_api_create_checkout_session
-from drf_stripe.serializers import CheckoutRequestSerializer
-from rest_framework.exceptions import ValidationError
-from stripe.error import StripeError
-
-
 class CustomCheckoutRequestSerializer(CheckoutRequestSerializer):
     """Handle creation of a custom checkout session where parameters are customized."""
-
     def validate(self, attrs):
         stripe_user = get_or_create_stripe_user(user_id=self.context['request'].user.id)
         try:
