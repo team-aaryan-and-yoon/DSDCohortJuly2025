@@ -22,23 +22,16 @@ class IsProfileOwner(permissions.BasePermission):
     """
     Permission that only allows users to access their own profile.
     """
-    
+
     def has_permission(self, request, view):
-        # Must be authenticated
         if not request.user or not request.user.is_authenticated:
             return False
-            
-        # For list view, we'll filter in the viewset
-        if view.action == 'list':
+
+        if view.action in ("list", "create"):
             return True
-            
-        # For create, always allow authenticated users to create their own profile
-        if view.action == 'create':
-            # The viewset will ensure they can only create their own profile
-            return True
-            
+
         return True
-    
+
     def has_object_permission(self, request, view, obj):
-        # Users can only access their own profile
-        return obj.supabase_id == request.user
+        supa = getattr(request, "supa_user", None)
+        return bool(supa and obj.supabase_id_id == supa.id)
