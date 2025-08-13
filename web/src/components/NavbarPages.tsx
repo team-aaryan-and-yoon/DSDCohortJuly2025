@@ -8,8 +8,6 @@ import type { Link } from "@/Types";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link as RouterLink } from "react-router-dom";
 
-
-
 interface NavbarProps {
   links: Link[];
 }
@@ -24,12 +22,19 @@ interface NavbarProps {
  * @returns {JSX.Element} - A rendered navigation menu with the provided links and a login/logout item based on authentication status.
  */
 const NavbarPages = ({ links }: NavbarProps) => {
-  const { user, signOut } = useAuth();
+  const { user } = useAuth();
 
-  // Determine the correct portal URL - for now just go to customer portal
+  // Determine the correct portal URL based on user role
   const getPortalUrl = () => {
-    if (!user) return '/sign-in';
-    return '/customer-portal';
+    if (!user) return "/sign-in";
+
+    // Check user role to determine which portal to show
+    const role = user.role.toLowerCase();
+    if (role === "provider") {
+      return "/provider-portal";
+    } else {
+      return "/customer-portal";
+    }
   };
 
   return (
@@ -39,15 +44,17 @@ const NavbarPages = ({ links }: NavbarProps) => {
         {links.map((link, key) => {
           // Handle special routing logic
           let linkUrl = link.url;
-          if (link.url === '/portal') {
+          if (link.url === "/portal") {
             linkUrl = getPortalUrl();
-          } else if (link.url === '/home') {
-            linkUrl = '/';
+          } else if (link.url === "/home") {
+            linkUrl = "/";
           }
           return (
             <NavigationMenuItem key={key}>
               <NavigationMenuLink asChild className="hover:bg-white">
-                <RouterLink to={linkUrl} className="text-xl text-gray-700 hover:text-blue-600 transition-colors">
+                <RouterLink
+                  to={linkUrl}
+                  className="text-xl text-gray-700 hover:text-blue-600 transition-colors">
                   {link.label}
                 </RouterLink>
               </NavigationMenuLink>

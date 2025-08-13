@@ -4,6 +4,7 @@ import ServiceOrderCard from "@/components/ServiceOrderCard";
 import { mapOrderRequest, mapOrderToView } from "@/utils/mappers";
 import type { Order } from "@/types/order";
 import { useAuth } from "@/contexts/AuthContext";
+import { Navigate } from "react-router-dom";
 
 const CustomerPortalPage = () => {
   const { user: authUser } = useAuth();
@@ -57,6 +58,11 @@ const CustomerPortalPage = () => {
 
   if (loading) return <div>Loading...</div>;
   if (!authUser) return <div>Please log in to view your portal.</div>;
+
+  // If user is a provider, redirect to provider portal
+  if (authUser && authUser.role.toLowerCase() === "provider") {
+    return <Navigate to="/provider-portal" replace />;
+  }
 
   // Filter orders into current, upcoming, and past categories
   const current = orders.filter(

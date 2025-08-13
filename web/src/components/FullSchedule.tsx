@@ -21,7 +21,7 @@ export interface CalendarEvent {
   start: Date;
   end: Date;
   color?: string;
-  description?: string; 
+  description?: string;
 }
 
 interface FullCalendarProps {
@@ -37,20 +37,21 @@ export const FullCalendar: React.FC<FullCalendarProps> = ({
   onDayClick,
   className,
   selectedDate,
-  setSelectedDate
+  setSelectedDate,
 }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
-
 
   const nextMonth = () => setCurrentMonth(addMonths(currentMonth, 1));
   const prevMonth = () => setCurrentMonth(subMonths(currentMonth, 1));
 
   const renderHeader = () => (
     <div className="flex justify-between items-center px-4 py-2 border-b border-gray-300 bg-gradient-to-br from-blue-50 to-indigo-100 text-gray-800 rounded-t-md">
-      <Button variant="ghost"    onClick={prevMonth}>
+      <Button variant="ghost" onClick={prevMonth}>
         <ChevronLeft className="w-5 h-5" />
-      </Button> 
-      <h2 className="text-lg font-semibold">{format(currentMonth, "MMMM yyyy")}</h2>
+      </Button>
+      <h2 className="text-lg font-semibold">
+        {format(currentMonth, "MMMM yyyy")}
+      </h2>
       <Button variant="ghost" onClick={nextMonth}>
         <ChevronRight className="w-5 h-5" />
       </Button>
@@ -82,7 +83,9 @@ export const FullCalendar: React.FC<FullCalendarProps> = ({
       for (let i = 0; i < 7; i++) {
         const cloneDay = day;
         const isInMonth = isSameMonth(cloneDay, monthStart);
-        const isSelected =  selectedDate ? isSameDay(cloneDay, selectedDate) : false;
+        const isSelected = selectedDate
+          ? isSameDay(cloneDay, selectedDate)
+          : false;
 
         const dayEvents = events.filter(
           (event) =>
@@ -94,34 +97,36 @@ export const FullCalendar: React.FC<FullCalendarProps> = ({
           <div
             key={day.toString()}
             className={cn(
-              "p-2 border border-gray-300 h-16 text-sm relative bg-gray-50 transition-colors",
+              "p-1 border border-gray-300 h-14 text-sm relative bg-gray-50 transition-colors",
               isInMonth
                 ? "cursor-pointer hover:bg-gray-100"
                 : "bg-gray-200 text-gray-400 cursor-not-allowed",
-              isSelected && isInMonth && "bg-gray-300 ring-2 ring-gray-500  ring-offset-gray-100 z-10"
+              isSelected &&
+                isInMonth &&
+                "bg-gray-300 ring-2 ring-gray-500  ring-offset-gray-100 z-10"
             )}
             onClick={() => {
               if (!isInMonth) return;
               setSelectedDate(cloneDay);
               onDayClick?.(cloneDay);
-            }}
-          >
-            <div className="absolute top-1 right-1 text-xs text-gray-500">
+            }}>
+            <div className="absolute top-0.5 right-1 text-xs text-gray-500">
               {format(day, "d")}
             </div>
-            <div className="mt-5 space-y-1 overflow-hidden">
+            <div className="mt-3 space-y-1 overflow-hidden">
               {dayEvents.slice(0, 1).map((event) => (
                 <div
                   key={event.id}
-                  className="truncate rounded px-1 text-xs text-white"
+                  className="truncate rounded px-1 text-xs text-white w-full"
                   style={{ backgroundColor: event.color || "#6b7280" }}
-                  title={event.title}
-                >
+                  title={`${event.title}${
+                    event.description ? ` - ${event.description}` : ""
+                  }`}>
                   {event.title}
                 </div>
               ))}
-              {dayEvents.length > 1  && (
-                <div className="text-[10px] text-gray-400">
+              {dayEvents.length > 1 && (
+                <div className="text-[9px] text-gray-400">
                   +{dayEvents.length - 1} more
                 </div>
               )}
@@ -139,19 +144,20 @@ export const FullCalendar: React.FC<FullCalendarProps> = ({
       );
     }
 
-    return <div className="px-4">{rows}</div>;
+    return <div className="px-4 pb-2">{rows}</div>;
   };
 
   return (
     <div
       className={cn(
-        "bg-gray-100  border-4 border-gray-300 rounded-lg shadow text-gray-800 w-full max-w-5xl mx-auto ",
+        "bg-gray-100 border-4 border-gray-300 rounded-lg shadow text-gray-800 w-full mx-auto flex flex-col",
         className
-      )}
-    >
-      {renderHeader()}
-      {renderDaysOfWeek()}
-      {renderCells()}
+      )}>
+      <div>
+        {renderHeader()}
+        {renderDaysOfWeek()}
+      </div>
+      <div>{renderCells()}</div>
     </div>
   );
 };

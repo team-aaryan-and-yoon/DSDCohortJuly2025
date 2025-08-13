@@ -19,6 +19,29 @@ class StatusChoices(models.TextChoices):
     COMPLETED = "completed", "Completed"
 
 
+# Status mapping utility functions
+def get_display_status(backend_status):
+    """Convert backend status format to frontend display format"""
+    status_mapping = {
+        "scheduled": "Scheduled",
+        "on-the-way": "On the way",
+        "in-progress": "In progress",
+        "completed": "Completed",
+    }
+    return status_mapping.get(backend_status, backend_status)
+
+
+def get_backend_status(frontend_status):
+    """Convert frontend display format to backend status format"""
+    status_mapping = {
+        "Scheduled": "scheduled",
+        "On the way": "on-the-way",
+        "In progress": "in-progress",
+        "Completed": "completed",
+    }
+    return status_mapping.get(frontend_status, frontend_status)
+
+
 class CleaningJobs(models.TextChoices):
     SINGLE_ROOM = "single_room", "Single Room"
     APARTMENT = "apartment", "Apartment"

@@ -29,10 +29,21 @@ export function SignInPage() {
     setLoading(true);
     setError("");
     setSuccess("");
-    
+
     const result = await signIn(email, password);
     if (result.success) {
-      navigate("/customer-portal");
+      // Use userData returned from signIn to determine portal destination
+      const userData = result.userData;
+
+      // Check which portal to navigate to based on user role
+      if (userData && userData.role.toLowerCase() === "provider") {
+        navigate("/provider-portal");
+      } else if (userData && userData.role.toLowerCase() === "client") {
+        navigate("/customer-portal");
+      } else {
+        // Default to home if user role not specified
+        navigate("/");
+      }
     } else {
       setError(result.message);
     }
@@ -56,7 +67,7 @@ export function SignInPage() {
     }
     setError("");
     setSuccess("");
-    
+
     const result = await forgotPassword(email);
     if (result.success) {
       setSuccess("Password reset email sent! Check your inbox.");
@@ -101,8 +112,7 @@ export function SignInPage() {
             <Button
               variant="ghost"
               onClick={() => navigate("/")}
-              className="text-gray-600 hover:text-gray-900"
-            >
+              className="text-gray-600 hover:text-gray-900">
               <ArrowLeft className="h-4 w-4 mr-2" />
               Back to Home
             </Button>
@@ -118,10 +128,14 @@ export function SignInPage() {
             <CardContent className="space-y-4">
               <form onSubmit={handleSubmit} className="space-y-4">
                 {error && (
-                  <div className="text-red-600 text-sm text-center">{error}</div>
+                  <div className="text-red-600 text-sm text-center">
+                    {error}
+                  </div>
                 )}
                 {success && (
-                  <div className="text-green-600 text-sm text-center">{success}</div>
+                  <div className="text-green-600 text-sm text-center">
+                    {success}
+                  </div>
                 )}
                 <div className="space-y-2">
                   <Label htmlFor="email">Email</Label>
@@ -147,46 +161,43 @@ export function SignInPage() {
                       onChange={(e) => setPassword(e.target.value)}
                       required
                     />
+                    <Button
+                      type="button"
+                      variant="ghost"
+                      size="sm"
+                      className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
+                      onClick={() => setShowPassword(!showPassword)}>
+                      {showPassword ? (
+                        <EyeOff className="h-4 w-4 text-gray-400" />
+                      ) : (
+                        <Eye className="h-4 w-4 text-gray-400" />
+                      )}
+                    </Button>
+                  </div>
+                </div>
+
+                <div className="flex items-center justify-between">
+                  <div className="flex items-center space-x-2">
+                    <input type="checkbox" id="remember" className="rounded" />
+                    <Label htmlFor="remember" className="text-sm text-gray-600">
+                      Remember me
+                    </Label>
+                  </div>
                   <Button
                     type="button"
-                    variant="ghost"
-                    size="sm"
-                    className="absolute right-0 top-0 h-full px-3 py-2 hover:bg-transparent"
-                    onClick={() => setShowPassword(!showPassword)}
-                  >
-                    {showPassword ? (
-                      <EyeOff className="h-4 w-4 text-gray-400" />
-                    ) : (
-                      <Eye className="h-4 w-4 text-gray-400" />
-                    )}
+                    variant="link"
+                    className="text-sm text-blue-600 p-0"
+                    onClick={handleForgotPassword}>
+                    Forgot password?
                   </Button>
                 </div>
-              </div>
 
-              <div className="flex items-center justify-between">
-                <div className="flex items-center space-x-2">
-                  <input type="checkbox" id="remember" className="rounded" />
-                  <Label htmlFor="remember" className="text-sm text-gray-600">
-                    Remember me
-                  </Label>
-                </div>
-                <Button 
-                  type="button"
-                  variant="link" 
-                  className="text-sm text-blue-600 p-0"
-                  onClick={handleForgotPassword}
-                >
-                  Forgot password?
+                <Button
+                  type="submit"
+                  disabled={loading}
+                  className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-lg">
+                  {loading ? "Signing In..." : "Sign In"}
                 </Button>
-              </div>
-
-              <Button 
-                type="submit"
-                disabled={loading}
-                className="w-full h-12 bg-blue-600 hover:bg-blue-700 text-lg"
-              >
-                {loading ? "Signing In..." : "Sign In"}
-              </Button>
               </form>
 
               <div className="relative">
@@ -204,8 +215,7 @@ export function SignInPage() {
                 type="button"
                 variant="outline"
                 onClick={handleGoogleLogin}
-                className="w-full h-12"
-              >
+                className="w-full h-12">
                 <svg className="mr-2 h-4 w-4" viewBox="0 0 24 24">
                   <path
                     d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"
@@ -234,8 +244,7 @@ export function SignInPage() {
                   className="text-blue-600 p-0 h-auto font-normal"
                   onClick={() => {
                     navigate("/sign-up");
-                  }}
-                >
+                  }}>
                   Sign up here
                 </Button>
               </div>

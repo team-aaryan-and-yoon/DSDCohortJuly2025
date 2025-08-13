@@ -7,22 +7,33 @@ from utils.constants import (
     ServiceType,
     CleaningJobs,
     MaintenanceJobs,
+    get_display_status,
+    get_backend_status,
 )
 
 
-# MinimalProfileSerializer to avoid sending unnecessary provider data with orders
+# MinimalProfileSerializer to avoid sending unnecessary user data with orders
 class MinimalProfileSerializer(serializers.ModelSerializer):
     class Meta:
         model = Profile
-        fields = ["first_name", "last_name"]
+        fields = [
+            "first_name",
+            "last_name",
+            "street_address",
+            "city",
+            "state",
+            "zip_code",
+        ]
 
 
 class OrderSerializer(serializers.ModelSerializer):
     provider = MinimalProfileSerializer(read_only=True)
+    client = MinimalProfileSerializer(read_only=True)
     price = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
-    status = serializers.SerializerMethodField()
+    status = serializers.CharField()
     service_type = serializers.SerializerMethodField()
+    job = serializers.SerializerMethodField()
 
     @extend_schema_field(serializers.FloatField)
     def get_price(self, obj):
@@ -32,20 +43,59 @@ class OrderSerializer(serializers.ModelSerializer):
     def get_description(self, obj):
         return DESCRIPTIONS.get(obj.job, "No description available.")
 
-    @extend_schema_field(serializers.CharField)
-    def get_status(self, obj):
-        status_mapping = {
-            "scheduled": "Scheduled",
-            "on-the-way": "On the way",
-            "in-progress": "In progress",
-            "completed": "Completed",
-        }
-        return status_mapping.get(obj.status, obj.status)
+    # Override to_representation to convert status to frontend format when sending to client
+    def to_representation(self, instance):
+        ret = super().to_representation(instance)
+
+        # Convert status from backend to frontend format using our utility function
+        ret["status"] = get_display_status(instance.status)
+
+        return ret
+
+    def update(self, instance, validated_data):
+        # Handle status updates explicitly
+        if "status" in validated_data:
+            new_status = validated_data.pop("status")
+
+            # Convert to backend format using our utility function
+            db_status = get_backend_status(new_status)
+
+            from django.db import transaction
+
+            try:
+                with transaction.atomic():
+                    # Update status directly in the database
+                    instance.status = db_status
+                    instance.save(update_fields=["status"])
+
+                    # Refresh from DB to confirm change
+                    instance.refresh_from_db()
+            except Exception:
+                raise
+
+        # Process other fields normally
+        return super().update(instance, validated_data)
 
     @extend_schema_field(serializers.CharField)
     def get_service_type(self, obj):
         service_mapping = {"cleaning": "Cleaning", "maintenance": "Maintenance"}
         return service_mapping.get(obj.service_type, obj.service_type)
+
+    @extend_schema_field(serializers.CharField)
+    def get_job(self, obj):
+        # Create a combined mapping dictionary from both CleaningJobs and MaintenanceJobs choices
+        job_mapping = {}
+
+        # Add cleaning job choices
+        for value, label in CleaningJobs.choices:
+            job_mapping[value] = label
+
+        # Add maintenance job choices
+        for value, label in MaintenanceJobs.choices:
+            job_mapping[value] = label
+
+        # Return the display name from the mapping
+        return job_mapping.get(obj.job, obj.job)
 
     def validate(self, data):
         service = data.get("service_type")
@@ -61,6 +111,25 @@ class OrderSerializer(serializers.ModelSerializer):
                 raise serializers.ValidationError(
                     f"'{job}' is not valid for service '{service}'"
                 )
+
+        # Validate status field if present
+        if "status" in data:
+            status = data.get("status")
+            from utils.constants import StatusChoices
+
+            valid_statuses = [status_value for status_value, _ in StatusChoices.choices]
+
+            # Convert frontend format to backend format if needed
+            db_status = get_backend_status(status)
+            data["status"] = db_status
+
+            # Check if the backend status is valid
+            if db_status not in valid_statuses:
+                # Invalid status
+                raise serializers.ValidationError(
+                    f"Invalid status: '{status}'. Valid options are: {', '.join(dict(StatusChoices.choices).values())}"
+                )
+
         return data
 
     class Meta:
@@ -68,6 +137,7 @@ class OrderSerializer(serializers.ModelSerializer):
         fields = [
             "order_num",
             "provider",
+            "client",
             "payment_token",
             "start_time",
             "end_time",
@@ -80,6 +150,7 @@ class OrderSerializer(serializers.ModelSerializer):
             "price",
             "description",
         ]
+        # IMPORTANT: 'status' is NOT in read_only_fields to allow status updates
         read_only_fields = [
             "order_num",
             "start_time",
@@ -87,6 +158,6 @@ class OrderSerializer(serializers.ModelSerializer):
             "created_at",
             "price",
             "description",
-            "status",
+            "job",
             "service_type",
         ]
