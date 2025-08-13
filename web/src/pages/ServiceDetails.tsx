@@ -1,20 +1,11 @@
 import ServiceCard from "@/components/ServiceCard";
 import { Button } from "@/components/ui/button";
-import {
-  Carousel,
-  CarouselContent,
-  CarouselItem,
-  CarouselNext,
-  CarouselPrevious,
-} from "@/components/ui/carousel";
 //import { cleaningServiceData, maintenanceServiceData } from "@/examples/data";
 import type { serviceType } from "@/Types";
 import { useEffect, useState } from "react";
 import ReviewComment from "@/components/ReviewComment";
 import { Rating } from "@smastrom/react-rating";
 import { useNavigate, useParams } from "react-router-dom";
-import type { EmblaCarouselType } from "embla-carousel";
-import { WheelGesturesPlugin } from "embla-carousel-wheel-gestures";
 import { useCart } from "@/contexts/CartContext";
 import apiClient from "@/utils/apiClient";
 
@@ -25,35 +16,38 @@ const ServiceDetailsPage = () => {
   const { type } = useParams<{ type: string }>();
   const navigate = useNavigate();
   const urlType = (type ?? "").toLowerCase() as RouteType;
-  const [allServices, setAllServices] = useState<{ [key: string]: serviceType[] } | null>(null);
+  const [allServices, setAllServices] = useState<{
+    [key: string]: serviceType[];
+  } | null>(null);
 
   //const initialServices = urlType === "maintenance" ? maintenanceServiceData : cleaningServiceData;
   const [services, setServices] = useState<serviceType[]>([]);
-  const [selectedService, setSelectedService] = useState<serviceType | null>(null);
+  const [selectedService, setSelectedService] = useState<serviceType | null>(
+    null
+  );
 
-  const [embla, setEmbla] = useState<EmblaCarouselType | undefined>(undefined);
-
-  const { setItems } = useCart();  
+  const { setItems } = useCart();
   const addItem = (item: serviceType) => {
-    setItems(prev => [...prev, item]); 
+    setItems((prev) => [...prev, item]);
   };
 
   useEffect(() => {
-    apiClient.get('services/')
-      .then(response => {
+    apiClient
+      .get("services/")
+      .then((response) => {
         setAllServices(response.data);
       })
-      .catch(error => {
+      .catch((error) => {
         console.error("Failed to fetch services:", error);
       });
   }, []); //runs once on mount
 
   // Redirect invalid types
   useEffect(() => {
-      if (!urlType) {
+    if (!urlType) {
       navigate("/services/cleaning", { replace: true });
       return;
-  }
+    }
     if (urlType && !VALID.includes(urlType)) {
       navigate("/services/cleaning", { replace: true });
     }
@@ -67,81 +61,45 @@ const ServiceDetailsPage = () => {
       if (currentServices.length > 0) {
         setSelectedService(allServices[urlType][0]);
       }
-    } 
+    }
   }, [urlType, allServices]);
 
- useEffect(() => {
-  if (!embla) return;
-
-  const onSelect = () => {
-    const i = embla.selectedScrollSnap();
-    const next = services[i];
-    if (next) setSelectedService(next);
-  };
-
-  embla.on("select", onSelect);
-  onSelect(); // sync on mount
-
-  return () => {
-    embla.off("select", onSelect); // ensure cleanup runs, but returns void
-  };
-}, [embla, services]);
+  useEffect(() => {
+    // Initialize the selected service when services are loaded
+    if (services.length > 0 && !selectedService) {
+      setSelectedService(services[0]);
+    }
+  }, [services, selectedService]);
 
   return (
-    <div className="flex w-full h-[100svh] gap-4  px-4 py-8">
-      {/* Left: Carousel */}
-      <div className="flex flex-col h-full w-1/2 border-2 rounded-md">
-        <div className="flex h-full w-full items-center justify-center gap-4 p-4">
-          <Carousel
-            orientation="vertical"
-            opts={{
-              align: "center",            // both top & bottom peek
-              containScroll: "trimSnaps", // avoid dead zones at ends
-            }}
-            className="w-full"
-            setApi={setEmbla}           
-            plugins={[
-              WheelGesturesPlugin({
-                forceWheelAxis: "y",      // vertical wheel controls the carousel
-              }),
-            ]}
-          >
-      
-            <CarouselContent className="h-[700px] overscroll-y-contain">
+    <div className="flex w-full h-[100svh] gap-4 px-4 py-8">
+      {/* Left: Service List */}
+      <div className="flex flex-col h-full w-1/2 border-2 rounded-md overflow-hidden">
+        <div className="h-full w-full p-4">
+          <div className="w-full h-full overflow-y-auto overflow-x-hidden pr-2">
+            <div className="flex flex-col gap-8 pb-8 pt-2 w-full min-w-[320px]">
               {services.map((service: serviceType, i: number) => (
-                <CarouselItem
+                <div
                   key={i}
-                  className="basis-[50%] flex justify-center items-center cursor-pointer"
-                  onClick={() => {
-                    setSelectedService(service);
-                    embla?.scrollTo(i);
-                  }}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" || e.key === " ") {
-                      e.preventDefault();
-                      setSelectedService(service);
-                      embla?.scrollTo(i);
-                    }
-                  }}
-                  role="button"
-                  tabIndex={0}
-                  aria-label={`View ${service.name}`}
-                >
-                  <ServiceCard
-                    service={service}
-                    card_action_click={() => {
-                      setSelectedService(service);
-                      embla?.scrollTo(i);
-                    }}
-                    size={{ width: 500, height: 500 }}
-                    disableButton={true}
-                  />
-                </CarouselItem>
+                  className="flex justify-center cursor-pointer w-full"
+                  onClick={() => setSelectedService(service)}>
+                  <div
+                    className={`w-full max-w-lg p-2 rounded-lg transition-all duration-200 ${
+                      selectedService?.name === service.name
+                        ? "bg-blue-100 shadow-md"
+                        : ""
+                    }`}>
+                    <ServiceCard
+                      service={service}
+                      card_action_click={() => setSelectedService(service)}
+
+                      disableButton={true}
+                    />
+                  </div>
+                </div>
               ))}
-            </CarouselContent>
-            <CarouselPrevious />
-            <CarouselNext />
-          </Carousel>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -174,13 +132,17 @@ const ServiceDetailsPage = () => {
             </div>
             <div className="px-4 pb-2">{selectedService?.details}</div>
             <div className="flex w-full h-full justify-end items-end p-4">
-              <Button onClick={()=> {
-                addItem(selectedService);
-                navigate('/book-service', { state: {service:
-                  selectedService }});
+              <Button
+                onClick={() => {
+                  if (selectedService) {
+                    addItem(selectedService);
+                    navigate("/book-service", {
+                      state: { service: selectedService },
+                    });
+                  }
                 }}>
-                  Book now
-                </Button>
+                Book now
+              </Button>
             </div>
           </div>
         </div>
