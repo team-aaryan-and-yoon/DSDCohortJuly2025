@@ -55,6 +55,19 @@ export function SignUpPage() {
   // Helper function to handle navigation based on role
   const navigateBasedOnRole = (role: string | undefined | null) => {
     const normalizedRole = role?.toLowerCase() || "";
+    
+    // Check if there's a pending redirect after auth
+    const redirectPath = sessionStorage.getItem('redirectAfterAuth');
+    const pendingService = sessionStorage.getItem('pendingService');
+    
+    if (redirectPath && pendingService) {
+      // Clear the stored redirect path
+      sessionStorage.removeItem('redirectAfterAuth');
+      const service = JSON.parse(pendingService);
+      // Navigate back to book-service with the service data
+      navigate(redirectPath, { state: { service }, replace: true });
+      return;
+    }
 
     // On the backend, roles are stored as "provider" or "client"
     if (normalizedRole === "provider") {

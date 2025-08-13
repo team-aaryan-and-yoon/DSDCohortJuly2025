@@ -34,15 +34,27 @@ export function SignInPage() {
     if (result.success) {
       // Use userData returned from signIn to determine portal destination
       const userData = result.userData;
-
-      // Check which portal to navigate to based on user role
-      if (userData && userData.role.toLowerCase() === "provider") {
-        navigate("/provider-portal");
-      } else if (userData && userData.role.toLowerCase() === "client") {
-        navigate("/customer-portal");
+      
+      // Check if there's a pending redirect after auth
+      const redirectPath = sessionStorage.getItem('redirectAfterAuth');
+      const pendingService = sessionStorage.getItem('pendingService');
+      
+      if (redirectPath && pendingService) {
+        // Clear the stored redirect path
+        sessionStorage.removeItem('redirectAfterAuth');
+        const service = JSON.parse(pendingService);
+        // Navigate back to book-service with the service data
+        navigate(redirectPath, { state: { service }, replace: true });
       } else {
-        // Default to home if user role not specified
-        navigate("/");
+        // Check which portal to navigate to based on user role
+        if (userData && userData.role.toLowerCase() === "provider") {
+          navigate("/provider-portal");
+        } else if (userData && userData.role.toLowerCase() === "client") {
+          navigate("/customer-portal");
+        } else {
+          // Default to home if user role not specified
+          navigate("/");
+        }
       }
     } else {
       setError(result.message);

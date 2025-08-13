@@ -1,13 +1,43 @@
-import { useLocation, Link } from 'react-router-dom';
-import { useState } from "react";
+import { useLocation, Link, useNavigate } from 'react-router-dom';
+import { useState, useEffect } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import ProgressBarCheckout from "../components/ui/progress-bar-checkout";
 import type { serviceType } from "@/Types";
+import { useAuth } from "@/contexts/AuthContext";
 
 const SelectedOrderPage = () => {
     const location = useLocation();
+    const navigate = useNavigate();
+    const { user } = useAuth();
     const service: serviceType | null = location.state?.service;
+    
+    // Form state
+    const [selectedDate, setSelectedDate] = useState<Date | undefined>();
+    const [selectedTime, setSelectedTime] = useState<string>('');
+    const [notes, setNotes] = useState<string>('');
+    
+    // Store service and form data in sessionStorage to persist through auth flow
+    useEffect(() => {
+        if (service) {
+            sessionStorage.setItem('pendingService', JSON.stringify(service));
+        }
+    }, [service]);
+    
+    // Restore form data if returning from auth
+    useEffect(() => {
+        const savedFormData = sessionStorage.getItem('pendingBookingForm');
+        if (savedFormData) {
+            const formData = JSON.parse(savedFormData);
+            if (formData.date) {
+                setSelectedDate(new Date(formData.date));
+            }
+            setSelectedTime(formData.time || '');
+            setNotes(formData.notes || '');
+            // Clear the saved form data after restoring
+            sessionStorage.removeItem('pendingBookingForm');
+        }
+    }, []);
 
     if (!service) {
         return (
@@ -49,17 +79,87 @@ const SelectedOrderPage = () => {
                     <h3 className="text-md font-semibold mb-2">Schedule Your Service</h3>
                     <div>
                         <label className="block text-sm font-medium mb-2">Service Date</label>
-                        <Calendar mode="single" />     
+                        <Calendar 
+                            mode="single" 
+                            selected={selectedDate}
+                            onSelect={setSelectedDate}
+                        />     
                     </div>
                     <div> 
                         <label className="block text-sm font-medium mb-2">Service Time</label>
-                        <input type="time" className="w-full rounded-md border-gray-300 shadow-sm p-2" />
+                        <input 
+                            type="time" 
+                            value={selectedTime}
+                            onChange={(e) => setSelectedTime(e.target.value)}
+                            className="w-full rounded-md border-gray-300 shadow-sm p-2" 
+                        />
                     </div>
                     <div> 
                         <label className="block text-sm font-medium mb-2">Note</label>
-                        <textarea rows={4} placeholder="Leave a note for the provider..." className="w-full rounded-md border-gray-300 shadow-sm p-2" />
+                        <textarea 
+                            rows={4} 
+                            value={notes}
+                            onChange={(e) => setNotes(e.target.value)}
+                            placeholder="Leave a note for the provider..." 
+                            className="w-full rounded-md border-gray-300 shadow-sm p-2" 
+                        />
                     </div>
-                    <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">Confirm and Pay</Button>
+                    {!user ? (
+                        <>
+                            <Button 
+                                className="w-full bg-emerald-600 hover:bg-emerald-700 text-white mb-2"
+                                onClick={() => {
+                                    // Store form data before redirecting
+                                    sessionStorage.setItem('pendingBookingForm', JSON.stringify({
+                                        date: selectedDate?.toISOString(),
+                                        time: selectedTime,
+                                        notes: notes
+                                    }));
+                                    // Store current path to return after auth
+                                    sessionStorage.setItem('redirectAfterAuth', '/book-service');
+                                    navigate('/sign-up');
+                                }}
+                            >
+                                Sign Up to Continue
+                            </Button>
+                            <Button 
+                                variant="outline"
+                                className="w-full"
+                                onClick={() => {
+                                    // Store form data before redirecting
+                                    sessionStorage.setItem('pendingBookingForm', JSON.stringify({
+                                        date: selectedDate?.toISOString(),
+                                        time: selectedTime,
+                                        notes: notes
+                                    }));
+                                    // Store current path to return after auth
+                                    sessionStorage.setItem('redirectAfterAuth', '/book-service');
+                                    navigate('/sign-in');
+                                }}
+                            >
+                                Already have an account? Sign In
+                            </Button>
+                        </>
+                    ) : (
+                        <Button 
+                            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+                            onClick={() => {
+                                // User is authenticated, proceed to payment with all booking data
+                                navigate('/orders', { 
+                                    state: { 
+                                        service,
+                                        bookingDetails: {
+                                            date: selectedDate,
+                                            time: selectedTime,
+                                            notes: notes
+                                        }
+                                    } 
+                                });
+                            }}
+                        >
+                            Confirm and Pay
+                        </Button>
+                    )}
                 </div>
             </div>
         </div>
