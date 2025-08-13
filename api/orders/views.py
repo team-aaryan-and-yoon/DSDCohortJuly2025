@@ -8,15 +8,17 @@ from supabase import create_client
 from utils.constants import get_display_status
 
 import copy
-from rest_framework.decorators import api_view
+from rest_framework.decorators import api_view, permission_classes
+from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
 from utils.constants import ALL_SERVICES
 
 
-@api_view(["GET"])
+@api_view(['GET'])
+@permission_classes([AllowAny])
 def get_services(request):
     """
-    a view to get all services
+    a view to get all services - accessible to anonymous users
     """
     services_data = copy.deepcopy(ALL_SERVICES)
 

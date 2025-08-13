@@ -52,6 +52,9 @@ const AuthCallback = () => {
                 isGoogleAuth: true
               }));
               
+              // Preserve the pending redirect during profile completion
+              // The SignUp page will handle it after profile is created
+              
               // Redirect to signup for profile completion
               navigate('/sign-up?complete=true');
             } else {
@@ -60,8 +63,20 @@ const AuthCallback = () => {
               navigate('/');
             }
           } else {
-            // Profile exists, go to home
-            navigate('/');
+            // Profile exists, check for pending redirect
+            const redirectPath = sessionStorage.getItem('redirectAfterAuth');
+            const pendingService = sessionStorage.getItem('pendingService');
+            
+            if (redirectPath && pendingService) {
+              // Clear the stored redirect path
+              sessionStorage.removeItem('redirectAfterAuth');
+              const service = JSON.parse(pendingService);
+              // Navigate back to book-service with the service data
+              navigate(redirectPath, { state: { service }, replace: true });
+            } else {
+              // No pending redirect, go to home
+              navigate('/');
+            }
           }
         } else {
           navigate('/sign-in');
