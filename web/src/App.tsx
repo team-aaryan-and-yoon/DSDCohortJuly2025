@@ -8,7 +8,6 @@ import type { Link } from "./Types";
 import HomePage from "./pages/HomePage";
 import SelectedOrderPage from "./pages/SelectedOrderPage";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage";
-import LandingPage from "./pages/LandingPage";
 
 import ProviderPortal from "./pages/ProviderPortal";
 import { AuthProvider } from "./contexts/AuthContext";
@@ -81,7 +80,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/landing" element={<LandingPage />} />
+              <Route path="/landing" element={<HomePage />} />
               <Route path="/book-service" element={<SelectedOrderPage />} />
               <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
             </Routes>
