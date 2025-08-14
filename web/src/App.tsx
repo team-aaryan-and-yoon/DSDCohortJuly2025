@@ -26,27 +26,31 @@ function App() {
     <AuthProvider>
       <CartProvider>
         <BrowserRouter>
-          {/* Header */}
-          <div className="sticky top-0 z-50 flex bg-white/90 backdrop-blur-md shadow-sm">
-            <div className="flex w-2/12 h-full justify-end items-center gap-2 px-4 py-2 ">
-              <img
-                src="/images/icon_no_text.png"
-                alt="icon"
-                height={50}
-                width={50}
-              />
-              <span className="text-xl text-center font-bold text-gray-900">
-                HandsOff
-              </span>
-            </div>
+          <header className="sticky top-0 z-50 bg-white/90 backdrop-blur-md shadow-sm">
+            <div className="mx-auto max-w-7xl px-3 sm:px-4">
+              <div className="flex items-center gap-3 min-h-16">
+                {/* Left: Logo + brand */}
+                <div className="flex items-center gap-2 shrink-0 overflow-visible">
+                  <img
+                    src="/images/icon_no_text.png"
+                    alt="HandsOff"
+                    className="h-10 sm:h-12 w-auto object-contain"
+                  />
+                  <span className="text-lg sm:text-xl font-bold text-gray-900">HandsOff</span>
+                </div>
 
-            <div className="flex w-full h-full justify-center">
-              <NavbarPages links={links} />
+                {/* Center: Nav */}
+                <nav className="flex-1 flex justify-center">
+                  <NavbarPages links={links} />
+                </nav>
+
+                {/* Right: Auth */}
+                <div className="shrink-0">
+                  <NavbarAuth />
+                </div>
+              </div>
             </div>
-            <div className="flex w-2/12 justify-center">
-              <NavbarAuth />
-            </div>
-          </div>
+          </header>
 
           {/* Body */}
           <div className="w-full h-full ">
