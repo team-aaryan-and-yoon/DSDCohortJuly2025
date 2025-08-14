@@ -119,3 +119,38 @@
   }
 }
 
+/* Interactive elements cursor styles */
+@layer utilities {
+  /* Basic interactive elements */
+  a, 
+  button, 
+  [role="button"], 
+  select, 
+  summary, 
+  input[type="checkbox"], 
+  input[type="radio"], 
+  input[type="submit"], 
+  input[type="button"],
+  input[type="reset"],
+  label[for],
+  .cursor-pointer,
+  /* ShadCN specific elements */
+  [data-slot="select-trigger"],
+  [data-slot="button"],
+  [data-state="open"] summary,
+  [data-radix-collection-item],
+  [cmdk-item],
+  .interactive {
+    @apply cursor-pointer;
+  }
+
+  /* Disabled state handling */
+  button:disabled,
+  [role="button"][aria-disabled="true"],
+  input:disabled,
+  select:disabled,
+  [aria-disabled="true"],
+  .disabled {
+    @apply cursor-not-allowed;
+  }
+}

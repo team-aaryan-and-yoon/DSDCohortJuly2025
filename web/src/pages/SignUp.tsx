@@ -8,7 +8,7 @@ import {
   CardDescription,
   CardContent,
 } from "@/components/ui/card";
-import { ArrowLeft, Wrench } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Eye, EyeOff } from "lucide-react";
 import { useState, useEffect } from "react";
 import {
@@ -202,7 +202,11 @@ export function SignUpPage() {
       <div className="max-w-md w-full relative z-10">
         <div className="text-center mb-8">
           <div className="flex items-center justify-center space-x-2 mb-4">
-            <Wrench className="h-8 w-8 text-white" />
+            <img
+              src="/images/icon_no_text.png"
+              alt="icon"
+              className="h-8 w-8"
+            />
             <span className="text-2xl font-bold text-white">HandsOff</span>
           </div>
           <Button

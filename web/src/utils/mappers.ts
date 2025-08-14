@@ -98,6 +98,7 @@ export function mapOrderToView(order: Order): OrderView {
       minute: "2-digit",
     }),
     serviceType: order.serviceType,
+    job: order.job,
     status: order.status,
     rating: order.rating,
     orderDate: orderDate.toLocaleDateString(),

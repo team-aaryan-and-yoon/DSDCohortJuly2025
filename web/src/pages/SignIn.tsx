@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArrowLeft, Wrench } from "lucide-react";
+import { ArrowLeft } from "lucide-react";
 import { Eye, EyeOff } from "lucide-react";
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
@@ -87,7 +87,11 @@ export function SignInPage() {
         <div className="absolute inset-0 bg-blue-600/70 flex items-center justify-center p-8">
           <div className="text-center text-white">
             <div className="flex items-center justify-center space-x-2 mb-8">
-              <Wrench className="h-16 w-16 text-white" />
+              <img
+                src="/images/icon_no_text.png"
+                alt="icon"
+                className="h-16 w-16"
+              />
               <span className="text-5xl font-bold">HandsOff</span>
             </div>
             <h2 className="text-3xl font-bold mb-4">Welcome Back!</h2>
@@ -103,7 +107,11 @@ export function SignInPage() {
         <div className="max-w-md w-full">
           <div className="text-center mb-8 lg:hidden">
             <div className="flex items-center justify-center space-x-2 mb-4">
-              <Wrench className="h-8 w-8 text-blue-600" />
+              <img
+                src="/images/icon_no_text.png"
+                alt="icon"
+                className="h-8 w-8"
+              />
               <span className="text-2xl font-bold text-gray-900">HandsOff</span>
             </div>
           </div>

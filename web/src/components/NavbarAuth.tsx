@@ -8,8 +8,6 @@ import type { Link } from "@/Types";
 import { useAuth } from "@/contexts/AuthContext";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 
-
-
 interface NavbarProps {
   links: Link[];
   isLogged: boolean;
@@ -30,47 +28,50 @@ const NavbarAuth = () => {
 
   const handleLogout = async () => {
     await signOut();
-    navigate('/sign-in');
+    navigate("/sign-in");
   };
 
   // Determine the correct portal URL - for now just go to customer portal
   const getPortalUrl = () => {
-    if (!user) return '/sign-in';
-    return '/customer-portal';
+    if (!user) return "/sign-in";
+    return "/customer-portal";
   };
 
   return (
     <NavigationMenu>
-        <NavigationMenuList className="px-4">
-      {/* Logins/sign ups */} 
-          <NavigationMenuItem className="items-center">
+      <NavigationMenuList className="px-2 flex items-center gap-2">
+        {/* Logins/sign ups */}
+        <NavigationMenuItem className="items-center">
           {user ? (
-            <NavigationMenuLink 
-              className="bg-blue-50 cursor-pointer" 
-              onClick={handleLogout}
-            >
-              Sign Out   ({user.first_name})
+            <NavigationMenuLink
+              className="bg-blue-50 hover:bg-blue-100 px-3 py-2 rounded-md cursor-pointer block min-w-[140px] text-center whitespace-nowrap"
+              onClick={handleLogout}>
+              Sign Out ({user.first_name})
             </NavigationMenuLink>
           ) : (
-            <NavigationMenuLink asChild  className="hover:bg-white">
-              <RouterLink to="/sign-in" className="text-lg text-gray-700 hover:text-blue-600 transition-colors">
+            <NavigationMenuLink asChild className="hover:bg-white">
+              <RouterLink
+                to="/sign-in"
+                className="text-lg px-3 py-2 rounded-md text-gray-700 hover:text-blue-600 transition-colors block min-w-[80px] text-center whitespace-nowrap">
                 Sign In
               </RouterLink>
-            </NavigationMenuLink> 
-          ) }
+            </NavigationMenuLink>
+          )}
         </NavigationMenuItem>
-        {!user && 
-        <NavigationMenuItem className="px-4">
-            <NavigationMenuLink asChild className="bg-blue-600 hover:bg-blue-700">
-              <RouterLink to="/sign-up" className="text-lg text-white hover:bg-accent hover:text-white dark:hover:bg-accent/50 ">
+        {!user && (
+          <NavigationMenuItem>
+            <NavigationMenuLink
+              asChild
+              className="bg-blue-600 hover:bg-blue-700 px-3 py-2 rounded-md block min-w-[110px] text-center">
+              <RouterLink
+                to="/sign-up"
+                className="text-lg text-white whitespace-nowrap">
                 Get Started
               </RouterLink>
-            </NavigationMenuLink> 
-        </NavigationMenuItem>
-            }
+            </NavigationMenuLink>
+          </NavigationMenuItem>
+        )}
       </NavigationMenuList>
-
-
     </NavigationMenu>
   );
 };
