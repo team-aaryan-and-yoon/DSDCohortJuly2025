@@ -8,6 +8,8 @@ import type { Link } from "./Types";
 import HomePage from "./pages/HomePage";
 import SelectedOrderPage from "./pages/SelectedOrderPage";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage";
+import LandingPage from "./pages/LandingPage";
+
 import ProviderPortal from "./pages/ProviderPortal";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -15,7 +17,6 @@ import AuthCallback from "./pages/AuthCallback";
 import NavbarPages from "./components/NavbarPages";
 import NavbarAuth from "./components/NavbarAuth";
 import { CartProvider } from "./contexts/CartContext";
-import OrderPage from "./pages/OrderPage";
 
 function App() {
   const links: Link[] = [
@@ -80,7 +81,7 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/orders" element={<OrderPage />} />
+              <Route path="/landing" element={<LandingPage />} />
               <Route path="/book-service" element={<SelectedOrderPage />} />
               <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
             </Routes>

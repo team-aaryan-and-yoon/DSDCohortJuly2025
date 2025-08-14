@@ -99,10 +99,11 @@ class Order(models.Model):
                     "Could not generate a unique order_num after 5 attempts."
                 )
 
-        self.full_clean()  # Call clean method to validate job and service_type
-
         # Calculate end_time based on start_time and job duration
-        self.end_time = self.start_time + DURATIONS[self.job]
+        if self.start_time and self.job:
+            self.end_time = self.start_time + DURATIONS[self.job]
+
+        self.full_clean()  # Call clean method to validate job and service_type
 
         super().save(*args, **kwargs)
 

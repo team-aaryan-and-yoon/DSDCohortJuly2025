@@ -38,6 +38,20 @@ class OrderViewSet(ModelViewSet):
 
     #lookup_field = "order_num"
 
+    def perform_create(self, serializer):
+        # Get the user's profile (attached by SupabaseAuth)
+        profile = getattr(self.request, "profile", None)
+        if not profile:
+            # If no profile attached, try to get it from the user
+            from users.models import Profile
+            try:
+                profile = Profile.objects.get(supabase_id=self.request.user)
+            except Profile.DoesNotExist:
+                raise ValueError("User profile not found")
+        
+        # Save the order with the client set to the authenticated user's profile
+        serializer.save(client=profile)
+
     def update(self, request, *args, **kwargs):
         # Get original order for later comparison
         original_order = self.get_object()

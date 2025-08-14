@@ -72,20 +72,52 @@ const SelectedOrderPage = () => {
             // Create the order
             const response = await apiClient.post('/orders/', orderData);
             
-            // TODO: Integrate with Stripe payment
-            // For now, navigate directly to confirmation with order data
-            
-            navigate('/order-confirmation', { 
-                state: { 
-                    orderNumber: response.data.order_num,
-                    service,
-                    bookingDetails: {
-                        date: selectedDate,
-                        time: selectedTime,
-                        notes: notes
-                    }
-                } 
+            // Now trigger Stripe payment with order reference
+            const stripeResponse = await apiClient.post('/stripe/checkout/', {
+                price_id: "price_1RvVkSCGGh5HtGAdPBivjsyv", // TODO: Use dynamic pricing based on service
+                metadata: {
+                    order_num: response.data.order_num,
+                    service_name: service.name
+                }
             });
+
+            // Redirect to Stripe checkout
+            if (stripeResponse.data?.url) {
+                window.location.href = stripeResponse.data.url;
+                return;
+            }
+
+            // If no direct URL, use sessionId with Stripe
+            const sessionId = stripeResponse.data?.session_id;
+            if (sessionId) {
+                const { loadStripe } = await import('@stripe/stripe-js');
+                const pk = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
+                const stripe = pk ? await loadStripe(pk) : null;
+                
+                if (stripe) {
+                    const { error } = await stripe.redirectToCheckout({ sessionId });
+                    if (error) {
+                        alert(error.message);
+                        return;
+                    }
+                } else {
+                    alert('Stripe failed to load');
+                    return;
+                }
+            } else {
+                // Fallback: navigate to confirmation without payment
+                navigate('/order-confirmation', { 
+                    state: { 
+                        orderNumber: response.data.order_num,
+                        service,
+                        bookingDetails: {
+                            date: selectedDate,
+                            time: selectedTime,
+                            notes: notes
+                        }
+                    } 
+                });
+            }
         } catch (error: any) {
             console.error('Failed to create order:', error);
             console.error('Error response:', error.response?.data);
@@ -199,7 +231,13 @@ const SelectedOrderPage = () => {
                             </Button>
                         </>
                     ) : (
-                        <ConfirmAndPayButton />
+                        <Button 
+                            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
+                            onClick={handleCreateOrder}
+                            disabled={isCreatingOrder}
+                        >
+                            {isCreatingOrder ? 'Creating Order...' : 'Confirm and Pay'}
+                        </Button>
                     )}
                 </div>
             </div>
