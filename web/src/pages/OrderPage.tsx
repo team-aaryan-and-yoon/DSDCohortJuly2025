@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import ProgressBarCheckout from "../components/ui/progress-bar-checkout";
-import HandlePayButton from "@/components/HandlePayButton";
+import ConfirmAndPayButton from "@/components/ConfirmAndPayButton";
 
 export default function OrderPage() {
   const [selectedServiceIndex, setSelectedServiceIndex] = useState<
@@ -168,10 +168,6 @@ export default function OrderPage() {
               >
                 Back to Overview
               </Button>
-
-              <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
-                Click to Pay
-              </Button>
             </>
           ) : (
             <>
@@ -202,10 +198,7 @@ export default function OrderPage() {
                 <p className="text-sm text-gray-600">Total Amount: $1,773.00</p>
               </div>
 
-              <HandlePayButton priceId="" />
-              {/* <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">
-                Click to Pay
-              </Button> */}
+              <ConfirmAndPayButton/>
             </>
           )}
         </div>

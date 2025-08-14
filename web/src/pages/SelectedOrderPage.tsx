@@ -4,6 +4,8 @@ import { Calendar } from "@/components/ui/calendar";
 import { Button } from "@/components/ui/button";
 import ProgressBarCheckout from "../components/ui/progress-bar-checkout";
 import type { serviceType } from "@/Types";
+import ConfirmAndPayButton from "@/components/ConfirmAndPayButton";
+
 
 const SelectedOrderPage = () => {
     const location = useLocation();
@@ -59,7 +61,7 @@ const SelectedOrderPage = () => {
                         <label className="block text-sm font-medium mb-2">Note</label>
                         <textarea rows={4} placeholder="Leave a note for the provider..." className="w-full rounded-md border-gray-300 shadow-sm p-2" />
                     </div>
-                    <Button className="w-full bg-emerald-600 hover:bg-emerald-700 text-white">Confirm and Pay</Button>
+                    <ConfirmAndPayButton />
                 </div>
             </div>
         </div>

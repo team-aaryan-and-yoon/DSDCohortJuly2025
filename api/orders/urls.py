@@ -11,5 +11,3 @@ urlpatterns = router.urls
 urlpatterns += [
     path('services/', get_services, name='get_services'),
 ]
-
-
