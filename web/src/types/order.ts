@@ -41,6 +41,7 @@ export interface OrderView {
   serviceDate: string;
   serviceTime: string;
   serviceType: ServiceType;
+  job: string;
   status: Status;
   rating: number | null;
   orderDate: string;

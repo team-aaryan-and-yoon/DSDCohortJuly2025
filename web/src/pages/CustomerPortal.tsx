@@ -5,6 +5,14 @@ import { mapOrderRequest, mapOrderToView } from "@/utils/mappers";
 import type { Order } from "@/types/order";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from "@/components/ui/table";
 
 const CustomerPortalPage = () => {
   const { user: authUser } = useAuth();
@@ -56,8 +64,18 @@ const CustomerPortalPage = () => {
     fetchOrders();
   }, [authUser]);
 
-  if (loading) return <div>Loading...</div>;
-  if (!authUser) return <div>Please log in to view your portal.</div>;
+  if (loading)
+    return (
+      <div className="w-full h-[100svh] flex items-center justify-center">
+        Loading...
+      </div>
+    );
+  if (!authUser)
+    return (
+      <div className="w-full h-[100svh] flex items-center justify-center">
+        Please log in to view your portal.
+      </div>
+    );
 
   // If user is a provider, redirect to provider portal
   if (authUser && authUser.role.toLowerCase() === "provider") {
@@ -72,81 +90,121 @@ const CustomerPortalPage = () => {
   const past = orders.filter((o) => o.status === "Completed");
 
   return (
-    <div className="p-4">
-      <h1 className="text-2xl font-semibold mb-4">
-        Welcome,{" "}
-        {authUser.first_name ? `${authUser.first_name}!` : "Valued Customer!"}
-      </h1>
+    <div className="w-full h-[100svh] px-4 py-4 overflow-hidden">
+      <div className="w-full h-full flex flex-col gap-3">
+        <h1 className="text-2xl font-bold">
+          Welcome,{" "}
+          {authUser.first_name ? `${authUser.first_name}!` : "Valued Customer!"}
+        </h1>
 
-      <section>
-        <h2 className="text-xl font-bold mb-2">Current Orders</h2>
-        <div className="flex flex-wrap gap-4">
-          {current.length > 0 ? (
-            current.map((order) => (
-              <ServiceOrderCard
-                key={order.orderNum}
-                order={mapOrderToView(order)}
-              />
-            ))
-          ) : (
-            <p>No current orders.</p>
-          )}
-        </div>
-      </section>
+        <div className="flex flex-col lg:flex-row w-full h-full gap-4 overflow-hidden">
+          {/* Left side - Current and Upcoming Orders */}
+          <div className="flex flex-col w-full lg:w-2/3 h-full gap-4">
+            {/* Current Orders */}
+            <div className="flex flex-col h-1/2 w-full border-4 rounded-lg bg-white">
+              <div className="flex w-full h-8 justify-center border-b-2 bg-gradient-to-br from-blue-50 to-indigo-100">
+                <label className="font-bold text-lg">Current Orders</label>
+              </div>
+              <div className="flex flex-col h-full w-full items-center gap-2 p-2 overflow-y-auto">
+                {current.length > 0 ? (
+                  current.map((order) => (
+                    <div key={order.orderNum} className="flex w-full">
+                      <ServiceOrderCard
+                        key={order.orderNum}
+                        order={mapOrderToView(order)}
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex w-full h-full justify-center items-center">
+                    <span>No current orders</span>
+                  </div>
+                )}
+              </div>
+            </div>
 
-      <section>
-        <h2 className="text-xl font-bold mb-2">Upcoming Orders</h2>
-        <div className="flex flex-wrap gap-4">
-          {upcoming.length > 0 ? (
-            upcoming.map((order) => (
-              <ServiceOrderCard
-                key={order.orderNum}
-                order={mapOrderToView(order)}
-              />
-            ))
-          ) : (
-            <p>No upcoming orders.</p>
-          )}
-        </div>
-      </section>
-
-      <section>
-        <h2 className="text-xl font-bold mb-4">Past Orders</h2>
-        {past.length > 0 ? (
-          <div className="overflow-x-auto m-6">
-            <table className="min-w-full border border-gray-300 text-sm text-left">
-              <thead className="bg-gray-100">
-                <tr>
-                  <th className="border px-4 py-2">Service Type</th>
-                  <th className="border px-4 py-2">Status</th>
-                  <th className="border px-4 py-2">Service Date</th>
-                  <th className="border px-4 py-2">Order Date</th>
-                  <th className="border px-4 py-2">Rating</th>
-                </tr>
-              </thead>
-              <tbody>
-                {past.map(mapOrderToView).map((orderView) => (
-                  <tr key={orderView.orderNum}>
-                    <td className="border px-4 py-2">
-                      {orderView.serviceType}
-                    </td>
-                    <td className="border px-4 py-2">{orderView.status}</td>
-                    <td className="border px-4 py-2">
-                      {orderView.serviceDate}
-                    </td>
-                    <td className="border px-4 py-2">{orderView.orderDate}</td>
-                    <td className="border px-4 py-2">
-                      {orderView.rating != null ? orderView.rating : "—"}
-                    </td>
-                  </tr>
-                ))}
-              </tbody>
-            </table>
+            {/* Upcoming Orders */}
+            <div className="flex flex-col h-1/2 w-full border-4 rounded-lg bg-white">
+              <div className="flex w-full h-8 justify-center border-b-2 bg-gradient-to-br from-blue-50 to-indigo-100">
+                <label className="font-bold text-lg">Upcoming Orders</label>
+              </div>
+              <div className="flex flex-col h-full w-full items-center gap-2 p-2 overflow-y-auto">
+                {upcoming.length > 0 ? (
+                  upcoming.map((order) => (
+                    <div key={order.orderNum} className="flex w-full">
+                      <ServiceOrderCard
+                        key={order.orderNum}
+                        order={mapOrderToView(order)}
+                      />
+                    </div>
+                  ))
+                ) : (
+                  <div className="flex w-full h-full justify-center items-center">
+                    <span>No upcoming orders</span>
+                  </div>
+                )}
+              </div>
+            </div>
           </div>
-        ) : (
-          <p>No past orders.</p>
-        )}
-      </section>
+
+          {/* Right side - Past Orders */}
+          <div className="flex flex-col w-full lg:w-1/3 h-full">
+            <div className="flex flex-col h-full w-full border-4 rounded-lg bg-white">
+              <div className="flex w-full h-8 justify-center border-b-2 bg-gradient-to-br from-blue-50 to-indigo-100">
+                <label className="font-bold text-lg">Order History</label>
+              </div>
+              <div className="flex w-full h-full overflow-auto">
+                {past.length > 0 ? (
+                  <Table className="bg-white">
+                    <TableHeader>
+                      <TableRow className="sticky top-0 bg-gray-100 z-10">
+                        <TableHead>Service Type</TableHead>
+                        <TableHead className="border-l border-gray-300">
+                          Status
+                        </TableHead>
+                        <TableHead className="border-l border-gray-300">
+                          Service Date
+                        </TableHead>
+                        <TableHead className="border-l border-gray-300">
+                          Order Date
+                        </TableHead>
+                        <TableHead className="border-l border-gray-300">
+                          Rating
+                        </TableHead>
+                      </TableRow>
+                    </TableHeader>
+                    <TableBody>
+                      {past.map(mapOrderToView).map((orderView) => (
+                        <TableRow key={orderView.orderNum}>
+                          <TableCell className="border-l border-gray-300">
+                            {orderView.serviceType}
+                          </TableCell>
+                          <TableCell className="border-l border-gray-300">
+                            {orderView.status}
+                          </TableCell>
+                          <TableCell className="border-l border-gray-300">
+                            {orderView.serviceDate}
+                          </TableCell>
+                          <TableCell className="border-l border-gray-300">
+                            {orderView.orderDate}
+                          </TableCell>
+                          <TableCell className="border-l border-gray-300">
+                            {orderView.rating != null ? orderView.rating : "—"}
+                          </TableCell>
+                        </TableRow>
+                      ))}
+                    </TableBody>
+                  </Table>
+                ) : (
+                  <div className="flex w-full h-full justify-center items-center">
+                    <span>No past orders</span>
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 };

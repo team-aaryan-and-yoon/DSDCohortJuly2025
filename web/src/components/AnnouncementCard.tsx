@@ -1,6 +1,7 @@
 import { useState } from "react";
 import type { OrderView, ProviderOrderView } from "@/types/order";
 import type { Status } from "@/types/enums";
+import { cn } from "@/lib/utils";
 
 import cleaningIcon from "@/assets/cleaning.png";
 import maintenanceIcon from "@/assets/handyman.png";
@@ -21,6 +22,14 @@ interface AnnouncementProps {
 const orderIcons: Record<OrderView["serviceType"], string> = {
   Cleaning: cleaningIcon,
   Maintenance: maintenanceIcon,
+};
+
+// Status colors for visual indicators (match ServiceOrderCard)
+const statusColors: Record<Status, string> = {
+  Scheduled: "bg-blue-500 text-blue-100",
+  "On the way": "bg-teal-500 text-teal-100",
+  "In progress": "bg-yellow-500 text-yellow-100",
+  Completed: "bg-green-500 text-green-100",
 };
 
 // Define available status transitions based on current status
@@ -116,6 +125,13 @@ const AnnouncementCard = ({
           {/* Status Selector */}
           <div className="flex items-center gap-2 mt-2">
             <span className="font-medium text-gray-700">Status:</span>
+            <span
+              className={cn(
+                "inline-block w-3 h-3 rounded-full mr-1",
+                statusColors[order.status].split(" ")[0]
+              )}
+              aria-hidden="true"
+            />
             <Select
               disabled={isDisabled || !onStatusChange}
               value={order.status}
