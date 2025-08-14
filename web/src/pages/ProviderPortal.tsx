@@ -133,17 +133,7 @@ const ProviderPortal = () => {
 
       const ordersData = response?.data;
 
-      // Log raw orders data for debugging (only in development)
-      if (process.env.NODE_ENV !== "production") {
-        console.log("Raw orders from API:", ordersData);
-      }
-
       const fetchedOrders = (ordersData ?? []).map(mapOrderRequest);
-
-      // Log mapped orders for debugging (only in development)
-      if (process.env.NODE_ENV !== "production") {
-        console.log("Mapped orders:", fetchedOrders);
-      }
 
       // Process orders for different views
       processOrders(fetchedOrders);
@@ -168,8 +158,6 @@ const ProviderPortal = () => {
         // Use the dedicated utility to convert frontend status to backend format
         const backendStatus = mapFrontendToBackendStatus(newStatus);
 
-        // Log the status conversion for debugging
-        console.log(`Converting status: ${newStatus} -> ${backendStatus}`);
 
         // Make a direct PATCH request with the backend format status
         await apiClient.patch(`/orders/${orderNum}/`, {
@@ -185,8 +173,6 @@ const ProviderPortal = () => {
 
           const currentStatus = verifyResponse.data?.status;
 
-          // Log the received status from verification
-          console.log(`Verification status received: ${currentStatus}`);
 
           // Use our status mapper to normalize both statuses for comparison
           const verifiedFrontendStatus =
@@ -196,9 +182,6 @@ const ProviderPortal = () => {
 
           // Compare with what we expected
           if (verifiedFrontendStatus !== newStatus) {
-            console.log(
-              `Status mismatch, retrying update: ${currentStatus} (${verifiedFrontendStatus}) != ${newStatus}`
-            );
             // If the status doesn't match what we expect, try one more update
             await apiClient.patch(`/orders/${orderNum}/`, {
               status: backendStatus,

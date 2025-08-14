@@ -21,6 +21,10 @@ const AuthCallback = () => {
         if (session?.user) {
           // OAuth successful
           
+          // For Google OAuth users, check for pending redirect first
+          const redirectPath = sessionStorage.getItem('redirectAfterAuth');
+          const pendingService = sessionStorage.getItem('pendingService');
+          
           // Check if profile exists
           let profileExists = false;
           try {
@@ -32,12 +36,17 @@ const AuthCallback = () => {
               profileExists = true;
             }
           } catch (profileError: any) {
+            console.error('Profile check error:', profileError);
             // 204 is returned as an error by axios sometimes
             if (profileError?.response?.status === 204) {
               // Profile does not exist yet
               profileExists = false;
             } else {
-              // Error checking profile - continue anyway
+              // Error checking profile - for Google OAuth, assume profile exists if we have a session
+              // and redirect them to complete the flow
+              if (session.user.app_metadata?.provider === 'google' && redirectPath) {
+                profileExists = true; // Assume profile exists for OAuth users
+              }
             }
           }
           
@@ -64,9 +73,6 @@ const AuthCallback = () => {
             }
           } else {
             // Profile exists, check for pending redirect
-            const redirectPath = sessionStorage.getItem('redirectAfterAuth');
-            const pendingService = sessionStorage.getItem('pendingService');
-            
             if (redirectPath && pendingService) {
               // Clear the stored redirect path
               sessionStorage.removeItem('redirectAfterAuth');

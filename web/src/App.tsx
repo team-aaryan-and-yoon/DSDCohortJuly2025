@@ -13,6 +13,8 @@ import ProviderPortal from "./pages/ProviderPortal";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthCallback from "./pages/AuthCallback";
+import StripeSuccessPage from "./pages/StripeSuccessPage";
+import StripeCancelPage from "./pages/StripeCancelPage";
 import NavbarPages from "./components/NavbarPages";
 import NavbarAuth from "./components/NavbarAuth";
 import { CartProvider } from "./contexts/CartContext";
@@ -83,6 +85,8 @@ function App() {
               <Route path="/landing" element={<HomePage />} />
               <Route path="/book-service" element={<SelectedOrderPage />} />
               <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
+              <Route path="/checkout/success" element={<StripeSuccessPage />} />
+              <Route path="/checkout/cancel" element={<StripeCancelPage />} />
             </Routes>
           </div>
         </BrowserRouter>

@@ -5,7 +5,6 @@ import { Button } from "@/components/ui/button";
 import ProgressBarCheckout from "../components/ui/progress-bar-checkout";
 import type { serviceType } from "@/Types";
 import { useAuth } from "@/contexts/AuthContext";
-import { apiClient } from "@/utils/apiClient";
 import ConfirmAndPayButton from "@/components/ConfirmAndPayButton";
 
 const SelectedOrderPage = () => {
@@ -13,12 +12,12 @@ const SelectedOrderPage = () => {
     const navigate = useNavigate();
     const { user } = useAuth();
     const service: serviceType | null = location.state?.service;
+    const serviceType: string = location.state?.serviceType;
     
     // Form state
     const [selectedDate, setSelectedDate] = useState<Date | undefined>();
     const [selectedTime, setSelectedTime] = useState<string>('');
     const [notes, setNotes] = useState<string>('');
-    const [isCreatingOrder, setIsCreatingOrder] = useState<boolean>(false);
     
     // Store service and form data in sessionStorage to persist through auth flow
     useEffect(() => {
@@ -42,91 +41,26 @@ const SelectedOrderPage = () => {
         }
     }, []);
 
-    const handleCreateOrder = async () => {
-        if (!selectedDate || !selectedTime || !service) {
-            alert('Please select a date and time for your service');
-            return;
+    // Get service type from the current location state, URL, or service data
+    const getServiceType = () => {
+        // First try from location state
+        if (serviceType) {
+            return serviceType;
         }
-
-        setIsCreatingOrder(true);
         
-        try {
-            // Combine date and time into a single datetime
-            const [hours, minutes] = selectedTime.split(':');
-            const startTime = new Date(selectedDate);
-            startTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-
-            // Get the service type from the URL path
-            const urlPath = window.location.pathname;
-            const serviceType = urlPath.includes('/services/maintenance') ? 'maintenance' : 'cleaning';
-            
-            // Prepare the order data
-            const orderData = {
-                service_type: serviceType,
-                job: service.id || '', // Use the id field which contains the job enum value
-                start_time: startTime.toISOString(),
-                comments: notes,
-                status: 'scheduled' // Set initial status as scheduled
-            };
-
-            // Create the order
-            const response = await apiClient.post('/orders/', orderData);
-            
-            // Now trigger Stripe payment with order reference
-            const stripeResponse = await apiClient.post('/stripe/checkout/', {
-                price_id: "price_1RvVkSCGGh5HtGAdPBivjsyv", // TODO: Use dynamic pricing based on service
-                metadata: {
-                    order_num: response.data.order_num,
-                    service_name: service.name
-                }
-            });
-
-            // Redirect to Stripe checkout
-            if (stripeResponse.data?.url) {
-                window.location.href = stripeResponse.data.url;
-                return;
-            }
-
-            // If no direct URL, use sessionId with Stripe
-            const sessionId = stripeResponse.data?.session_id;
-            if (sessionId) {
-                const { loadStripe } = await import('@stripe/stripe-js');
-                const pk = import.meta.env.VITE_STRIPE_PUBLIC_KEY;
-                const stripe = pk ? await loadStripe(pk) : null;
-                
-                if (stripe) {
-                    const { error } = await stripe.redirectToCheckout({ sessionId });
-                    if (error) {
-                        alert(error.message);
-                        return;
-                    }
-                } else {
-                    alert('Stripe failed to load');
-                    return;
-                }
-            } else {
-                // Fallback: navigate to confirmation without payment
-                navigate('/order-confirmation', { 
-                    state: { 
-                        orderNumber: response.data.order_num,
-                        service,
-                        bookingDetails: {
-                            date: selectedDate,
-                            time: selectedTime,
-                            notes: notes
-                        }
-                    } 
-                });
-            }
-        } catch (error: any) {
-            console.error('Failed to create order:', error);
-            console.error('Error response:', error.response?.data);
-            console.error('Status:', error.response?.status);
-            console.error('Order data sent:', orderData);
-            alert(`Failed to create order: ${error.response?.status} - ${JSON.stringify(error.response?.data) || error.message}`);
-        } finally {
-            setIsCreatingOrder(false);
+        // Try to detect from URL
+        const urlPath = window.location.pathname;
+        if (urlPath.includes('/services/maintenance')) {
+            return 'maintenance';
         }
+        
+        // Try to detect from service ID (maintenance services typically have underscores)
+        if (service?.id && (service.id.includes('fix_') || service.id.includes('install_') || service.id.includes('mount_') || service.id.includes('repair'))) {
+            return 'maintenance';
+        }
+        
+        // Default to cleaning
+        return 'cleaning';
     };
 
     if (!service) {
@@ -231,13 +165,19 @@ const SelectedOrderPage = () => {
                             </Button>
                         </>
                     ) : (
-                        <Button 
-                            className="w-full bg-emerald-600 hover:bg-emerald-700 text-white"
-                            onClick={handleCreateOrder}
-                            disabled={isCreatingOrder}
-                        >
-                            {isCreatingOrder ? 'Creating Order...' : 'Confirm and Pay'}
-                        </Button>
+                        selectedDate && selectedTime ? (
+                            <ConfirmAndPayButton 
+                                service={service}
+                                serviceType={getServiceType()}
+                                selectedDate={selectedDate}
+                                selectedTime={selectedTime}
+                                notes={notes}
+                            />
+                        ) : (
+                            <div className="w-full bg-gray-400 text-white p-3 rounded text-center">
+                                Please select date and time
+                            </div>
+                        )
                     )}
                 </div>
             </div>

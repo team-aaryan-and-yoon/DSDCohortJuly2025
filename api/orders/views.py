@@ -5,9 +5,11 @@ from rest_framework.permissions import IsAuthenticated
 from django.core.mail import send_mail
 from decouple import config
 from supabase import create_client
-from utils.constants import get_display_status
+from utils.constants import get_display_status, Role
+from users.models import Profile
 
 import copy
+import random
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import AllowAny
 from rest_framework.response import Response
@@ -36,21 +38,31 @@ class OrderViewSet(ModelViewSet):
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
 
-    #lookup_field = "order_num"
+    lookup_field = "order_num"
 
     def perform_create(self, serializer):
         # Get the user's profile (attached by SupabaseAuth)
         profile = getattr(self.request, "profile", None)
         if not profile:
             # If no profile attached, try to get it from the user
-            from users.models import Profile
             try:
                 profile = Profile.objects.get(supabase_id=self.request.user)
             except Profile.DoesNotExist:
                 raise ValueError("User profile not found")
         
-        # Save the order with the client set to the authenticated user's profile
-        serializer.save(client=profile)
+        # Auto-assign a random provider based on service type
+        service_type = serializer.validated_data.get('service_type')
+        available_providers = Profile.objects.filter(
+            role=Role.PROVIDER,
+            provider_type=service_type
+        )
+        
+        provider = None
+        if available_providers.exists():
+            provider = random.choice(available_providers)
+        
+        # Save the order with the client and assigned provider
+        serializer.save(client=profile, provider=provider)
 
     def update(self, request, *args, **kwargs):
         # Get original order for later comparison
@@ -199,3 +211,4 @@ class OrderViewSet(ModelViewSet):
             queryset = Order.objects.filter(client=profile).select_related("provider")
 
         return queryset
+

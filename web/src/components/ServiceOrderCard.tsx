@@ -15,9 +15,11 @@ const statusColors: Record<OrderView["status"], string> = {
   Completed: "bg-green-200 text-green-800",
 };
 
-const orderIcons: Record<OrderView["serviceType"], string> = {
-  Cleaning: cleaningIcon,
-  Maintenance: maintenanceIcon,
+const orderIcons: Record<string, string> = {
+  cleaning: cleaningIcon,
+  maintenance: maintenanceIcon,
+  Cleaning: cleaningIcon,  // Keep capitalized version for backward compatibility
+  Maintenance: maintenanceIcon,  // Keep capitalized version for backward compatibility
 };
 
 const getStatusMessage = (order: OrderView) => {
