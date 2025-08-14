@@ -5,6 +5,7 @@ import { mapOrderRequest, mapOrderToView } from "@/utils/mappers";
 import type { Order } from "@/types/order";
 import { useAuth } from "@/contexts/AuthContext";
 import { Navigate } from "react-router-dom";
+import RatingStars from "@/components/RatingStars";
 import {
   Table,
   TableBody,
@@ -160,9 +161,6 @@ const CustomerPortalPage = () => {
                       <TableRow className="sticky top-0 bg-gray-100 z-10">
                         <TableHead>Service Type</TableHead>
                         <TableHead className="border-l border-gray-300">
-                          Status
-                        </TableHead>
-                        <TableHead className="border-l border-gray-300">
                           Service Date
                         </TableHead>
                         <TableHead className="border-l border-gray-300">
@@ -180,16 +178,27 @@ const CustomerPortalPage = () => {
                             {orderView.serviceType}
                           </TableCell>
                           <TableCell className="border-l border-gray-300">
-                            {orderView.status}
-                          </TableCell>
-                          <TableCell className="border-l border-gray-300">
                             {orderView.serviceDate}
                           </TableCell>
                           <TableCell className="border-l border-gray-300">
                             {orderView.orderDate}
                           </TableCell>
                           <TableCell className="border-l border-gray-300">
-                            {orderView.rating != null ? orderView.rating : "—"}
+                            <RatingStars
+                              value={orderView.rating}
+                              orderId={orderView.orderNum}
+                              readOnly={orderView.rating !== null}
+                              onRatingUpdate={(newRating) => {
+                                // Update orders array with the new rating
+                                setOrders((prevOrders) =>
+                                  prevOrders.map((order) =>
+                                    order.orderNum === orderView.orderNum
+                                      ? { ...order, rating: newRating }
+                                      : order
+                                  )
+                                );
+                              }}
+                            />
                           </TableCell>
                         </TableRow>
                       ))}

@@ -1,6 +1,7 @@
 import AnnouncementCard from "@/components/AnnouncementCard";
 import { FullCalendar, type CalendarEvent } from "@/components/FullSchedule";
 import HourSchedule from "@/components/HourSchedule";
+import RatingStars from "@/components/RatingStars";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -423,7 +424,13 @@ const ProviderPortal = () => {
                           {data.orderDate}
                         </TableCell>
                         <TableCell className="border-l border-gray-300">
-                          {data.rating ?? "—"}
+                          {data.rating !== null && (
+                            <RatingStars
+                              value={data.rating}
+                              orderId={data.orderNum}
+                              readOnly={true}
+                            />
+                          )}
                         </TableCell>
                       </TableRow>
                     ))}
