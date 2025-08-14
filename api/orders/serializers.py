@@ -32,8 +32,11 @@ class OrderSerializer(serializers.ModelSerializer):
     price = serializers.SerializerMethodField()
     description = serializers.SerializerMethodField()
     status = serializers.CharField()
-    service_type = serializers.SerializerMethodField()
-    job = serializers.SerializerMethodField()
+    service_type = serializers.ChoiceField(choices=ServiceType.choices, write_only=False)
+    job = serializers.CharField(write_only=False)
+    start_time = serializers.DateTimeField(write_only=False)
+    service_type_display = serializers.SerializerMethodField(read_only=True)
+    job_display = serializers.SerializerMethodField(read_only=True)
 
     @extend_schema_field(serializers.FloatField)
     def get_price(self, obj):
@@ -77,12 +80,12 @@ class OrderSerializer(serializers.ModelSerializer):
         return super().update(instance, validated_data)
 
     @extend_schema_field(serializers.CharField)
-    def get_service_type(self, obj):
+    def get_service_type_display(self, obj):
         service_mapping = {"cleaning": "Cleaning", "maintenance": "Maintenance"}
         return service_mapping.get(obj.service_type, obj.service_type)
 
     @extend_schema_field(serializers.CharField)
-    def get_job(self, obj):
+    def get_job_display(self, obj):
         # Create a combined mapping dictionary from both CleaningJobs and MaintenanceJobs choices
         job_mapping = {}
 
@@ -144,6 +147,8 @@ class OrderSerializer(serializers.ModelSerializer):
             "status",
             "service_type",
             "job",
+            "service_type_display",
+            "job_display",
             "comments",
             "rating",
             "created_at",
@@ -153,11 +158,10 @@ class OrderSerializer(serializers.ModelSerializer):
         # IMPORTANT: 'status' is NOT in read_only_fields to allow status updates
         read_only_fields = [
             "order_num",
-            "start_time",
             "end_time",
             "created_at",
             "price",
             "description",
-            "job",
-            "service_type",
+            "service_type_display",
+            "job_display",
         ]

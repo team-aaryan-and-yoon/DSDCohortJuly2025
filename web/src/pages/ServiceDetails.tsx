@@ -137,7 +137,7 @@ const ServiceDetailsPage = () => {
                   if (selectedService) {
                     addItem(selectedService);
                     navigate("/book-service", {
-                      state: { service: selectedService },
+                      state: { service: selectedService, serviceType: urlType },
                     });
                   }
                 }}>

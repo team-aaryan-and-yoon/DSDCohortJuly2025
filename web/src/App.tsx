@@ -8,14 +8,16 @@ import type { Link } from "./Types";
 import HomePage from "./pages/HomePage";
 import SelectedOrderPage from "./pages/SelectedOrderPage";
 import OrderConfirmationPage from "./pages/OrderConfirmationPage";
+
 import ProviderPortal from "./pages/ProviderPortal";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthCallback from "./pages/AuthCallback";
+import StripeSuccessPage from "./pages/StripeSuccessPage";
+import StripeCancelPage from "./pages/StripeCancelPage";
 import NavbarPages from "./components/NavbarPages";
 import NavbarAuth from "./components/NavbarAuth";
 import { CartProvider } from "./contexts/CartContext";
-import OrderPage from "./pages/OrderPage";
 
 function App() {
   const links: Link[] = [
@@ -80,9 +82,11 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/orders" element={<OrderPage />} />
+              <Route path="/landing" element={<HomePage />} />
               <Route path="/book-service" element={<SelectedOrderPage />} />
               <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
+              <Route path="/checkout/success" element={<StripeSuccessPage />} />
+              <Route path="/checkout/cancel" element={<StripeCancelPage />} />
             </Routes>
           </div>
         </BrowserRouter>

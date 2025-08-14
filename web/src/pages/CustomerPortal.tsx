@@ -45,12 +45,10 @@ const CustomerPortalPage = () => {
             }
             // Wait 2 seconds before retry
             await new Promise((resolve) => setTimeout(resolve, 2000));
-            console.log(`Retrying API call... ${retries} attempts left`);
           }
         }
 
         const ordersData = response?.data;
-        console.log("Raw API response:", ordersData);
         const orders = (ordersData ?? []).map(mapOrderRequest);
         setOrders(orders);
       } catch (e) {
@@ -159,7 +157,8 @@ const CustomerPortalPage = () => {
                   <Table className="bg-white">
                     <TableHeader>
                       <TableRow className="sticky top-0 bg-gray-100 z-10">
-                        <TableHead>Service Type</TableHead>
+                        <TableHead>Order #</TableHead>
+                        <TableHead className="border-l border-gray-300">Service Type</TableHead>
                         <TableHead className="border-l border-gray-300">
                           Service Date
                         </TableHead>
@@ -174,6 +173,9 @@ const CustomerPortalPage = () => {
                     <TableBody>
                       {past.map(mapOrderToView).map((orderView) => (
                         <TableRow key={orderView.orderNum}>
+                          <TableCell>
+                            {orderView.orderNum}
+                          </TableCell>
                           <TableCell className="border-l border-gray-300">
                             {orderView.serviceType}
                           </TableCell>

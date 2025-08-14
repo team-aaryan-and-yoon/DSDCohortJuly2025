@@ -1,9 +1,12 @@
 import React from "react";
 import { Button } from "../components/ui/button";
 import ProgressBarCheckout from "../components/ui/progress-bar-checkout";
+import { useLocation, useNavigate } from 'react-router-dom';
 
 const OrderConfirmationPage: React.FC = () => {
-  const orderNumber = "#2343345646423";
+  const location = useLocation();
+  const navigate = useNavigate();
+  const orderNumber = location.state?.orderNumber || "PENDING";
 
   const CheckmarkIcon: React.FC = () => (
     <div className="pb-10">
@@ -30,7 +33,7 @@ const OrderConfirmationPage: React.FC = () => {
 
       <div className="flex flex-col items-center justify-center">
         <CheckmarkIcon />
-        <h2 className="text-2xl font-bold p-1 ">{orderNumber}</h2>
+        <h2 className="text-2xl font-bold p-1 ">#{orderNumber}</h2>
         <p className="text-lg font-bold p-1">ORDER CONFIRMATION RECEIVED</p>
         <p className="text-gray-500 max-w-[450px] text-center mb-4">
           Your Order has been received, please check on the dashboard for the
@@ -41,9 +44,9 @@ const OrderConfirmationPage: React.FC = () => {
           size="lg"
           className="w-full"
           onClick={() => {
-            window.location.href = "/dashboard";
+            navigate("/customer-portal");
           }}>
-          Dashboard
+          View Orders
         </Button>
       </div>
     </div>

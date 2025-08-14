@@ -21,6 +21,10 @@ const AuthCallback = () => {
         if (session?.user) {
           // OAuth successful
           
+          // For Google OAuth users, check for pending redirect first
+          const redirectPath = sessionStorage.getItem('redirectAfterAuth');
+          const pendingService = sessionStorage.getItem('pendingService');
+          
           // Check if profile exists
           let profileExists = false;
           try {
@@ -32,12 +36,17 @@ const AuthCallback = () => {
               profileExists = true;
             }
           } catch (profileError: any) {
+            console.error('Profile check error:', profileError);
             // 204 is returned as an error by axios sometimes
             if (profileError?.response?.status === 204) {
               // Profile does not exist yet
               profileExists = false;
             } else {
-              // Error checking profile - continue anyway
+              // Error checking profile - for Google OAuth, assume profile exists if we have a session
+              // and redirect them to complete the flow
+              if (session.user.app_metadata?.provider === 'google' && redirectPath) {
+                profileExists = true; // Assume profile exists for OAuth users
+              }
             }
           }
           
@@ -52,6 +61,9 @@ const AuthCallback = () => {
                 isGoogleAuth: true
               }));
               
+              // Preserve the pending redirect during profile completion
+              // The SignUp page will handle it after profile is created
+              
               // Redirect to signup for profile completion
               navigate('/sign-up?complete=true');
             } else {
@@ -60,8 +72,23 @@ const AuthCallback = () => {
               navigate('/');
             }
           } else {
-            // Profile exists, go to home
-            navigate('/');
+            // Profile exists, check for pending redirect
+<<<<<<< HEAD
+=======
+            const redirectPath = sessionStorage.getItem('redirectAfterAuth');
+            const pendingService = sessionStorage.getItem('pendingService');
+            
+>>>>>>> 4434980208d8bd90d41817a951a14fc1a1fb77f5
+            if (redirectPath && pendingService) {
+              // Clear the stored redirect path
+              sessionStorage.removeItem('redirectAfterAuth');
+              const service = JSON.parse(pendingService);
+              // Navigate back to book-service with the service data
+              navigate(redirectPath, { state: { service }, replace: true });
+            } else {
+              // No pending redirect, go to home
+              navigate('/');
+            }
           }
         } else {
           navigate('/sign-in');
