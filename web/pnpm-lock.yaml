@@ -38,6 +38,9 @@ importers:
       '@smastrom/react-rating':
         specifier: ^1.5.0
         version: 1.5.0(react-dom@19.1.1(react@19.1.1))(react@19.1.1)
+      '@stripe/stripe-js':
+        specifier: ^7.8.0
+        version: 7.8.0
       '@supabase/supabase-js':
         specifier: ^2.53.0
         version: 2.55.0
@@ -63,7 +66,7 @@ importers:
         specifier: ^8.6.0
         version: 8.6.0(react@19.1.1)
       embla-carousel-wheel-gestures:
-        specifier: ^8.0.2
+        specifier: ^8.0.5
         version: 8.1.0(embla-carousel@8.6.0)
       lucide-react:
         specifier: ^0.525.0
@@ -979,6 +982,10 @@ packages:
     peerDependencies:
       react: '>=18'
       react-dom: '>=18'
+
+  '@stripe/stripe-js@7.8.0':
+    resolution: {integrity: sha512-DNXRfYUgkZlrniQORbA/wH8CdFRhiBSE0R56gYU0V5vvpJ9WZwvGrz9tBAZmfq2aTgw6SK7mNpmTizGzLWVezw==}
+    engines: {node: '>=12.16'}
 
   '@supabase/auth-js@2.71.1':
     resolution: {integrity: sha512-mMIQHBRc+SKpZFRB2qtupuzulaUhFYupNyxqDj5Jp/LyPvcWvjaJzZzObv6URtL/O6lPxkanASnotGtNpS3H2Q==}
@@ -2862,6 +2869,8 @@ snapshots:
     dependencies:
       react: 19.1.1
       react-dom: 19.1.1(react@19.1.1)
+
+  '@stripe/stripe-js@7.8.0': {}
 
   '@supabase/auth-js@2.71.1':
     dependencies:

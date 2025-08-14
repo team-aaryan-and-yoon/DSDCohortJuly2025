@@ -148,7 +148,9 @@ DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 DRF_STRIPE = {
     "STRIPE_API_SECRET": config("STRIPE_API_SECRET"),
-    "FRONT_END_BASE_URL": "http://localhost:3000"
+    "FRONT_END_BASE_URL": "http://localhost:5173",
+    "CHECKOUT_SUCCESS_URL_PATH": "/checkout/success?session_id={CHECKOUT_SESSION_ID}",
+    "CHECKOUT_CANCEL_URL_PATH": "/checkout/cancel",
 }
 
 # Supabase Configuration

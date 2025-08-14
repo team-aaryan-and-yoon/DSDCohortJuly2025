@@ -7,6 +7,7 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import type { Link } from "./Types";
 import HomePage from "./pages/HomePage";
 import SelectedOrderPage from "./pages/SelectedOrderPage";
+import OrderConfirmationPage from "./pages/OrderConfirmationPage";
 import ProviderPortal from "./pages/ProviderPortal";
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
@@ -77,6 +78,7 @@ function App() {
               />
               <Route path="/orders" element={<OrderPage />} />
               <Route path="/book-service" element={<SelectedOrderPage />} />
+              <Route path="/order-confirmation" element={<OrderConfirmationPage />} />
             </Routes>
           </div>
         </BrowserRouter>
