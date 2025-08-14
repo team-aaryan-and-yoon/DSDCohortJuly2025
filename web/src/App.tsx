@@ -1,6 +1,4 @@
-// import { useState } from "react";
 import "./App.css";
-
 import CustomerPortal from "./pages/CustomerPortal";
 import ServiceDetailsPage from "./pages/ServiceDetails";
 import SignUpPage from "./pages/SignUp";
@@ -9,13 +7,10 @@ import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
 import type { Link } from "./Types";
 import HomePage from "./pages/HomePage";
 import SelectedOrderPage from "./pages/SelectedOrderPage";
-
 import ProviderPortal from "./pages/ProviderPortal";
-
 import { AuthProvider } from "./contexts/AuthContext";
 import ProtectedRoute from "./components/ProtectedRoute";
 import AuthCallback from "./pages/AuthCallback";
-import LandingPage from "./pages/LandingPage";
 import NavbarPages from "./components/NavbarPages";
 import NavbarAuth from "./components/NavbarAuth";
 import { CartProvider } from "./contexts/CartContext";
@@ -80,7 +75,6 @@ function App() {
                   </ProtectedRoute>
                 }
               />
-              <Route path="/landing" element={<LandingPage />} />
               <Route path="/orders" element={<OrderPage />} />
               <Route path="/book-service" element={<SelectedOrderPage />} />
             </Routes>
