@@ -27,12 +27,14 @@ def get_services(request):
     return Response(services_data)
 
 
+
+
 class OrderViewSet(ModelViewSet):
     queryset = Order.objects.all().select_related("client", "provider")
     serializer_class = OrderSerializer
     permission_classes = [IsAuthenticated]
 
-    lookup_field = "order_num"
+    #lookup_field = "order_num"
 
     def update(self, request, *args, **kwargs):
         # Get original order for later comparison
@@ -81,6 +83,64 @@ class OrderViewSet(ModelViewSet):
             )
         except Exception:
             # Don't let email failures affect the API response
+            pass
+    
+    def create(self, request, *args, **kwargs):
+        response = super().create(request, *args, **kwargs)
+        # check for successful order creation
+        if response.status_code == 201:
+            try:
+                order_data = response.data
+                order = Order.objects.get(order_num=order_data["order_num"])
+                self._send_order_confirmation_email(order)
+            except Exception as e:
+                pass
+        return response
+    
+    def _send_order_confirmation_email(self, order):
+        # helper to send confirmation email
+        try:
+            # Get client email from Supabase
+            url = config("SUPABASE_URL")
+            key = config("SUPABASE_SERVICE_KEY")
+            supabase = create_client(url, key)
+
+            if not order.client or not order.client.supabase_id:
+                return
+            
+            client_supabase_id = str(order.client.supabase_id.id)
+            user_response = supabase.auth.admin.get_user_by_id(client_supabase_id)
+            client_email = user_response.user.email 
+
+            order_details = (
+                f"Service Type: {order.service_type}\\n"
+                f"Job: {order.job}\\n"
+                f"Start Time: {order.start_time}\\n"
+                f"End Time: {order.end_time}\\n"
+                f"Status: {order.status}\\n"
+                #f"Order Number: {order.order_num}\n  
+            )
+
+            if order.provider:
+                provider_name = f"{order.provider.first_name} {order.provider.last_name}"
+                provider_info = f"Your service will be provided by {provider_name}"
+            else:
+                provider_info = "A service provider will be assigned to your order shortly."
+
+            #send email
+            send_mail(
+                subject=f"Confirmation of your order: {order.order_num}",
+                message=(
+                    f"Hello, \\n\\n"
+                    f"Thank you for your order! Here are your order details:\\n\\n"
+                    f"{order_details} \\n\\n"
+                    f"{provider_info}\\n\\n"
+                ),
+                from_email=config("EMAIL_HOST_USER"),
+                recipient_list=[client_email],
+                fail_silently=False,
+            )
+        except Exception as e:
             pass
 
     def partial_update(self, request, *args, **kwargs):
