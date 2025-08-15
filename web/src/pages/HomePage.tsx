@@ -51,7 +51,7 @@ const HomePage = () => {
     },
     {
       reviewer: "Mary L",
-      comment: "Truely a saver",
+      comment: "Truly a saver",
       rating: 5,
       avatar_url: undefined,
     },

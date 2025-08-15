@@ -7,6 +7,20 @@ import type {
 import type { User, ApiUser } from "@/types/user";
 import { mapBackendToFrontendStatus } from "./statusMapper";
 
+// Dynamic formatting functions
+function formatServiceType(serviceType: string): string {
+  // Capitalize first letter
+  return serviceType.charAt(0).toUpperCase() + serviceType.slice(1).toLowerCase();
+}
+
+function formatJob(job: string): string {
+  // Replace underscores with spaces and capitalize each word
+  return job
+    .split('_')
+    .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+    .join(' ');
+}
+
 // maps orders from API format to app format
 export function mapOrderRequest(apiOrder: ApiOrder): Order {
   try {
@@ -97,8 +111,8 @@ export function mapOrderToView(order: Order): OrderView {
       hour: "2-digit",
       minute: "2-digit",
     }),
-    serviceType: order.serviceType,
-    job: order.job,
+    serviceType: formatServiceType(order.serviceType),
+    job: formatJob(order.job),
     status: order.status,
     rating: order.rating,
     orderDate: orderDate.toLocaleDateString(),
@@ -152,8 +166,8 @@ export function mapOrderToProviderView(order: Order): ProviderOrderView {
       minute: "2-digit",
     }),
     serviceLocation: serviceLocation,
-    serviceType: order.serviceType,
-    job: order.job,
+    serviceType: formatServiceType(order.serviceType),
+    job: formatJob(order.job),
     status: order.status,
     rating: order.rating,
     orderDate: orderDate.toLocaleDateString(),
