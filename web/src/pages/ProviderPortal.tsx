@@ -33,9 +33,6 @@ const ProviderPortal = () => {
   // Keep track of which specific order is currently being updated
   const [updatingOrderId, setUpdatingOrderId] = useState<string | null>(null);
 
-  // We no longer need the global status message since we're only showing local status messages
-  // Just keep track of which order is being updated
-
   // Process orders into different categories and formats needed for the UI
   const processOrders = (fetchedOrders: Order[]) => {
     if (fetchedOrders.length === 0) {
@@ -77,7 +74,7 @@ const ProviderPortal = () => {
     );
     setHistory(completedOrders);
 
-    // Create calendar events
+    // Create calendar events with properly formatted service type and job
     const calendarEvents: CalendarEvent[] = fetchedOrders
       .map((order) => {
         const startTime = new Date(order.startTime);
@@ -87,12 +84,29 @@ const ProviderPortal = () => {
           return null;
         }
 
+        // Get the same formatting as used in the provider view by using
+        // the same provider order object with the same ID
+        const matchingProviderOrder = providerOrders.find(
+          (providerOrder) => providerOrder.orderNum === order.orderNum
+        );
+
+        // If we found a matching provider order, use its formatted values
+        const formattedServiceType = matchingProviderOrder
+          ? matchingProviderOrder.serviceType
+          : order.serviceType;
+        const formattedJob = matchingProviderOrder
+          ? matchingProviderOrder.job
+          : order.job;
+
         return {
           id: order.orderNum,
-          title: `${order.serviceType} - ${order.job}`,
+          title: `${formattedServiceType} - ${formattedJob}`,
           start: startTime,
           end: endTime,
-          color: order.serviceType === "Cleaning" ? "#3b82f6" : "#ef4444",
+          color:
+            order.serviceType.toLowerCase() === "cleaning"
+              ? "#3b82f6"
+              : "#ef4444",
           description: order.description || order.comments || "",
         };
       })
@@ -158,7 +172,6 @@ const ProviderPortal = () => {
         // Use the dedicated utility to convert frontend status to backend format
         const backendStatus = mapFrontendToBackendStatus(newStatus);
 
-
         // Make a direct PATCH request with the backend format status
         await apiClient.patch(`/orders/${orderNum}/`, {
           status: backendStatus, // Send backend format explicitly (lowercase with dashes)
@@ -172,7 +185,6 @@ const ProviderPortal = () => {
           );
 
           const currentStatus = verifyResponse.data?.status;
-
 
           // Use our status mapper to normalize both statuses for comparison
           const verifiedFrontendStatus =
@@ -281,7 +293,6 @@ const ProviderPortal = () => {
 
   return (
     <div className="w-full h-[100svh] px-4 py-8 overflow-hidden">
-      {/* Top notification bar removed as requested */}
       <div className="flex w-full h-full gap-8 overflow-hidden">
         {/* Left */}
         <div className="flex flex-col w-full h-full justify-between">
