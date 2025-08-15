@@ -75,7 +75,7 @@ const AuthCallback = () => {
             // Profile exists, check for pending redirect
             const redirectPath = sessionStorage.getItem('redirectAfterAuth');
             const pendingService = sessionStorage.getItem('pendingService');
-            
+
             if (redirectPath && pendingService) {
               // Clear the stored redirect path
               sessionStorage.removeItem('redirectAfterAuth');
