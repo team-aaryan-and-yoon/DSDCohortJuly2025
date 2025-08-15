@@ -141,11 +141,11 @@ class OrderViewSet(ModelViewSet):
             client_email = user_response.user.email 
 
             order_details = (
-                f"Service Type: {order.service_type}\\n"
-                f"Job: {order.job}\\n"
-                f"Start Time: {order.start_time}\\n"
-                f"End Time: {order.end_time}\\n"
-                f"Status: {order.status}\\n"
+                f"Service Type: {order.service_type}\n"
+                f"Job: {order.job}\n"
+                f"Start Time: {order.start_time}\n"
+                f"End Time: {order.end_time}\n"
+                f"Status: {order.status}\n"
                 #f"Order Number: {order.order_num}\n  
             )
 
@@ -159,10 +159,10 @@ class OrderViewSet(ModelViewSet):
             send_mail(
                 subject=f"Confirmation of your order: {order.order_num}",
                 message=(
-                    f"Hello, \\n\\n"
-                    f"Thank you for your order! Here are your order details:\\n\\n"
-                    f"{order_details} \\n\\n"
-                    f"{provider_info}\\n\\n"
+                    f"Hello, \n\n"
+                    f"Thank you for your order! Here are your order details:\n\n"
+                    f"{order_details} \n\n"
+                    f"{provider_info}\n\n"
                 ),
                 from_email=config("EMAIL_HOST_USER"),
                 recipient_list=[client_email],
